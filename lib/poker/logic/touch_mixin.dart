@@ -13,10 +13,20 @@ mixin TouchMixin {
     if (_down == null) {
       return const Alignment(0, 0);
     } else {
+      double w = rc.width / 2;
+      double h = rc.height / 2;
       return Alignment(
-        (_down!.dx - rc.center.dx) / rc.width * 2,
-        (_down!.dy - rc.center.dy) / rc.height * 2,
+        (_down!.dx - w) / w,
+        (_down!.dy - h) / h,
       );
+    }
+  }
+
+  bool dragAtTop(Rect rc) {
+    if (_down == null) {
+      return true;
+    } else {
+      return _down!.dy <= rc.center.dy;
     }
   }
 

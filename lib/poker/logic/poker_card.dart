@@ -28,36 +28,35 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
 
   @override
   Widget build(BuildContext context) {
-    Alignment alignment = byDown(widget.rect);
     return Positioned.fromRect(
       rect: widget.rect.translate(dif.dx, dif.dy),
-      child: Transform.rotate(
-        angle: rotate(dif, widget.rect, alignment.y <= 0),
-        alignment: alignment,
-        child: GestureDetector(
-          onPanDown: (d) {
-            ctrl.stop();
-            onPanDown(d.localPosition);
-          },
-          onPanUpdate: (d) => setState(() => dif = byMove(d.localPosition)),
-          onPanEnd: (d) {
-            double vX = velocity(true, d.velocity.pixelsPerSecond, widget.rect);
-            double vY = velocity(false, d.velocity.pixelsPerSecond, widget.rect);
-            if (vY > TouchMixin.maxVelocity || canSwipeOut(false, dif, widget.rect)) {
-              toTop();
+      child: GestureDetector(
+        onPanDown: (d) {
+          ctrl.stop();
+          onPanDown(d.localPosition);
+        },
+        onPanUpdate: (d) => setState(() => dif = byMove(d.localPosition)),
+        onPanEnd: (d) {
+          double vX = velocity(true, d.velocity.pixelsPerSecond, widget.rect);
+          double vY = velocity(false, d.velocity.pixelsPerSecond, widget.rect);
+          if (vY > TouchMixin.maxVelocity || canSwipeOut(false, dif, widget.rect)) {
+            toTop();
+            toIdle(dif);
+          } else if (vX.abs() > TouchMixin.maxVelocity || canSwipeOut(true, dif, widget.rect)) {
+            if (dif.dx > 0) {
+              toRight();
               toIdle(dif);
-            } else if (vX.abs() > TouchMixin.maxVelocity || canSwipeOut(true, dif, widget.rect)) {
-              if (dif.dx > 0) {
-                toRight();
-                toIdle(dif);
-              } else {
-                toLeft();
-                toIdle(dif);
-              }
             } else {
+              toLeft();
               toIdle(dif);
             }
-          },
+          } else {
+            toIdle(dif);
+          }
+        },
+        child: Transform.rotate(
+          angle: rotate(dif, widget.rect, dragAtTop(widget.rect)),
+          alignment: byDown(widget.rect),
           child: widget.child,
         ),
       ),

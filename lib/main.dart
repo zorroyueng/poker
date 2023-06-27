@@ -28,7 +28,10 @@ class _HomePage extends StatelessWidget {
         body: PokerView(
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.lime.withOpacity(.5),
+              image: const DecorationImage(
+                fit: BoxFit.cover,
+                image: NetworkImage('https://hbimg.huabanimg.com/e0f1e09eafb2195ba8d9d6347bb7b981aea6c321370c0-RPxc2Y'),
+              ),
               borderRadius: BorderRadius.circular(20),
             ),
           ),
