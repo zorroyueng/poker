@@ -8,24 +8,16 @@ class PokerView extends StatelessWidget with PokerMixin {
   PokerView({super.key, required this.child});
 
   @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (_, constraints) {
-        return Stack(
-          fit: StackFit.expand,
-          children: [
-            PokerCard(
-              rect: idle(
-                Size(
-                  constraints.maxWidth,
-                  constraints.maxHeight,
-                ),
-              ),
-              child: child,
-            ),
-          ],
-        );
-      },
-    );
-  }
+  Widget build(BuildContext context) => LayoutBuilder(
+        builder: (_, bc) {
+          Rect rect = idle(Size(bc.maxWidth, bc.maxHeight));
+          return Stack(
+            clipBehavior: Clip.none,
+            fit: StackFit.expand,
+            children: [
+              PokerCard(rect: rect, child: child),
+            ],
+          );
+        },
+      );
 }

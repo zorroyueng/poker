@@ -17,19 +17,12 @@ mixin AnimMixin {
   void toLeft() {}
 
   void toIdle(Offset dif) {
-    _animation = ctrl.drive(
-      OffsetTween(
-        begin: dif,
-        end: Offset.zero,
-      ),
-    );
-    const spring = SpringDescription(
-      mass: 30,
-      stiffness: 1,
-      damping: 1,
-    );
-    final simulation = SpringSimulation(spring, 0, 1, 0);
-    ctrl.animateWith(simulation);
+    _animation = OffsetTween(
+      begin: dif,
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: ctrl, curve: Curves.easeOutBack));
+    ctrl.duration = const Duration(milliseconds: 500);
+    ctrl.forward(from: 0);
   }
 
   void initAnim(PokerCardState t, VoidCallback cb) {
