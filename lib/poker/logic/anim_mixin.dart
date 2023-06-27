@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:poker/poker/logic/offset_tween.dart';
+import 'package:poker/poker/logic/poker_card.dart';
 import 'package:poker/poker/poker_view.dart';
 
 mixin AnimMixin {
@@ -31,7 +32,7 @@ mixin AnimMixin {
     ctrl.animateWith(simulation);
   }
 
-  void initAnim(PokerViewState t, VoidCallback cb) {
+  void initAnim(PokerCardState t, VoidCallback cb) {
     ctrl = AnimationController(vsync: t);
     ctrl.addListener(cb);
   }
