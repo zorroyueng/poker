@@ -1,9 +1,12 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 
 mixin TouchMixin {
   Offset? _down;
   Offset dif = Offset.zero;
-  static const double maxVelocity = 5;
+  static const double maxSwipeVelocity = 5; // 滑动速度判断swipeOut最大值
+  static const double maxAnimVelocity = 7; // 动画速度最大值
 
   void onPanDown(Offset d) => _down = d;
 
@@ -32,9 +35,14 @@ mixin TouchMixin {
 
   double velocity(bool x, Offset o, Rect rc) {
     if (x) {
-      return o.dx / rc.width;
+      return o.dx / rc.shortestSide;
     } else {
-      return o.dy / rc.height;
+      return o.dy / rc.shortestSide;
     }
+  }
+
+  int duration(double vX, double vY) {
+    double v = min(maxAnimVelocity, sqrt(vX * vX + vY * vY));
+    return 500 - (300 * (v / maxAnimVelocity)).toInt();
   }
 }

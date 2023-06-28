@@ -14,17 +14,22 @@ mixin LayoutMixin {
     }
   }
 
+  // 滑动百分比为[0,1]
   double percent(bool x, Offset dif, Rect rect) {
     if (rect.isEmpty) {
       return 0;
     } else {
       if (x) {
-        return dif.dx / (rect.width * _percentK);
+        return math.min(1, dif.dx.abs() / (rect.width * _percentK));
       } else {
-        return dif.dy / (rect.height * _percentK);
+        return math.min(1, dif.dy.abs() / (rect.height * _percentK));
       }
     }
   }
 
   double rotate(Offset dif, Rect rect, bool up) => percent(true, dif, rect) * _maxRotate * (up ? 1 : -1);
+
+  Offset end(Offset dif, Rect rect, double vX, double vY) {
+    return dif + Offset(rect.width, 0);
+  }
 }

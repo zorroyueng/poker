@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:poker/demo/demo_adapter.dart';
+import 'package:poker/demo/demo_helper.dart';
+import 'package:poker/poker/logic/poker_adapter.dart';
 import 'package:poker/poker/poker_view.dart';
 
 void main() {
@@ -23,18 +26,15 @@ class MyApp extends StatelessWidget {
 }
 
 class _HomePage extends StatelessWidget {
+  final DemoAdapter adapter = DemoAdapter();
+
   @override
-  Widget build(BuildContext context) => Scaffold(
-        body: PokerView(
-          child: Container(
-            decoration: BoxDecoration(
-              image: const DecorationImage(
-                fit: BoxFit.cover,
-                image: NetworkImage('https://hbimg.huabanimg.com/e0f1e09eafb2195ba8d9d6347bb7b981aea6c321370c0-RPxc2Y'),
-              ),
-              borderRadius: BorderRadius.circular(20),
-            ),
-          ),
-        ),
-      );
+  Widget build(BuildContext context) {
+    List<DemoData> data = [];
+    for (int i = 0; i < DemoHelper.pics.length; i++) {
+      data.add(DemoData(i, DemoHelper.pics[i]));
+    }
+    adapter.setData(data);
+    return Scaffold(body: PokerView(adapter: adapter));
+  }
 }

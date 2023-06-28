@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:poker/poker/logic/anim_mixin.dart';
 import 'package:poker/poker/logic/layout_mixin.dart';
+import 'package:poker/poker/logic/poker_adapter.dart';
 import 'package:poker/poker/logic/touch_mixin.dart';
 
 class PokerCard extends StatefulWidget {
-  final Widget child;
+  final PokerAdapter adapter;
+  final PokerItem item;
   final Rect rect;
 
-  const PokerCard({super.key, required this.child, required this.rect});
+  const PokerCard({super.key, required this.item, required this.rect, required this.adapter});
 
   @override
   State<PokerCard> createState() => PokerCardState();
@@ -22,7 +24,7 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
 
   @override
   void dispose() {
-    ctrl.dispose();
+    disposeAnim();
     super.dispose();
   }
 
@@ -32,19 +34,33 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
       rect: widget.rect.translate(dif.dx, dif.dy),
       child: GestureDetector(
         onPanDown: (d) {
-          ctrl.stop();
+          stopAnim();
           onPanDown(d.localPosition);
+          widget.adapter.prepareItem(widget.item);
         },
         onPanUpdate: (d) => setState(() => dif = byMove(d.localPosition)),
         onPanEnd: (d) {
-          double vX = velocity(true, d.velocity.pixelsPerSecond, widget.rect);
-          double vY = velocity(false, d.velocity.pixelsPerSecond, widget.rect);
-          if (vY > TouchMixin.maxVelocity || canSwipeOut(false, dif, widget.rect)) {
+          Offset v = d.velocity.pixelsPerSecond;
+          double vX = velocity(true, v, widget.rect);
+          double vY = velocity(false, v, widget.rect);
+          if (vY > TouchMixin.maxSwipeVelocity && vY > vX.abs() && canSwipeOut(false, dif, widget.rect)) {
             toTop();
             toIdle(dif);
-          } else if (vX.abs() > TouchMixin.maxVelocity || canSwipeOut(true, dif, widget.rect)) {
+          } else if (vX >= TouchMixin.maxSwipeVelocity) {
+            Offset e = end(dif, widget.rect, vX, vY);
+            toRight(
+              dif,
+              e,
+              duration(vX, vY),
+              () => widget.adapter.toNext(widget.item),
+            );
+          } else if (-vX >= TouchMixin.maxSwipeVelocity) {
+            toLeft();
+            toIdle(dif);
+          } else if (canSwipeOut(true, dif, widget.rect)) {
             if (dif.dx > 0) {
-              toRight();
+              // Offset e = end(dif, widget.rect, vX, vY);
+              // toRight(dif, e, duration(vX, vY));
               toIdle(dif);
             } else {
               toLeft();
@@ -57,7 +73,7 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
         child: Transform.rotate(
           angle: rotate(dif, widget.rect, dragAtTop(widget.rect)),
           alignment: byDown(widget.rect),
-          child: widget.child,
+          child: widget.item.child,
         ),
       ),
     );

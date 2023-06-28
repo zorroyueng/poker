@@ -1,18 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:poker/poker/logic/offset_tween.dart';
+import 'package:poker/poker/logic/poker_adapter.dart';
 import 'package:poker/poker/logic/poker_card.dart';
 import 'package:poker/poker/poker_view.dart';
 
 mixin AnimMixin {
-  late final AnimationController ctrl;
+  late final AnimationController _ctrl;
   Animation<Offset>? _animation;
+  VoidCallback? _onEnd;
 
   Offset byAnim() => _animation!.value;
 
   void toTop() {}
 
-  void toRight() {}
+  void toRight(Offset dif, Offset end, int duration, VoidCallback onEnd) {
+    stopAnim();
+    _animation = OffsetTween(
+      begin: dif,
+      end: end,
+    ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.decelerate));
+    _ctrl.duration = Duration(milliseconds: duration);
+    _onEnd = () {
+      if (_ctrl.value == 1) {
+        onEnd.call();
+        _ctrl.removeListener(_onEnd!);
+      }
+    };
+    _ctrl.addListener(_onEnd!);
+    _ctrl.forward(from: 0);
+  }
 
   void toLeft() {}
 
@@ -20,17 +37,25 @@ mixin AnimMixin {
     _animation = OffsetTween(
       begin: dif,
       end: Offset.zero,
-    ).animate(CurvedAnimation(parent: ctrl, curve: Curves.easeOutBack));
-    ctrl.duration = const Duration(milliseconds: 500);
-    ctrl.forward(from: 0);
+    ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutBack));
+    _ctrl.duration = const Duration(milliseconds: 500);
+    _ctrl.forward(from: 0);
   }
 
   void initAnim(PokerCardState t, VoidCallback cb) {
-    ctrl = AnimationController(vsync: t);
-    ctrl.addListener(cb);
+    _ctrl = AnimationController(vsync: t);
+    _ctrl.addListener(cb);
   }
 
-  void disposeAnim() => ctrl.dispose();
+  void disposeAnim() => _ctrl.dispose();
+
+  void stopAnim() {
+    if (_onEnd != null) {
+      _ctrl.removeListener(_onEnd!);
+      _onEnd = null;
+    }
+    _ctrl.stop();
+  }
 }
 
 class AlignmentTween extends Tween<Alignment> {
