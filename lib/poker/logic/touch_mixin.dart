@@ -26,7 +26,7 @@ mixin TouchMixin {
     if (_down == null) {
       return true;
     } else {
-      return _down!.dy <= rc.center.dy;
+      return _down!.dy <= rc.height / 2;
     }
   }
 
