@@ -55,7 +55,7 @@ abstract class PokerAdapter<T> {
 
   int _itemIndex(PokerItem item) => _items.indexWhere((e) => e.key == item.key);
 
-  void prepareItem(PokerItem item) {
+  void onPanDown(PokerItem item) {
     _lastSwipeItem = item;
     int indexItem = _itemIndex(item); // 屏幕点击在_items序列中的index，当前为_items.length - 1
     int indexData = _current + (_items.length - 1 - indexItem);
@@ -64,6 +64,8 @@ abstract class PokerAdapter<T> {
     _buildWidgets(from: _current, to: prepareIndex);
     _view!.update(_items);
   }
+
+  bool hasLastSwipeItem() => _lastSwipeItem != null;
 
   bool isLastSwipeItem(PokerItem item) => item == _lastSwipeItem;
 

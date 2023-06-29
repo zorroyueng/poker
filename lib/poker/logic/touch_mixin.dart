@@ -7,10 +7,19 @@ mixin TouchMixin {
   Offset dif = Offset.zero;
   static const double maxSwipeVelocity = 5; // 滑动速度判断swipeOut最大值
   static const double maxAnimVelocity = 7; // 动画速度最大值
+  bool _singleTouch = false;
+
+  void onTouch(PointerEvent e) {
+    _singleTouch = e.pointer == 1;
+  }
+
+  bool singleTouch() => _singleTouch;
 
   void onPanDown(Offset d) => _down = d;
 
   Offset byMove(Offset move) => move - _down!;
+
+  Offset lastMove(Offset dif) => _down! + dif;
 
   Alignment byDown(Rect rc) {
     if (_down == null) {
