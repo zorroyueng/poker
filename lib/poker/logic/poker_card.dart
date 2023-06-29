@@ -73,6 +73,7 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
         child: Transform.rotate(
           angle: rotate(dif, widget.rect, dragAtTop(widget.rect)),
           alignment: byDown(widget.rect),
+          filterQuality: FilterQuality.medium,
           child: widget.item.child,
         ),
       ),

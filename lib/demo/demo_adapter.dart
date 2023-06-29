@@ -8,6 +8,7 @@ class DemoAdapter extends PokerAdapter<DemoData> {
   @override
   Widget item(DemoData t) => Container(
         decoration: BoxDecoration(
+          color: Colors.white,
           image: DecorationImage(
             fit: BoxFit.cover,
             image: NetworkImage(t.url),

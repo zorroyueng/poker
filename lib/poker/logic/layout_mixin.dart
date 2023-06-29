@@ -27,7 +27,8 @@ mixin LayoutMixin {
     }
   }
 
-  double rotate(Offset dif, Rect rect, bool up) => percent(true, dif, rect) * _maxRotate * (up ? 1 : -1);
+  double rotate(Offset dif, Rect rect, bool up) =>
+      percent(true, dif, rect) * _maxRotate * (up ? 1 : -1) * (dif.dx >= 0 ? 1 : -1);
 
   Offset end(Offset dif, Rect rect, double vX, double vY) {
     return dif + Offset(rect.width, 0);
