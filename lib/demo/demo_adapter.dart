@@ -8,14 +8,17 @@ class DemoAdapter extends PokerAdapter<DemoData> {
   @override
   Widget item(DemoData t) => Stack(
         fit: StackFit.expand,
+        clipBehavior: Clip.none,
         children: [
           Positioned.fill(
             child: Container(
+              clipBehavior: Clip.none,
               decoration: BoxDecoration(
                 color: Colors.white,
                 image: DecorationImage(
                   fit: BoxFit.cover,
                   image: NetworkImage(t.url),
+                  filterQuality: FilterQuality.medium,
                 ),
                 borderRadius: BorderRadius.circular(20),
               ),
@@ -26,6 +29,7 @@ class DemoAdapter extends PokerAdapter<DemoData> {
             bottom: 0,
             right: 0,
             child: Container(
+              clipBehavior: Clip.none,
               height: 60,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
