@@ -22,6 +22,12 @@ class _PokerViewState extends State<PokerView> with PokerMixin, AdapterView {
   }
 
   @override
+  void didUpdateWidget(PokerView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    widget.adapter.setAdapter(this);
+  }
+
+  @override
   Widget build(BuildContext context) => LayoutBuilder(
         builder: (_, bc) {
           Rect rect = idle(Size(bc.maxWidth, bc.maxHeight));

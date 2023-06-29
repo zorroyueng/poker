@@ -3,6 +3,7 @@ import 'package:poker/poker/logic/anim_mixin.dart';
 import 'package:poker/poker/logic/layout_mixin.dart';
 import 'package:poker/poker/logic/poker_adapter.dart';
 import 'package:poker/poker/logic/touch_mixin.dart';
+import 'package:poker/poker/poker_config.dart';
 
 class PokerCard extends StatefulWidget {
   final PokerAdapter adapter;
@@ -16,9 +17,19 @@ class PokerCard extends StatefulWidget {
 }
 
 class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixin, TouchMixin, AnimMixin, LayoutMixin {
+  void _updateDif(Offset o) {
+    dif = o;
+    if (widget.adapter.isLastSwipeItem(widget.item)) {
+      widget.adapter.swipePercent(
+        swipePercent(true, dif, widget.rect),
+        swipePercent(false, dif, widget.rect),
+      );
+    }
+  }
+
   @override
   void initState() {
-    initAnim(this, () => setState(() => dif = byAnim()));
+    initAnim(this, () => setState(() => _updateDif(byAnim())));
     super.initState();
   }
 
@@ -30,6 +41,8 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
 
   @override
   Widget build(BuildContext context) {
+    widget.item.update ??= () => setState(() {});
+
     return Positioned.fromRect(
       rect: widget.rect.translate(dif.dx, dif.dy),
       child: GestureDetector(
@@ -38,7 +51,7 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
           onPanDown(d.localPosition);
           widget.adapter.prepareItem(widget.item);
         },
-        onPanUpdate: (d) => setState(() => dif = byMove(d.localPosition)),
+        onPanUpdate: (d) => setState(() => _updateDif(byMove(d.localPosition))),
         onPanEnd: (d) {
           Offset v = d.velocity.pixelsPerSecond;
           double vX = velocity(true, v, widget.rect);
@@ -73,8 +86,17 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
         child: Transform.rotate(
           angle: rotate(dif, widget.rect, dragAtTop(widget.rect)),
           alignment: byDown(widget.rect),
-          filterQuality: FilterQuality.medium,
-          child: widget.item.child,
+          filterQuality: FilterQuality.low,
+          child: Transform.scale(
+            scale: PokerConfig.backCardScale + (1 - PokerConfig.backCardScale) * widget.item.percent,
+            child: Transform.translate(
+              offset: Offset(
+                widget.rect.width * PokerConfig.backCardOffset.dx * (1 - widget.item.percent),
+                widget.rect.height * PokerConfig.backCardOffset.dy * (1 - widget.item.percent),
+              ),
+              child: widget.item.child,
+            ),
+          ),
         ),
       ),
     );
