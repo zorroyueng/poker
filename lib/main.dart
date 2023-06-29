@@ -31,8 +31,9 @@ class _HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<DemoData> data = [];
-    for (int i = 0; i < DemoHelper.pics.length; i++) {
-      data.add(DemoData(i, DemoHelper.pics[i]));
+    List<String> pics = DemoHelper.stars + DemoHelper.nights + DemoHelper.pics;
+    for (int i = 0; i < pics.length; i++) {
+      data.add(DemoData(i, pics[i]));
     }
     adapter.setData(data);
     return Scaffold(body: PokerView(adapter: adapter));
