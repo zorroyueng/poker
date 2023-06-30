@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/physics.dart';
 import 'package:poker/poker/logic/offset_tween.dart';
-import 'package:poker/poker/logic/poker_adapter.dart';
 import 'package:poker/poker/logic/poker_card.dart';
-import 'package:poker/poker/poker_view.dart';
 
 mixin AnimMixin {
   late final AnimationController _ctrl;
@@ -14,26 +11,38 @@ mixin AnimMixin {
 
   void toTop() {}
 
-  void toRight(Offset dif, Offset end, int duration, VoidCallback onEnd) {
+  void anim({
+    required Offset begin,
+    required Offset end,
+    required int duration,
+    required Curve curve,
+    VoidCallback? onEnd,
+  }) {
     stopAnim();
     _animation = OffsetTween(
-      begin: dif,
+      begin: begin,
       end: end,
-    ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.decelerate));
+    ).animate(CurvedAnimation(
+      parent: _ctrl,
+      curve: curve,
+    ));
     _ctrl.duration = Duration(milliseconds: duration);
-    _onEnd = () {
-      if (_ctrl.value == 1) {
-        onEnd.call();
-        _ctrl.removeListener(_onEnd!);
-      }
-    };
-    _ctrl.addListener(_onEnd!);
+    if (onEnd != null) {
+      _onEnd = () {
+        if (_ctrl.value == 1) {
+          onEnd.call();
+          _ctrl.removeListener(_onEnd!);
+        }
+      };
+      _ctrl.addListener(_onEnd!);
+    }
     _ctrl.forward(from: 0);
   }
 
   void toLeft() {}
 
   void toIdle(Offset dif) {
+    stopAnim();
     _animation = OffsetTween(
       begin: dif,
       end: Offset.zero,

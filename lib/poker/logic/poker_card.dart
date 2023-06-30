@@ -64,21 +64,35 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
           Offset v = d.velocity.pixelsPerSecond;
           double vX = velocity(true, v, widget.rect);
           double vY = velocity(false, v, widget.rect);
-          if (vY > TouchMixin.maxSwipeVelocity && vY > vX.abs() && canSwipeOut(false, dif, widget.rect)) {
-            toTop();
-            toIdle(dif);
+          if (-vY > TouchMixin.maxSwipeVelocity && -vY >= vX.abs() && canSwipeOut(false, dif, widget.rect)) {
+            print('top vX=${vX.floor()}, vY=${vY.floor()}');
+            anim(
+              begin: dif,
+              end: end(false, dif, widget.rect, vX, vY),
+              duration: duration(vX, vY),
+              curve: Curves.decelerate,
+              onEnd: () => widget.adapter.toNext(widget.item),
+            );
           } else if (vX >= TouchMixin.maxSwipeVelocity) {
-            Offset e = end(dif, widget.rect, vX, vY);
-            toRight(
-              dif,
-              e,
-              duration(vX, vY),
-              () => widget.adapter.toNext(widget.item),
+            print('right vX=${vX.floor()}, vY=${vY.floor()}');
+            anim(
+              begin: dif,
+              end: end(true, dif, widget.rect, vX, vY),
+              duration: duration(vX, vY),
+              curve: Curves.decelerate,
+              onEnd: () => widget.adapter.toNext(widget.item),
             );
           } else if (-vX >= TouchMixin.maxSwipeVelocity) {
-            toLeft();
-            toIdle(dif);
+            print('left vX=${vX.floor()}, vY=${vY.floor()}');
+            anim(
+              begin: dif,
+              end: end(true, dif, widget.rect, vX, vY),
+              duration: duration(vX, vY),
+              curve: Curves.decelerate,
+              onEnd: () => widget.adapter.toNext(widget.item),
+            );
           } else if (canSwipeOut(true, dif, widget.rect)) {
+            print('canSwipeOut vX=${vX.floor()}, vY=${vY.floor()}');
             if (dif.dx > 0) {
               // Offset e = end(dif, widget.rect, vX, vY);
               // toRight(dif, e, duration(vX, vY));
@@ -88,6 +102,7 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
               toIdle(dif);
             }
           } else {
+            print('_ vX=${vX.floor()}, vY=${vY.floor()}');
             toIdle(dif);
           }
         },

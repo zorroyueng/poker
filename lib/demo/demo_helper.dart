@@ -5,7 +5,6 @@ class DemoHelper {
     'https://hbimg.huabanimg.com/6d3086666fcf92a27b54f994517ec83b28562f047dea7-NwjxwK_fw1200',
     'https://hbimg.huabanimg.com/424ecb1062ac1def81e7832d7a2246055d556436838f7-zFFuWJ_fw1200',
     'https://hbimg.huabanimg.com/0360fd54e1d02151e796c452981655b211ed3e6a7b1bd-RnoRFw_fw1200',
-    'https://hbimg.huabanimg.com/0360fd54e1d02151e796c452981655b211ed3e6a7b1bd-RnoRFw_fw1200',
     'https://hbimg.huabanimg.com/0407a93eeac26cf48407004d001e819f400e73502c9cf0-nuAsix_fw1200',
     'https://hbimg.huabanimg.com/5ed2a8803fe36b6a53e46aa079a4a0cdbde3fb35296a56-xoxmCF_fw1200',
     'https://hbimg.huabanimg.com/aed6ac581c88fcf63c7d3ae97bda7b3717e2aeaa6859b-GYqixk_fw1200'
