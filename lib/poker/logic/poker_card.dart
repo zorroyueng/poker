@@ -19,7 +19,7 @@ class PokerCard extends StatefulWidget {
 class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixin, TouchMixin, AnimMixin, LayoutMixin {
   void _updateDif(Offset o) {
     dif = o;
-    if (widget.adapter.isLastSwipeItem(widget.item)) {
+    if (widget.adapter.isCurrentSwipeItem(widget.item)) {
       widget.adapter.swipePercent(
         swipePercent(true, dif, widget.rect),
         swipePercent(false, dif, widget.rect),
@@ -41,7 +41,6 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
 
   @override
   Widget build(BuildContext context) {
-    widget.item.update ??= () => setState(() {});
     return Positioned.fromRect(
       rect: widget.rect.translate(dif.dx, dif.dy),
       child: GestureDetector(
@@ -119,14 +118,15 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
         child: Transform.rotate(
           angle: rotate(dif, widget.rect, dragAtTop(widget.rect)),
           alignment: byDown(widget.rect),
-          child: Transform.scale(
-            scale: PokerConfig.backCardScale + (1 - PokerConfig.backCardScale) * widget.item.percent,
-            child: Transform.translate(
-              offset: Offset(
-                widget.rect.width * PokerConfig.backCardOffset.dx * (1 - widget.item.percent),
-                widget.rect.height * PokerConfig.backCardOffset.dy * (1 - widget.item.percent),
+          child: StreamBuilder<double>(
+            stream: widget.item.percent.stream().distinct(),
+            initialData: widget.item.percent.value(),
+            builder: (_, __) => Transform.scale(
+              scale: backScale(widget.item.percent.value()),
+              child: Transform.translate(
+                offset: backOffset(widget.item.percent.value(), widget.rect),
+                child: widget.item.child,
               ),
-              child: widget.item.child,
             ),
           ),
         ),

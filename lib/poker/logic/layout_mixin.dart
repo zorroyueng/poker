@@ -1,6 +1,8 @@
 import 'dart:math' as math;
 import 'dart:ui';
 
+import 'package:poker/poker/poker_config.dart';
+
 mixin LayoutMixin {
   static const double _percentSwipeK = .3; // 滑动超出宽高范围，计算滑动百分比使用，back也使用做变换
   static const double _percentRotateK = .6; // 滑动超出宽高范围，计算旋转百分比使用
@@ -69,4 +71,11 @@ mixin LayoutMixin {
     }
     return end;
   }
+
+  double backScale(double percent) => PokerConfig.backCardScale + (1 - PokerConfig.backCardScale) * percent;
+
+  Offset backOffset(double percent, Rect rect) => Offset(
+        rect.width * PokerConfig.backCardOffset.dx * (1 - percent),
+        rect.height * PokerConfig.backCardOffset.dy * (1 - percent),
+      );
 }

@@ -34,7 +34,7 @@ class DemoAdapter extends PokerAdapter<DemoData> {
             right: 0,
             child: Container(
               clipBehavior: Clip.none,
-              height: 60,
+              height: 160,
               decoration: BoxDecoration(
                 borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(30),

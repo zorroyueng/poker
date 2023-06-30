@@ -1,15 +1,17 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:poker/poker/logic/broadcast.dart';
 import 'package:poker/poker/poker_config.dart';
 
 abstract class PokerAdapter<T> {
   AdapterView? _view;
   final List<T> _data = [];
-  int _current = 0;
+  int _firstIndex = 0;
   final List<PokerItem> _items = [];
   final Map<Object, PokerItem> _cache = {};
-  PokerItem? _lastSwipeItem;
+  PokerItem? _currentSwipeItem;
 
   /// interface
   Object id(T t);
@@ -22,19 +24,18 @@ abstract class PokerAdapter<T> {
   void setView(AdapterView view) {
     _view = view;
     _view!.update(_items);
-    _preload(_current, _current + PokerConfig.idleCardNum + 3);
+    _preload(_firstIndex, _firstIndex + PokerConfig.idleCardNum + 3);
   }
 
   void setData(List<T> lst) {
     _data.clear();
     _data.addAll(lst);
-    _current = 0;
-    _lastSwipeItem = null;
-    _items.clear();
-    _buildWidgets(from: _current, to: _current + PokerConfig.idleCardNum - 1);
+    _firstIndex = 0;
+    _buildItems(from: _firstIndex, to: _firstIndex + PokerConfig.idleCardNum - 1);
     if (_view != null) {
       _view!.update(_items);
     }
+    _currentSwipeItem = _items.isEmpty ? null : _items[0];
   }
 
   void update(T t) {}
@@ -42,12 +43,13 @@ abstract class PokerAdapter<T> {
   void insert(T t) {}
 
   // 需要在静止状态执行此函数，保证current正确赋值percent
-  void _buildWidgets({required int from, required int to}) {
+  void _buildItems({required int from, required int to}) {
+    _items.clear();
     for (int i = from; i <= to; i++) {
       PokerItem? w = _obtainItem(i);
       if (w != null) {
         if (i == from) {
-          w.percent = 1;
+          w.percent.add(1);
         }
         _items.insert(0, w);
       } else {
@@ -68,39 +70,28 @@ abstract class PokerAdapter<T> {
   int _itemIndex(PokerItem item) => _items.indexWhere((e) => e.key == item.key);
 
   void onPanDown(PokerItem item) {
-    _lastSwipeItem = item;
+    _currentSwipeItem = item;
     int indexItem = _itemIndex(item); // 屏幕点击在_items序列中的index，当前为_items.length - 1
-    int indexData = _current + (_items.length - 1 - indexItem);
+    int indexData = _firstIndex + (_items.length - 1 - indexItem);
     int prepareIndex = indexData + PokerConfig.idleCardNum;
-    _items.clear();
-    _buildWidgets(from: _current, to: prepareIndex);
+    _buildItems(from: _firstIndex, to: prepareIndex);
     _view!.update(_items);
   }
 
-  bool hasLastSwipeItem() => _lastSwipeItem != null;
-
-  bool isLastSwipeItem(PokerItem item) => item == _lastSwipeItem;
+  bool isCurrentSwipeItem(PokerItem item) => item == _currentSwipeItem;
 
   void swipePercent(double pX, double pY) {
-    int index = _itemIndex(_lastSwipeItem!);
+    int index = _itemIndex(_currentSwipeItem!);
     // next
-    if (index - 1 >= 0) {
-      PokerItem next = _items[index - 1];
-      double percent = Curves.decelerate.transform(max(pX, pY));
-      if (percent != next.percent) {
-        next.percent = percent;
-        next.update!.call();
+    int next = index - 1;
+    for (int i = next; i >= 0; i--) {
+      PokerItem item = _items[i];
+      if (i == next) {
+        item.percent.add(Curves.decelerate.transform(max(pX, pY)));
+      } else {
+        item.percent.add(0);
       }
     }
-    // afterNext
-    // if (index - 2 >= 0) {
-    //   PokerItem afterNext = _items[index - 2];
-    //   double percent = Curves.decelerate.transform(max(pX, pY));
-    //   if (percent != afterNext.percent) {
-    //     afterNext.percent = percent;
-    //     afterNext.update!.call();
-    //   }
-    // }
   }
 
   PokerItem? _obtainItem(int index) {
@@ -127,9 +118,9 @@ abstract class PokerAdapter<T> {
 
   bool toNext(PokerItem item) {
     // 将current向后移1位
-    int current = _current + 1;
+    int current = _firstIndex + 1;
     if (current < _data.length) {
-      _current = current;
+      _firstIndex = current;
       _items.remove(item);
       _view!.update(_items);
       return true;
@@ -143,9 +134,9 @@ abstract class PokerAdapter<T> {
 
   bool toLast() {
     // 将current向前移1位
-    int current = _current - 1;
+    int current = _firstIndex - 1;
     if (current >= 0 && _data.isNotEmpty) {
-      _current = current;
+      _firstIndex = current;
       // todo
       return true;
     } else {
@@ -161,8 +152,9 @@ mixin AdapterView {
 class PokerItem {
   final Object key;
   final Widget child;
-  double percent = 0; // 0 为back状态，1为展示状态
-  void Function()? update;
+
+  // 0 为back状态，1为展示状态
+  final Broadcast<double> percent = Broadcast(0);
 
   PokerItem(this.key, this.child);
 }
