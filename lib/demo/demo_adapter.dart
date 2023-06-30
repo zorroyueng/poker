@@ -32,11 +32,14 @@ class DemoAdapter extends PokerAdapter<DemoData> {
               clipBehavior: Clip.none,
               height: 60,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                gradient: const LinearGradient(
-                  begin: Alignment(0, 1),
-                  end: Alignment(0, -1),
-                  colors: [Colors.black, Colors.transparent],
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20),
+                ),
+                gradient: LinearGradient(
+                  begin: const Alignment(0, 1),
+                  end: const Alignment(0, -1),
+                  colors: [Colors.black.withOpacity(.7), Colors.transparent],
                 ),
               ),
               child: Align(
