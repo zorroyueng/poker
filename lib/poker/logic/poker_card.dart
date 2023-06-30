@@ -45,27 +45,37 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
     return Positioned.fromRect(
       rect: widget.rect.translate(dif.dx, dif.dy),
       child: GestureDetector(
-        // todo 进接受单指
+        // todo 需要仅响应单指
         onPanDown: (d) {
           stopAnim();
           onPanDown(d.localPosition - dif);
           widget.adapter.onPanDown(widget.item);
         },
-        onPanUpdate: (d) {
-          Offset delta = d.localPosition - lastMove(dif);
-          if ((delta - d.delta).distance <= 1) {
-            setState(() => _updateDif(byMove(d.localPosition)));
-          } else {
-            print('d.localPosition: ${d.localPosition}, dif: ${dif}');
-            print('delta: $delta, d.delta: ${d.delta}');
-          }
-        },
+        onPanUpdate: (d) => setState(() => _updateDif(byMove(d.localPosition))),
         onPanEnd: (d) {
           Offset v = d.velocity.pixelsPerSecond;
           double vX = velocity(true, v, widget.rect);
           double vY = velocity(false, v, widget.rect);
           if (-vY > TouchMixin.maxSwipeVelocity && -vY >= vX.abs() && canSwipeOut(false, dif, widget.rect)) {
-            print('top vX=${vX.floor()}, vY=${vY.floor()}');
+            // print('top vX=${vX.floor()}, vY=${vY.floor()}');
+            anim(
+              begin: dif,
+              end: end(null, dif, widget.rect, vX, vY),
+              duration: duration(vX, vY),
+              curve: Curves.decelerate,
+              onEnd: () => widget.adapter.toNext(widget.item),
+            );
+          } else if (vX >= TouchMixin.maxSwipeVelocity && vX >= vY.abs()) {
+            // print('right vX=${vX.floor()}, vY=${vY.floor()}');
+            anim(
+              begin: dif,
+              end: end(true, dif, widget.rect, vX, vY),
+              duration: duration(vX, vY),
+              curve: Curves.decelerate,
+              onEnd: () => widget.adapter.toNext(widget.item),
+            );
+          } else if (-vX >= TouchMixin.maxSwipeVelocity && -vX >= vY.abs()) {
+            // print('left vX=${vX.floor()}, vY=${vY.floor()}');
             anim(
               begin: dif,
               end: end(false, dif, widget.rect, vX, vY),
@@ -73,36 +83,36 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
               curve: Curves.decelerate,
               onEnd: () => widget.adapter.toNext(widget.item),
             );
-          } else if (vX >= TouchMixin.maxSwipeVelocity) {
-            print('right vX=${vX.floor()}, vY=${vY.floor()}');
+          } else if (canSwipeOut(false, dif, widget.rect)) {
+            // print('canSwipeOut y vX=${vX.floor()}, vY=${vY.floor()}');
             anim(
               begin: dif,
-              end: end(true, dif, widget.rect, vX, vY),
-              duration: duration(vX, vY),
-              curve: Curves.decelerate,
-              onEnd: () => widget.adapter.toNext(widget.item),
-            );
-          } else if (-vX >= TouchMixin.maxSwipeVelocity) {
-            print('left vX=${vX.floor()}, vY=${vY.floor()}');
-            anim(
-              begin: dif,
-              end: end(true, dif, widget.rect, vX, vY),
+              end: end(null, dif, widget.rect, vX, 0),
               duration: duration(vX, vY),
               curve: Curves.decelerate,
               onEnd: () => widget.adapter.toNext(widget.item),
             );
           } else if (canSwipeOut(true, dif, widget.rect)) {
-            print('canSwipeOut vX=${vX.floor()}, vY=${vY.floor()}');
+            // print('canSwipeOut x vX=${vX.floor()}, vY=${vY.floor()}');
             if (dif.dx > 0) {
-              // Offset e = end(dif, widget.rect, vX, vY);
-              // toRight(dif, e, duration(vX, vY));
-              toIdle(dif);
+              anim(
+                begin: dif,
+                end: end(true, dif, widget.rect, 0, vY),
+                duration: duration(vX, vY),
+                curve: Curves.decelerate,
+                onEnd: () => widget.adapter.toNext(widget.item),
+              );
             } else {
-              toLeft();
-              toIdle(dif);
+              anim(
+                begin: dif,
+                end: end(false, dif, widget.rect, 0, vY),
+                duration: duration(vX, vY),
+                curve: Curves.decelerate,
+                onEnd: () => widget.adapter.toNext(widget.item),
+              );
             }
           } else {
-            print('_ vX=${vX.floor()}, vY=${vY.floor()}');
+            // print('_ vX=${vX.floor()}, vY=${vY.floor()}');
             toIdle(dif);
           }
         },
