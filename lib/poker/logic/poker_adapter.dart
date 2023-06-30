@@ -16,10 +16,13 @@ abstract class PokerAdapter<T> {
 
   Widget item(T t);
 
+  void onPreload(T t);
+
   /// definition
-  void setAdapter(AdapterView view) {
+  void setView(AdapterView view) {
     _view = view;
     _view!.update(_items);
+    _preload(_current, _current + PokerConfig.idleCardNum + 3);
   }
 
   void setData(List<T> lst) {
@@ -50,6 +53,15 @@ abstract class PokerAdapter<T> {
       } else {
         break;
       }
+    }
+    if (_view != null) {
+      _preload(to + 1, to + 3);
+    }
+  }
+
+  void _preload(int from, int to) {
+    for (int i = from; i < min(to, _data.length); i++) {
+      onPreload(_data[i]);
     }
   }
 

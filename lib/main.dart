@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:poker/demo/demo_adapter.dart';
 import 'package:poker/demo/demo_helper.dart';
-import 'package:poker/poker/logic/poker_adapter.dart';
 import 'package:poker/poker/poker_view.dart';
 
 void main() {
@@ -26,12 +25,11 @@ class MyApp extends StatelessWidget {
 }
 
 class _HomePage extends StatelessWidget {
-  final DemoAdapter adapter = DemoAdapter();
-
   @override
   Widget build(BuildContext context) {
+    final DemoAdapter adapter = DemoAdapter(context);
     List<DemoData> data = [];
-    List<String> pics = DemoHelper.stars + DemoHelper.nights + DemoHelper.pics;
+    List<String> pics = DemoHelper.pics();
     for (int i = 0; i < pics.length; i++) {
       data.add(DemoData(i, pics[i]));
     }

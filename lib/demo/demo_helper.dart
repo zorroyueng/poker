@@ -1,5 +1,11 @@
 class DemoHelper {
-  static List<String> stars = [
+  static List<String> pics() {
+    List<String> pics = DemoHelper._stars + DemoHelper._nights + DemoHelper._images;
+    pics.shuffle();
+    return pics;
+  }
+
+  static final List<String> _stars = [
     'https://hbimg.huabanimg.com/6d3cc986621ab853d3834ed47aa9609f24f1b4b8318b28-QTIb9i_fw1200',
     'https://hbimg.huabanimg.com/931ac4833cc3e6837bd1c1704a5198db8c536af162282-xE7EgQ_fw1200',
     'https://hbimg.huabanimg.com/6d3086666fcf92a27b54f994517ec83b28562f047dea7-NwjxwK_fw1200',
@@ -10,7 +16,7 @@ class DemoHelper {
     'https://hbimg.huabanimg.com/aed6ac581c88fcf63c7d3ae97bda7b3717e2aeaa6859b-GYqixk_fw1200'
   ];
 
-  static List<String> nights = [
+  static final List<String> _nights = [
     'https://hbimg.huabanimg.com/9601229034342adcb11b3ba6fd742f834a0ad0bf530f9-UxsWYi_fw1200',
     'https://hbimg.huabanimg.com/9683e57bf6777090f642bcbdfddc177a4ddec2ff5e761-lWBo16_fw1200',
     'https://hbimg.huabanimg.com/06007201fccc6beb27a15277121a7b4894428a315a78b-3tbt8P_fw1200',
@@ -22,7 +28,7 @@ class DemoHelper {
     'https://hbimg.huabanimg.com/7f2d475cc8cf673df985c5e3854667df65bd0bdf50ce1-HygsPh_fw1200',
   ];
 
-  static List<String> pics = [
+  static final List<String> _images = [
     'https://hbimg.huabanimg.com/2428f5f77ad4f7b15b02d44b436b512658dd80da13109-s1EqCC',
     'https://hbimg.huabanimg.com/86d08f806e55b39be42339037097fbd51781006966dd0-mPiUQo',
     'https://hbimg.huabanimg.com/1464e0d3957bdc51680ab5dfe4ee2d0ef23c9622db218-LgirYZ',

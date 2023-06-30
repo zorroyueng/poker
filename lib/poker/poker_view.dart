@@ -17,14 +17,14 @@ class _PokerViewState extends State<PokerView> with PokerMixin, AdapterView {
 
   @override
   void initState() {
-    widget.adapter.setAdapter(this);
+    widget.adapter.setView(this);
     super.initState();
   }
 
   @override
   void didUpdateWidget(PokerView oldWidget) {
     super.didUpdateWidget(oldWidget);
-    widget.adapter.setAdapter(this);
+    widget.adapter.setView(this);
   }
 
   @override
@@ -48,4 +48,7 @@ class _PokerViewState extends State<PokerView> with PokerMixin, AdapterView {
 
   @override
   void update(List<PokerItem> items) => setState(() => _items = items);
+
+  @override
+  BuildContext getContext() => context;
 }

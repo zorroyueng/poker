@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:poker/poker/logic/poker_adapter.dart';
 
 class DemoAdapter extends PokerAdapter<DemoData> {
+  final BuildContext _context;
+
+  DemoAdapter(this._context);
+
   @override
   Object id(DemoData t) => t.id;
 
@@ -20,7 +24,7 @@ class DemoAdapter extends PokerAdapter<DemoData> {
                   image: NetworkImage(t.url),
                   filterQuality: FilterQuality.medium,
                 ),
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(30),
               ),
             ),
           ),
@@ -33,13 +37,14 @@ class DemoAdapter extends PokerAdapter<DemoData> {
               height: 60,
               decoration: BoxDecoration(
                 borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(20),
-                  bottomRight: Radius.circular(20),
+                  bottomLeft: Radius.circular(30),
+                  bottomRight: Radius.circular(30),
                 ),
                 gradient: LinearGradient(
                   begin: const Alignment(0, 1),
                   end: const Alignment(0, -1),
-                  colors: [Colors.black.withOpacity(.7), Colors.transparent],
+                  colors: [Colors.black.withOpacity(.5), Colors.transparent],
+                  stops: const [.5, 1],
                 ),
               ),
               child: Align(
@@ -56,6 +61,11 @@ class DemoAdapter extends PokerAdapter<DemoData> {
           )
         ],
       );
+
+  @override
+  void onPreload(DemoData t) {
+    precacheImage(NetworkImage(t.url), _context);
+  }
 }
 
 class DemoData {
