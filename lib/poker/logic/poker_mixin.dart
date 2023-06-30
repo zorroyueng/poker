@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 mixin PokerMixin {
-  static const double _paddingK = .1; // 最小边比例
+  static const double _paddingK = .05; // 最小边比例
   static const double _aspectRatio = .6; // 卡片宽高比
 
   Size _size = Size.zero;
