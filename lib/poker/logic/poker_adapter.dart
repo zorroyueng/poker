@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -7,7 +6,7 @@ import 'package:poker/poker/poker_config.dart';
 
 abstract class PokerAdapter<T> {
   AdapterView? _view;
-  final List<T> _data = [];
+  final List<T> _lstData = [];
   int _firstIndex = 0;
   final List<PokerItem> _items = [];
   final Map<Object, PokerItem> _cache = {};
@@ -19,18 +18,22 @@ abstract class PokerAdapter<T> {
 
   Widget item(T t);
 
-  void onPreload(T t);
+  void onPreload(T t, int index, int total); // 预加载t；还剩下几个数据
+
+  bool handle(T t, SwipeType type); // 判断卡片是否可以执行操作
+
+  Widget onLoading(); // 没有卡片时展示的loading动画
 
   /// definition
   void setView(AdapterView view) {
     _view = view;
     _view!.update(_items);
-    _preload(_firstIndex, _firstIndex + PokerConfig.idleCardNum + 3);
+    _preload(_firstIndex, _firstIndex + PokerConfig.idleCardNum + PokerConfig.preloadNum);
   }
 
   void setData(List<T> lst) {
-    _data.clear();
-    _data.addAll(lst);
+    _lstData.clear();
+    _lstData.addAll(lst);
     _firstIndex = 0;
     _buildItems(from: _firstIndex, to: _firstIndex + PokerConfig.idleCardNum - 1);
     if (_view != null) {
@@ -59,13 +62,13 @@ abstract class PokerAdapter<T> {
       }
     }
     if (_view != null) {
-      _preload(to + 1, to + 3);
+      _preload(to + 1, to + PokerConfig.preloadNum);
     }
   }
 
   void _preload(int from, int to) {
-    for (int i = from; i < min(to, _data.length); i++) {
-      onPreload(_data[i]);
+    for (int i = from; i <= min(to, _lstData.length - 1); i++) {
+      onPreload(_lstData[i], i, _lstData.length);
     }
   }
 
@@ -102,12 +105,12 @@ abstract class PokerAdapter<T> {
   }
 
   PokerItem? _obtainItem(int index) {
-    if (index < _data.length && index >= 0) {
-      T t = _data[index];
+    if (index < _lstData.length && index >= 0) {
+      T t = _lstData[index];
       Object key = id(t);
       PokerItem? w = _cache[key];
       if (w == null) {
-        w = PokerItem(key, item(t));
+        w = PokerItem(key: key, data: t, item: item(t));
         if (_cache.length >= 10) {
           _cache.remove(_cache.keys.first);
         }
@@ -126,7 +129,7 @@ abstract class PokerAdapter<T> {
   bool toNext(PokerItem item) {
     // 将current向后移1位
     int current = _firstIndex + 1;
-    if (current < _data.length) {
+    if (current < _lstData.length) {
       _firstIndex = current;
       _items.remove(item);
       _view!.update(_items);
@@ -142,7 +145,7 @@ abstract class PokerAdapter<T> {
   bool toLast() {
     // 将current向前移1位
     int current = _firstIndex - 1;
-    if (current >= 0 && _data.isNotEmpty) {
+    if (current >= 0 && _lstData.isNotEmpty) {
       _firstIndex = current;
       // todo
       return true;
@@ -156,12 +159,19 @@ mixin AdapterView {
   void update(List<PokerItem> widgets);
 }
 
-class PokerItem {
+class PokerItem<T> {
   final Object key;
-  final Widget child;
+  final T data;
+  final Widget item;
 
   // 0 为back状态，1为展示状态
   final Broadcast<double> percent = Broadcast(0);
 
-  PokerItem(this.key, this.child);
+  PokerItem({required this.key, required this.data, required this.item});
+}
+
+enum SwipeType {
+  right,
+  left,
+  up,
 }

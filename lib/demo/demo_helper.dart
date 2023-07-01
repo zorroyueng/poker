@@ -3,6 +3,7 @@ class DemoHelper {
 
   static List<String> pics() {
     List<String> pics = DemoHelper._stars + DemoHelper._nights + DemoHelper._scenery + DemoHelper._relaxed;
+    // List<String> pics = DemoHelper._stars;
     pics.shuffle();
     return pics;
   }

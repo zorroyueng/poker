@@ -65,58 +65,82 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
             double vY = velocity(false, v, widget.rect);
             if (-vY > TouchMixin.maxSwipeVelocity && -vY >= vX.abs() && canSwipeOut(false, dif, widget.rect)) {
               // print('top vX=${vX.floor()}, vY=${vY.floor()}');
-              anim(
-                begin: dif,
-                end: end(null, dif, widget.rect, vX, vY),
-                duration: duration(vX, vY),
-                curve: Curves.decelerate,
-                onEnd: () => widget.adapter.toNext(widget.item),
-              );
-            } else if (vX >= TouchMixin.maxSwipeVelocity && vX >= vY.abs()) {
-              // print('right vX=${vX.floor()}, vY=${vY.floor()}');
-              anim(
-                begin: dif,
-                end: end(true, dif, widget.rect, vX, vY),
-                duration: duration(vX, vY),
-                curve: Curves.decelerate,
-                onEnd: () => widget.adapter.toNext(widget.item),
-              );
-            } else if (-vX >= TouchMixin.maxSwipeVelocity && -vX >= vY.abs()) {
-              // print('left vX=${vX.floor()}, vY=${vY.floor()}');
-              anim(
-                begin: dif,
-                end: end(false, dif, widget.rect, vX, vY),
-                duration: duration(vX, vY),
-                curve: Curves.decelerate,
-                onEnd: () => widget.adapter.toNext(widget.item),
-              );
-            } else if (canSwipeOut(false, dif, widget.rect)) {
-              // print('canSwipeOut y vX=${vX.floor()}, vY=${vY.floor()}');
-              anim(
-                begin: dif,
-                end: end(null, dif, widget.rect, vX, 0),
-                duration: duration(vX, vY),
-                curve: Curves.decelerate,
-                onEnd: () => widget.adapter.toNext(widget.item),
-              );
-            } else if (canSwipeOut(true, dif, widget.rect)) {
-              // print('canSwipeOut x vX=${vX.floor()}, vY=${vY.floor()}');
-              if (dif.dx > 0) {
+              if (widget.adapter.handle(widget.item.data, SwipeType.up)) {
                 anim(
                   begin: dif,
-                  end: end(true, dif, widget.rect, 0, vY),
+                  end: end(null, dif, widget.rect, vX, vY),
                   duration: duration(vX, vY),
                   curve: Curves.decelerate,
                   onEnd: () => widget.adapter.toNext(widget.item),
                 );
               } else {
+                toIdle(dif);
+              }
+            } else if (vX >= TouchMixin.maxSwipeVelocity && vX >= vY.abs()) {
+              // print('right vX=${vX.floor()}, vY=${vY.floor()}');
+              if (widget.adapter.handle(widget.item.data, SwipeType.right)) {
                 anim(
                   begin: dif,
-                  end: end(false, dif, widget.rect, 0, vY),
+                  end: end(true, dif, widget.rect, vX, vY),
                   duration: duration(vX, vY),
                   curve: Curves.decelerate,
                   onEnd: () => widget.adapter.toNext(widget.item),
                 );
+              } else {
+                toIdle(dif);
+              }
+            } else if (-vX >= TouchMixin.maxSwipeVelocity && -vX >= vY.abs()) {
+              // print('left vX=${vX.floor()}, vY=${vY.floor()}');
+              if (widget.adapter.handle(widget.item.data, SwipeType.left)) {
+                anim(
+                  begin: dif,
+                  end: end(false, dif, widget.rect, vX, vY),
+                  duration: duration(vX, vY),
+                  curve: Curves.decelerate,
+                  onEnd: () => widget.adapter.toNext(widget.item),
+                );
+              } else {
+                toIdle(dif);
+              }
+            } else if (canSwipeOut(false, dif, widget.rect)) {
+              // print('canSwipeOut y vX=${vX.floor()}, vY=${vY.floor()}');
+              if (widget.adapter.handle(widget.item.data, SwipeType.up)) {
+                anim(
+                  begin: dif,
+                  end: end(null, dif, widget.rect, vX, 0),
+                  duration: duration(vX, vY),
+                  curve: Curves.decelerate,
+                  onEnd: () => widget.adapter.toNext(widget.item),
+                );
+              } else {
+                toIdle(dif);
+              }
+            } else if (canSwipeOut(true, dif, widget.rect)) {
+              // print('canSwipeOut x vX=${vX.floor()}, vY=${vY.floor()}');
+              if (dif.dx > 0) {
+                if (widget.adapter.handle(widget.item.data, SwipeType.right)) {
+                  anim(
+                    begin: dif,
+                    end: end(true, dif, widget.rect, 0, vY),
+                    duration: duration(vX, vY),
+                    curve: Curves.decelerate,
+                    onEnd: () => widget.adapter.toNext(widget.item),
+                  );
+                } else {
+                  toIdle(dif);
+                }
+              } else {
+                if (widget.adapter.handle(widget.item.data, SwipeType.left)) {
+                  anim(
+                    begin: dif,
+                    end: end(false, dif, widget.rect, 0, vY),
+                    duration: duration(vX, vY),
+                    curve: Curves.decelerate,
+                    onEnd: () => widget.adapter.toNext(widget.item),
+                  );
+                } else {
+                  toIdle(dif);
+                }
               }
             } else {
               // print('_ vX=${vX.floor()}, vY=${vY.floor()}');
@@ -137,7 +161,7 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
                   offset: backOffset(widget.item.percent.value(), widget.rect),
                   child: AbsorbPointer(
                     absorbing: widget.item.percent.value() != 1,
-                    child: widget.item.child,
+                    child: widget.item.item,
                   ),
                 ),
               ),
