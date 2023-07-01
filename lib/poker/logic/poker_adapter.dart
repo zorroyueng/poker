@@ -12,6 +12,8 @@ abstract class PokerAdapter<T> {
   final Map<Object, PokerItem> _cache = {};
   PokerItem? _swipedItem; // 最新操作的item，计算滑动percent
   PokerItem? _onPanItem; // 正在相应手势的item
+  final Broadcast<double> _percentX = Broadcast(0);
+  final Broadcast<double> _percentY = Broadcast(0);
 
   /// interface
   Object id(T t);
@@ -25,6 +27,10 @@ abstract class PokerAdapter<T> {
   Widget onLoading(); // 没有卡片时展示的loading动画
 
   /// definition
+  Broadcast<double> percentX() => _percentX;
+
+  Broadcast<double> percentY() => _percentY;
+
   void setView(AdapterView view) {
     _view = view;
     _view!.update(_items);
@@ -91,13 +97,20 @@ abstract class PokerAdapter<T> {
   bool isCurrentSwipeItem(PokerItem item) => item == _swipedItem;
 
   void swipePercent(double pX, double pY) {
+    if (pY.abs() >= pX.abs()) {
+      _percentX.add(0);
+      _percentY.add(pY);
+    } else {
+      _percentX.add(pX);
+      _percentY.add(0);
+    }
     int index = _itemIndex(_swipedItem!);
     // next
     int next = index - 1;
     for (int i = next; i >= 0; i--) {
       PokerItem item = _items[i];
       if (i == next) {
-        item.percent.add(Curves.decelerate.transform(max(pX, pY)));
+        item.percent.add(Curves.decelerate.transform(max(pX.abs(), pY.abs())));
       } else {
         item.percent.add(0);
       }

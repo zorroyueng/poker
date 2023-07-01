@@ -18,21 +18,21 @@ mixin LayoutMixin {
     }
   }
 
-  // 滑动百分比为[0,1]
+  // 滑动百分比为[-1,1]
   double swipePercent(bool x, Offset dif, Rect rect, [double k = _percentSwipeK]) {
     if (rect.isEmpty) {
       return 0;
     } else {
       if (x) {
-        return math.min(1, dif.dx.abs() / (rect.shortestSide * k));
+        return math.min(1, dif.dx.abs() / (rect.shortestSide * k)) * (dif.dx >= 0 ? 1 : -1);
       } else {
-        return math.min(1, dif.dy.abs() / (rect.shortestSide * k));
+        return math.min(1, dif.dy.abs() / (rect.shortestSide * k)) * (dif.dy <= 0 ? 1 : -1);
       }
     }
   }
 
   double rotate(Offset dif, Rect rect, bool up) =>
-      swipePercent(true, dif, rect, _percentRotateK) * _maxRotate * (up ? 1 : -1) * (dif.dx >= 0 ? 1 : -1);
+      swipePercent(true, dif, rect, _percentRotateK) * _maxRotate * (up ? 1 : -1);
 
   Offset end(
     bool? right, // true: right, false: left, null: up

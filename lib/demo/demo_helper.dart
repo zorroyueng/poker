@@ -1,11 +1,17 @@
+import 'package:poker/demo/demo_adapter.dart';
+
 class DemoHelper {
   DemoHelper._();
 
-  static List<String> pics() {
+  static List<DemoData> data() {
     List<String> pics = DemoHelper._stars + DemoHelper._nights + DemoHelper._scenery + DemoHelper._relaxed;
     // List<String> pics = DemoHelper._stars;
     pics.shuffle();
-    return pics;
+    List<DemoData> data = [];
+    for (int i = 0; i < pics.length; i++) {
+      data.add(DemoData(i, pics[i]));
+    }
+    return data;
   }
 
   static final List<String> _stars = [
