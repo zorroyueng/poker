@@ -4,7 +4,9 @@ class Broadcast<T> {
   final StreamController<T> _ctrl = StreamController.broadcast();
   late T _value;
 
-  Broadcast(this._value);
+  Broadcast(this._value) {
+    _ctrl.add(_value);
+  }
 
   Stream<T> stream() => _ctrl.stream;
 
