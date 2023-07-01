@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:poker/poker/logic/broadcast.dart';
+import 'package:poker/poker/base/broadcast.dart';
 import 'package:poker/poker/poker_config.dart';
 
 abstract class PokerAdapter<T> {

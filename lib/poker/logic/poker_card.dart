@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:poker/poker/base/single_touch.dart';
 import 'package:poker/poker/logic/anim_mixin.dart';
 import 'package:poker/poker/logic/layout_mixin.dart';
 import 'package:poker/poker/logic/poker_adapter.dart';
@@ -44,7 +45,6 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
     return Positioned.fromRect(
       rect: widget.rect.translate(dif.dx, dif.dy),
       child: GestureDetector(
-        // todo 需要仅响应单指
         onPanDown: (d) {
           stopAnim();
           onPanDown(d.localPosition - dif);
@@ -115,17 +115,22 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
             toIdle(dif);
           }
         },
-        child: Transform.rotate(
-          angle: rotate(dif, widget.rect, dragAtTop(widget.rect)),
-          alignment: byDown(widget.rect),
-          child: StreamBuilder<double>(
-            stream: widget.item.percent.stream().distinct(),
-            initialData: widget.item.percent.value(),
-            builder: (_, __) => Transform.scale(
-              scale: backScale(widget.item.percent.value()),
-              child: Transform.translate(
-                offset: backOffset(widget.item.percent.value(), widget.rect),
-                child: widget.item.child,
+        child: SingleTouch(
+          child: Transform.rotate(
+            angle: rotate(dif, widget.rect, dragAtTop(widget.rect)),
+            alignment: byDown(widget.rect),
+            child: StreamBuilder<double>(
+              stream: widget.item.percent.stream().distinct(),
+              initialData: widget.item.percent.value(),
+              builder: (_, __) => Transform.scale(
+                scale: backScale(widget.item.percent.value()),
+                child: Transform.translate(
+                  offset: backOffset(widget.item.percent.value(), widget.rect),
+                  child: AbsorbPointer(
+                    absorbing: widget.item.percent.value() != 1,
+                    child: widget.item.child,
+                  ),
+                ),
               ),
             ),
           ),
