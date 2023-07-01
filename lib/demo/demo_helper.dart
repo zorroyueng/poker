@@ -9,11 +9,33 @@ class DemoHelper {
     pics.shuffle();
     List<DemoData> data = [];
     for (int i = 0; i < pics.length; i++) {
-      data.add(DemoData(i, pics[i]));
+      data.add(DemoData(id: i, name: _name[i % _name.length], url: pics[i]));
     }
     return data;
   }
 
+  static final List<String> _name = [
+    'Marco Chen',
+    'Deacon Zhao',
+    'Nash Chen',
+    'Mira Mao',
+    'Baylee Zhang',
+    'Brenden Li',
+    'Barry Huang',
+    'Vick Qi',
+    'Kiley Kong',
+    'Britany Du',
+    'Chelsea Yang',
+    'Jessa Yan',
+    'Melisa Deng',
+    'Alma Liu',
+    'Harris Wang',
+    'Toby Li',
+    'Chance Li',
+    'Caitlyn Xin',
+    'Jessa Zhu',
+    'Alysia Wu',
+  ];
   static final List<String> _stars = [
     'https://hbimg.huabanimg.com/6d3cc986621ab853d3834ed47aa9609f24f1b4b8318b28-QTIb9i_fw1200',
     'https://hbimg.huabanimg.com/931ac4833cc3e6837bd1c1704a5198db8c536af162282-xE7EgQ_fw1200',

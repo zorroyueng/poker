@@ -49,14 +49,39 @@ class DemoAdapter extends PokerAdapter<DemoData> {
                   stops: const [.5, 1],
                 ),
               ),
-              child: Align(
-                alignment: const Alignment(0, 1),
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: Text(
-                    t.id.toString(),
-                    style: const TextStyle(fontSize: 30, color: Colors.white),
-                  ),
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${t.name} ${t.id}',
+                            maxLines: 1,
+                            style: const TextStyle(
+                              fontSize: 30,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            t.url,
+                            maxLines: 3,
+                            style: const TextStyle(
+                              fontSize: 20,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
                 ),
               ),
             ),
@@ -81,6 +106,7 @@ class DemoAdapter extends PokerAdapter<DemoData> {
 class DemoData {
   final int id;
   final String url;
+  final String name;
 
-  DemoData(this.id, this.url);
+  DemoData({required this.id, required this.name, required this.url});
 }
