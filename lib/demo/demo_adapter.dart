@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:poker/poker/logic/poker_adapter.dart';
 
@@ -21,8 +22,9 @@ class DemoAdapter extends PokerAdapter<DemoData> {
                 color: Colors.white,
                 image: DecorationImage(
                   fit: BoxFit.cover,
-                  image: NetworkImage(t.url),
+                  image: CachedNetworkImageProvider(t.url),
                   filterQuality: FilterQuality.medium,
+                  isAntiAlias: true,
                 ),
                 borderRadius: BorderRadius.circular(30),
               ),
@@ -64,7 +66,7 @@ class DemoAdapter extends PokerAdapter<DemoData> {
 
   @override
   void onPreload(DemoData t) {
-    precacheImage(NetworkImage(t.url), _context);
+    precacheImage(CachedNetworkImageProvider(t.url), _context);
   }
 }
 
