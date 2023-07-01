@@ -11,7 +11,8 @@ abstract class PokerAdapter<T> {
   int _firstIndex = 0;
   final List<PokerItem> _items = [];
   final Map<Object, PokerItem> _cache = {};
-  PokerItem? _currentSwipeItem;
+  PokerItem? _swipedItem; // 最新操作的item，计算滑动percent
+  PokerItem? _onPanItem; // 正在相应手势的item
 
   /// interface
   Object id(T t);
@@ -35,7 +36,8 @@ abstract class PokerAdapter<T> {
     if (_view != null) {
       _view!.update(_items);
     }
-    _currentSwipeItem = _items.isEmpty ? null : _items[0];
+    _swipedItem = _items.isEmpty ? null : _items[0];
+    _onPanItem = null;
   }
 
   void update(T t) {}
@@ -70,7 +72,8 @@ abstract class PokerAdapter<T> {
   int _itemIndex(PokerItem item) => _items.indexWhere((e) => e.key == item.key);
 
   void onPanDown(PokerItem item) {
-    _currentSwipeItem = item;
+    _swipedItem = item;
+    _onPanItem = item;
     int indexItem = _itemIndex(item); // 屏幕点击在_items序列中的index，当前为_items.length - 1
     int indexData = _firstIndex + (_items.length - 1 - indexItem);
     int prepareIndex = indexData + PokerConfig.idleCardNum;
@@ -78,10 +81,14 @@ abstract class PokerAdapter<T> {
     _view!.update(_items);
   }
 
-  bool isCurrentSwipeItem(PokerItem item) => item == _currentSwipeItem;
+  void onPanEnd() => _onPanItem = null;
+
+  PokerItem? swipingItem() => _onPanItem;
+
+  bool isCurrentSwipeItem(PokerItem item) => item == _swipedItem;
 
   void swipePercent(double pX, double pY) {
-    int index = _itemIndex(_currentSwipeItem!);
+    int index = _itemIndex(_swipedItem!);
     // next
     int next = index - 1;
     for (int i = next; i >= 0; i--) {

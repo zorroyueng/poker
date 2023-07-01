@@ -46,73 +46,82 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
       rect: widget.rect.translate(dif.dx, dif.dy),
       child: GestureDetector(
         onPanDown: (d) {
-          stopAnim();
-          onPanDown(d.localPosition - dif);
-          widget.adapter.onPanDown(widget.item);
+          if (widget.adapter.swipingItem() == null) {
+            stopAnim();
+            onPanDown(d.localPosition - dif);
+            widget.adapter.onPanDown(widget.item);
+          }
         },
-        onPanUpdate: (d) => setState(() => _updateDif(byMove(d.localPosition))),
+        onPanUpdate: (d) {
+          if (widget.adapter.swipingItem() == widget.item) {
+            setState(() => _updateDif(byMove(d.localPosition)));
+          }
+        },
         onPanEnd: (d) {
-          Offset v = d.velocity.pixelsPerSecond;
-          double vX = velocity(true, v, widget.rect);
-          double vY = velocity(false, v, widget.rect);
-          if (-vY > TouchMixin.maxSwipeVelocity && -vY >= vX.abs() && canSwipeOut(false, dif, widget.rect)) {
-            // print('top vX=${vX.floor()}, vY=${vY.floor()}');
-            anim(
-              begin: dif,
-              end: end(null, dif, widget.rect, vX, vY),
-              duration: duration(vX, vY),
-              curve: Curves.decelerate,
-              onEnd: () => widget.adapter.toNext(widget.item),
-            );
-          } else if (vX >= TouchMixin.maxSwipeVelocity && vX >= vY.abs()) {
-            // print('right vX=${vX.floor()}, vY=${vY.floor()}');
-            anim(
-              begin: dif,
-              end: end(true, dif, widget.rect, vX, vY),
-              duration: duration(vX, vY),
-              curve: Curves.decelerate,
-              onEnd: () => widget.adapter.toNext(widget.item),
-            );
-          } else if (-vX >= TouchMixin.maxSwipeVelocity && -vX >= vY.abs()) {
-            // print('left vX=${vX.floor()}, vY=${vY.floor()}');
-            anim(
-              begin: dif,
-              end: end(false, dif, widget.rect, vX, vY),
-              duration: duration(vX, vY),
-              curve: Curves.decelerate,
-              onEnd: () => widget.adapter.toNext(widget.item),
-            );
-          } else if (canSwipeOut(false, dif, widget.rect)) {
-            // print('canSwipeOut y vX=${vX.floor()}, vY=${vY.floor()}');
-            anim(
-              begin: dif,
-              end: end(null, dif, widget.rect, vX, 0),
-              duration: duration(vX, vY),
-              curve: Curves.decelerate,
-              onEnd: () => widget.adapter.toNext(widget.item),
-            );
-          } else if (canSwipeOut(true, dif, widget.rect)) {
-            // print('canSwipeOut x vX=${vX.floor()}, vY=${vY.floor()}');
-            if (dif.dx > 0) {
+          if (widget.adapter.swipingItem() == widget.item) {
+            widget.adapter.onPanEnd();
+            Offset v = d.velocity.pixelsPerSecond;
+            double vX = velocity(true, v, widget.rect);
+            double vY = velocity(false, v, widget.rect);
+            if (-vY > TouchMixin.maxSwipeVelocity && -vY >= vX.abs() && canSwipeOut(false, dif, widget.rect)) {
+              // print('top vX=${vX.floor()}, vY=${vY.floor()}');
               anim(
                 begin: dif,
-                end: end(true, dif, widget.rect, 0, vY),
+                end: end(null, dif, widget.rect, vX, vY),
                 duration: duration(vX, vY),
                 curve: Curves.decelerate,
                 onEnd: () => widget.adapter.toNext(widget.item),
               );
+            } else if (vX >= TouchMixin.maxSwipeVelocity && vX >= vY.abs()) {
+              // print('right vX=${vX.floor()}, vY=${vY.floor()}');
+              anim(
+                begin: dif,
+                end: end(true, dif, widget.rect, vX, vY),
+                duration: duration(vX, vY),
+                curve: Curves.decelerate,
+                onEnd: () => widget.adapter.toNext(widget.item),
+              );
+            } else if (-vX >= TouchMixin.maxSwipeVelocity && -vX >= vY.abs()) {
+              // print('left vX=${vX.floor()}, vY=${vY.floor()}');
+              anim(
+                begin: dif,
+                end: end(false, dif, widget.rect, vX, vY),
+                duration: duration(vX, vY),
+                curve: Curves.decelerate,
+                onEnd: () => widget.adapter.toNext(widget.item),
+              );
+            } else if (canSwipeOut(false, dif, widget.rect)) {
+              // print('canSwipeOut y vX=${vX.floor()}, vY=${vY.floor()}');
+              anim(
+                begin: dif,
+                end: end(null, dif, widget.rect, vX, 0),
+                duration: duration(vX, vY),
+                curve: Curves.decelerate,
+                onEnd: () => widget.adapter.toNext(widget.item),
+              );
+            } else if (canSwipeOut(true, dif, widget.rect)) {
+              // print('canSwipeOut x vX=${vX.floor()}, vY=${vY.floor()}');
+              if (dif.dx > 0) {
+                anim(
+                  begin: dif,
+                  end: end(true, dif, widget.rect, 0, vY),
+                  duration: duration(vX, vY),
+                  curve: Curves.decelerate,
+                  onEnd: () => widget.adapter.toNext(widget.item),
+                );
+              } else {
+                anim(
+                  begin: dif,
+                  end: end(false, dif, widget.rect, 0, vY),
+                  duration: duration(vX, vY),
+                  curve: Curves.decelerate,
+                  onEnd: () => widget.adapter.toNext(widget.item),
+                );
+              }
             } else {
-              anim(
-                begin: dif,
-                end: end(false, dif, widget.rect, 0, vY),
-                duration: duration(vX, vY),
-                curve: Curves.decelerate,
-                onEnd: () => widget.adapter.toNext(widget.item),
-              );
+              // print('_ vX=${vX.floor()}, vY=${vY.floor()}');
+              toIdle(dif);
             }
-          } else {
-            // print('_ vX=${vX.floor()}, vY=${vY.floor()}');
-            toIdle(dif);
           }
         },
         child: SingleTouch(
