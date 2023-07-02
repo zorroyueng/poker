@@ -36,7 +36,7 @@ class DemoAdapter extends PokerAdapter<DemoData> {
             right: 0,
             child: Container(
               clipBehavior: Clip.none,
-              height: 160,
+              height: 200,
               decoration: BoxDecoration(
                 borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(30),
@@ -50,7 +50,7 @@ class DemoAdapter extends PokerAdapter<DemoData> {
                 ),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(20),
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
@@ -65,9 +65,9 @@ class DemoAdapter extends PokerAdapter<DemoData> {
                             '${t.name} ${t.id}',
                             maxLines: 1,
                             style: const TextStyle(
-                              fontSize: 30,
+                              fontSize: 37,
                               color: Colors.white,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
                           Text(

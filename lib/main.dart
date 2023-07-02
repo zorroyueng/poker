@@ -30,28 +30,29 @@ class _HomePage extends StatelessWidget {
     required VoidCallback onPressed,
     double? percent,
     bool rotate = false,
-  }) {
-    return Expanded(
-      child: Transform.scale(
-        scale: 1 + (percent != null ? (percent * .2) : 0),
-        child: IconButton(
-          onPressed: onPressed,
-          alignment: Alignment.center,
-          style: percent != null
-              ? ButtonStyle(backgroundColor: MaterialStateProperty.resolveWith((_) => color.withOpacity(.2 * percent)))
-              : null,
-          icon: RotatedBox(
-            quarterTurns: rotate ? -2 : 0,
-            child: Icon(
-              icon,
-              color: percent != null ? color.withOpacity(.2 + .8 * percent) : color,
-              size: 50,
+  }) =>
+      Expanded(
+        child: Transform.scale(
+          scale: 1 + (percent != null ? (percent * .2) : 0),
+          child: IconButton(
+            onPressed: onPressed,
+            alignment: Alignment.center,
+            style: percent != null
+                ? ButtonStyle(
+                    backgroundColor: MaterialStateProperty.resolveWith((_) => color.withOpacity(.2 * percent)),
+                  )
+                : null,
+            icon: RotatedBox(
+              quarterTurns: rotate ? -2 : 0,
+              child: Icon(
+                icon,
+                color: percent != null ? color.withOpacity(.2 + .8 * percent) : color,
+                size: 50,
+              ),
             ),
           ),
         ),
-      ),
-    );
-  }
+      );
 
   @override
   Widget build(BuildContext context) {
