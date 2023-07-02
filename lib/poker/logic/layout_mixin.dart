@@ -6,7 +6,7 @@ import 'package:poker/poker/poker_config.dart';
 mixin LayoutMixin {
   static const double _percentSwipeK = .3; // 滑动超出宽高范围，计算滑动百分比使用，back也使用做变换
   static const double _percentRotateK = .6; // 滑动超出宽高范围，计算旋转百分比使用
-  static const double _swipeK = .5; // 滑动超出宽高范围，判断滑动阈值
+  static const double _swipeK = .2; // 滑动超出宽高范围，判断滑动阈值
   static const double _maxRotate = 10 * math.pi / 180; // 卡片横向滑动最大旋转角度
   static const double _disappearK = 2.7; // 消失边界为宽or高的倍数
 
@@ -19,20 +19,35 @@ mixin LayoutMixin {
   }
 
   // 滑动百分比为[-1,1]
-  double swipePercent(bool x, Offset dif, Rect rect, [double k = _percentSwipeK]) {
+  double swipePercent({
+    required bool x,
+    required Offset dif,
+    required Rect rect,
+    double k = _percentSwipeK,
+    bool unit = true,
+  }) {
     if (rect.isEmpty) {
       return 0;
     } else {
       if (x) {
-        return math.min(1, dif.dx.abs() / (rect.shortestSide * k)) * (dif.dx >= 0 ? 1 : -1);
+        double p = dif.dx.abs() / (rect.shortestSide * k);
+        return unit ? math.min(1, p) : p * (dif.dx >= 0 ? 1 : -1);
       } else {
-        return math.min(1, dif.dy.abs() / (rect.shortestSide * k)) * (dif.dy <= 0 ? 1 : -1);
+        double p = dif.dy.abs() / (rect.shortestSide * k);
+        return unit ? math.min(1, p) : p * (dif.dy <= 0 ? -1 : 1);
       }
     }
   }
 
   double rotate(Offset dif, Rect rect, bool up) =>
-      swipePercent(true, dif, rect, _percentRotateK) * _maxRotate * (up ? 1 : -1);
+      swipePercent(
+        x: true,
+        dif: dif,
+        rect: rect,
+        k: _percentRotateK,
+      ) *
+      _maxRotate *
+      (up ? 1 : -1);
 
   Offset end(
     bool? right, // true: right, false: left, null: up

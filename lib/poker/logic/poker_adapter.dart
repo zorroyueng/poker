@@ -99,9 +99,9 @@ abstract class PokerAdapter<T> {
   void swipePercent(double pX, double pY) {
     if (pY.abs() >= pX.abs()) {
       _percentX.add(0);
-      _percentY.add(pY);
+      _percentY.add((pY > 0 ? 1 : -1) * min(1, pY.abs() - pX.abs()));
     } else {
-      _percentX.add(pX);
+      _percentX.add((pX > 0 ? 1 : -1) * min(1, pX.abs() - pY.abs()));
       _percentY.add(0);
     }
     int index = _itemIndex(_swipedItem!);
@@ -110,7 +110,7 @@ abstract class PokerAdapter<T> {
     for (int i = next; i >= 0; i--) {
       PokerItem item = _items[i];
       if (i == next) {
-        item.percent.add(Curves.decelerate.transform(max(pX.abs(), pY.abs())));
+        item.percent.add(Curves.decelerate.transform(min(1, max(pX.abs(), pY.abs()))));
       } else {
         item.percent.add(0);
       }
@@ -140,6 +140,11 @@ abstract class PokerAdapter<T> {
   }
 
   bool toNext(PokerItem item) {
+    if (item == _swipedItem) {
+      _percentX.add(0);
+      _percentY.add(0);
+      _swipedItem = null;
+    }
     // 将current向后移1位
     int current = _firstIndex + 1;
     if (current < _lstData.length) {
@@ -148,7 +153,6 @@ abstract class PokerAdapter<T> {
       _view!.update(_items);
       return true;
     } else {
-      // todo
       _items.remove(item);
       _view!.update(_items);
       return false;

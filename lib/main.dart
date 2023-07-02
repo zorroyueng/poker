@@ -28,20 +28,25 @@ class _HomePage extends StatelessWidget {
     required Color color,
     required IconData icon,
     required VoidCallback onPressed,
-    required double percent,
+    double? percent,
     bool rotate = false,
   }) {
     return Expanded(
-      child: IconButton(
-        onPressed: onPressed,
-        alignment: Alignment.center,
-        style: ButtonStyle(backgroundColor: MaterialStateProperty.resolveWith((_) => color.withOpacity(.2 * percent))),
-        icon: RotatedBox(
-          quarterTurns: rotate ? -2 : 0,
-          child: Icon(
-            icon,
-            color: color.withOpacity(.2 + .8 * percent),
-            size: 50,
+      child: Transform.scale(
+        scale: 1 + (percent != null ? (percent * .2) : 0),
+        child: IconButton(
+          onPressed: onPressed,
+          alignment: Alignment.center,
+          style: percent != null
+              ? ButtonStyle(backgroundColor: MaterialStateProperty.resolveWith((_) => color.withOpacity(.2 * percent)))
+              : null,
+          icon: RotatedBox(
+            quarterTurns: rotate ? -2 : 0,
+            child: Icon(
+              icon,
+              color: percent != null ? color.withOpacity(.2 + .8 * percent) : color,
+              size: 50,
+            ),
           ),
         ),
       ),
@@ -70,7 +75,6 @@ class _HomePage extends StatelessWidget {
                   color: Colors.yellow,
                   icon: Icons.redo,
                   onPressed: () {},
-                  percent: .5,
                 ),
                 StreamBuilder(
                   initialData: adapter.percentX().value(),
@@ -83,7 +87,7 @@ class _HomePage extends StatelessWidget {
                   }).distinct(),
                   builder: (_, snap) => _btn(
                     color: Colors.lime,
-                    icon: Icons.recommend_outlined,
+                    icon: Icons.recommend,
                     onPressed: () {},
                     percent: snap.data!,
                     rotate: true,
@@ -93,9 +97,9 @@ class _HomePage extends StatelessWidget {
                   initialData: adapter.percentY().value(),
                   stream: adapter.percentY().stream().map<double>((v) {
                     if (v < 0) {
-                      return 0;
+                      return -v;
                     } else {
-                      return v;
+                      return 0;
                     }
                   }).distinct(),
                   builder: (_, snap) => _btn(
@@ -125,7 +129,6 @@ class _HomePage extends StatelessWidget {
                   color: Colors.orangeAccent,
                   icon: Icons.sync,
                   onPressed: () {},
-                  percent: .5,
                 ),
               ],
             ),

@@ -1,10 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:poker/poker/base/single_touch.dart';
 import 'package:poker/poker/logic/anim_mixin.dart';
 import 'package:poker/poker/logic/layout_mixin.dart';
 import 'package:poker/poker/logic/poker_adapter.dart';
 import 'package:poker/poker/logic/touch_mixin.dart';
-import 'package:poker/poker/poker_config.dart';
 
 class PokerCard extends StatefulWidget {
   final PokerAdapter adapter;
@@ -22,8 +23,8 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
     dif = o;
     if (widget.adapter.isCurrentSwipeItem(widget.item)) {
       widget.adapter.swipePercent(
-        swipePercent(true, dif, widget.rect),
-        swipePercent(false, dif, widget.rect),
+        swipePercent(x: true, dif: dif, rect: widget.rect, unit: false),
+        swipePercent(x: false, dif: dif, rect: widget.rect, unit: false),
       );
     }
   }
@@ -63,7 +64,7 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
             Offset v = d.velocity.pixelsPerSecond;
             double vX = velocity(true, v, widget.rect);
             double vY = velocity(false, v, widget.rect);
-            if (-vY > TouchMixin.maxSwipeVelocity && -vY >= vX.abs() && canSwipeOut(false, dif, widget.rect)) {
+            if (-vY > TouchMixin.maxSwipeV && -vY >= vX.abs()) {
               // print('top vX=${vX.floor()}, vY=${vY.floor()}');
               if (widget.adapter.handle(widget.item.data, SwipeType.up)) {
                 anim(
@@ -76,7 +77,7 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
               } else {
                 toIdle(dif);
               }
-            } else if (vX >= TouchMixin.maxSwipeVelocity && vX >= vY.abs()) {
+            } else if (vX >= TouchMixin.maxSwipeV && vX >= vY.abs()) {
               // print('right vX=${vX.floor()}, vY=${vY.floor()}');
               if (widget.adapter.handle(widget.item.data, SwipeType.right)) {
                 anim(
@@ -89,7 +90,7 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
               } else {
                 toIdle(dif);
               }
-            } else if (-vX >= TouchMixin.maxSwipeVelocity && -vX >= vY.abs()) {
+            } else if (-vX >= TouchMixin.maxSwipeV && -vX >= vY.abs()) {
               // print('left vX=${vX.floor()}, vY=${vY.floor()}');
               if (widget.adapter.handle(widget.item.data, SwipeType.left)) {
                 anim(
