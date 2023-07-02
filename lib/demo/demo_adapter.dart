@@ -36,7 +36,6 @@ class DemoAdapter extends PokerAdapter<DemoData> {
             right: 0,
             child: Container(
               clipBehavior: Clip.none,
-              height: 200,
               decoration: BoxDecoration(
                 borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(30),
@@ -51,36 +50,27 @@ class DemoAdapter extends PokerAdapter<DemoData> {
               ),
               child: Padding(
                 padding: const EdgeInsets.all(20),
-                child: Stack(
-                  fit: StackFit.expand,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${t.name} ${t.id}',
-                            maxLines: 1,
-                            style: const TextStyle(
-                              fontSize: 37,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          Text(
-                            t.url,
-                            maxLines: 3,
-                            style: const TextStyle(
-                              fontSize: 20,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
+                    Text(
+                      '${t.name} ${t.id}',
+                      maxLines: 1,
+                      style: const TextStyle(
+                        fontSize: 37,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
                       ),
-                    )
+                    ),
+                    Text(
+                      t.url,
+                      maxLines: 3,
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.grey[300],
+                      ),
+                    ),
                   ],
                 ),
               ),

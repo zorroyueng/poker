@@ -32,8 +32,9 @@ class _HomePage extends StatelessWidget {
     bool rotate = false,
   }) =>
       Expanded(
-        child: Transform.scale(
+        child: AnimatedScale(
           scale: 1 + (percent != null ? (percent * .2) : 0),
+          duration: Duration(milliseconds: percent == 0 ? 500 : 0),
           child: IconButton(
             onPressed: onPressed,
             alignment: Alignment.center,
