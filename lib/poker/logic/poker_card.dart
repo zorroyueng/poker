@@ -110,7 +110,7 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
                   begin: dif,
                   end: end(null, dif, widget.rect, vX, 0),
                   duration: duration(vX, vY),
-                  curve: Curves.decelerate,
+                  curve: Curves.easeIn,
                   onEnd: () => widget.adapter.toNext(widget.item),
                 );
               } else {
@@ -124,7 +124,7 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
                     begin: dif,
                     end: end(true, dif, widget.rect, 0, vY),
                     duration: duration(vX, vY),
-                    curve: Curves.decelerate,
+                    curve: Curves.easeIn,
                     onEnd: () => widget.adapter.toNext(widget.item),
                   );
                 } else {
@@ -136,7 +136,7 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
                     begin: dif,
                     end: end(false, dif, widget.rect, 0, vY),
                     duration: duration(vX, vY),
-                    curve: Curves.decelerate,
+                    curve: Curves.easeIn,
                     onEnd: () => widget.adapter.toNext(widget.item),
                   );
                 } else {

@@ -45,7 +45,7 @@ mixin TouchMixin {
 
   int duration(double vX, double vY) {
     double v = min(maxAnimV, sqrt(vX * vX + vY * vY));
-    int d = 500 - (200 * (v / maxAnimV)).toInt();
+    int d = 400 - (200 * (v / maxAnimV)).toInt();
     return d;
   }
 }

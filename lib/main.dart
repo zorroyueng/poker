@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:poker/demo/demo_adapter.dart';
 import 'package:poker/demo/demo_helper.dart';
+import 'package:poker/poker/base/percent_builder.dart';
 import 'package:poker/poker/poker_view.dart';
 
 void main() {
@@ -32,23 +33,26 @@ class _HomePage extends StatelessWidget {
     bool rotate = false,
   }) =>
       Expanded(
-        child: AnimatedScale(
-          scale: 1 + (percent != null ? (percent * .2) : 0),
-          duration: Duration(milliseconds: percent == 0 ? 500 : 0),
-          child: IconButton(
-            onPressed: onPressed,
-            alignment: Alignment.center,
-            style: percent != null
-                ? ButtonStyle(
-                    backgroundColor: MaterialStateProperty.resolveWith((_) => color.withOpacity(.2 * percent)),
-                  )
-                : null,
-            icon: RotatedBox(
-              quarterTurns: rotate ? -2 : 0,
-              child: Icon(
-                icon,
-                color: percent != null ? color.withOpacity(.2 + .8 * percent) : color,
-                size: 50,
+        child: PercentBuilder(
+          percent: percent ?? 0,
+          duration: Duration(milliseconds: percent == 0 ? 200 : 0),
+          builder: (_, p) => Transform.scale(
+            scale: 1 + (percent != null ? (p * .2) : 0),
+            child: IconButton(
+              onPressed: onPressed,
+              alignment: Alignment.center,
+              style: percent != null
+                  ? ButtonStyle(
+                      backgroundColor: MaterialStateProperty.resolveWith((_) => color.withOpacity(.2 * p)),
+                    )
+                  : null,
+              icon: RotatedBox(
+                quarterTurns: rotate ? -2 : 0,
+                child: Icon(
+                  icon,
+                  color: percent != null ? color.withOpacity(.2 + .8 * p) : color,
+                  size: 50,
+                ),
               ),
             ),
           ),
