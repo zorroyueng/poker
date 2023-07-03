@@ -47,7 +47,7 @@ mixin AnimMixin {
       begin: dif,
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutBack));
-    _ctrl.duration = const Duration(milliseconds: 500);
+    _ctrl.duration = Duration(milliseconds: dif == Offset.zero ? 0 : 500);
     _ctrl.forward(from: 0);
   }
 

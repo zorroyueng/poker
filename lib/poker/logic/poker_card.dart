@@ -53,11 +53,12 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
     super.dispose();
   }
 
-  void animTo(SwipeType type,
-      double vX,
-      double vY, [
-        Curve curve = Curves.easeIn,
-      ]) {
+  void animTo(
+    SwipeType type,
+    double vX,
+    double vY, [
+    Curve curve = Curves.easeIn,
+  ]) {
     if (widget.adapter.canSwipe(widget.item.data, type)) {
       bool? right;
       if (type == SwipeType.right) {
@@ -65,12 +66,13 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
       } else if (type == SwipeType.left) {
         right = false;
       }
+      Offset endDif = end(right, dif, widget.rect, vX, vY);
       anim(
         begin: dif,
-        end: end(right, dif, widget.rect, vX, vY),
+        end: endDif,
         duration: duration(vX, vY),
         curve: curve,
-        onEnd: () => widget.adapter.toNext(widget.item),
+        onEnd: () => widget.adapter.toNext(widget.item, endDif),
       );
     } else {
       toIdle(dif);
@@ -130,17 +132,16 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
             child: StreamBuilder<double>(
               stream: widget.item.percent.stream().distinct(),
               initialData: widget.item.percent.value(),
-              builder: (_, __) =>
-                  Transform.scale(
-                    scale: backScale(widget.item.percent.value()),
-                    child: Transform.translate(
-                      offset: backOffset(widget.item.percent.value(), widget.rect),
-                      child: AbsorbPointer(
-                        absorbing: widget.item.percent.value() != 1,
-                        child: widget.item.item,
-                      ),
-                    ),
+              builder: (_, __) => Transform.scale(
+                scale: backScale(widget.item.percent.value()),
+                child: Transform.translate(
+                  offset: backOffset(widget.item.percent.value(), widget.rect),
+                  child: AbsorbPointer(
+                    absorbing: widget.item.percent.value() != 1,
+                    child: widget.item.item,
                   ),
+                ),
+              ),
             ),
           ),
         ),

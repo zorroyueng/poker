@@ -11,10 +11,11 @@ abstract class PokerAdapter<T> {
   int _firstIndex = 0;
   final List<PokerItem> _items = [];
   final Map<Object, PokerItem> _cache = {};
-  PokerItem? _swipedItem; // 最新操作的item，计算滑动percent
-  PokerItem? _onPanItem; // 正在相应手势的item，为屏蔽多指触摸使用
+  PokerItem? _updatePercentItem; // 最新操作的item，计算滑动percent
+  PokerItem? _swipingItem; // 正在相应手势的item，为屏蔽多指触摸使用
   final Broadcast<double> _percentX = Broadcast(0);
   final Broadcast<double> _percentY = Broadcast(0);
+  final Map<Object, Offset> _mapPosition = {};
 
   /// interface
   Object id(T t);
@@ -36,14 +37,13 @@ abstract class PokerAdapter<T> {
 
   PokerItem? _canSwipe() {
     PokerItem? can;
-    for (int i = _items.length - 1; i >= 0; i--) {
-      PokerItem item = _items[i];
-      if (item.card != null && item.card!.dif == Offset.zero && item.percent.value() == 1) {
-        can = item;
-        break;
-      } else if (item == _swipedItem) {
-        // 屏蔽此种情况：当卡片被滑动过程中，造成后面卡片的percent=1
-        break;
+    if (_swipingItem == null) {
+      for (int i = _items.length - 1; i >= 0; i--) {
+        PokerItem item = _items[i];
+        if (item.card != null && item.card!.dif == Offset.zero && item.percent.value() == 1) {
+          can = item;
+          break;
+        }
       }
     }
     return can;
@@ -55,7 +55,7 @@ abstract class PokerAdapter<T> {
     if (item != null && canSwipe(item.data, type)) {
       item.card!.onPanDown(Offset.zero);
       onPanDown(item);
-      _onPanItem = null;
+      _swipingItem = null;
       item.card!.animTo(type, 0, 0);
       can = true;
     }
@@ -71,8 +71,8 @@ abstract class PokerAdapter<T> {
           _firstIndex = current;
           _buildItems(from: _firstIndex, to: _firstIndex + PokerConfig.idleCardNum);
           PokerItem item = _items[_items.length - 1];
-          item.dif = const Offset(-1000, -1000);
-          _swipedItem = item;
+          item.dif = _mapPosition[id(item.data)];
+          _updatePercentItem = item;
           _view?.update(_items);
           //需要设置back卡片初始percent，因为top卡片后画，会先绘制出percent为0的情况
           int nextIndex = _items.length - 2;
@@ -98,8 +98,9 @@ abstract class PokerAdapter<T> {
     _firstIndex = 0;
     _buildItems(from: _firstIndex, to: _firstIndex + PokerConfig.idleCardNum - 1);
     _view?.update(_items);
-    _swipedItem = _items.isEmpty ? null : _items[0];
-    _onPanItem = null;
+    _updatePercentItem = _items.isEmpty ? null : _items[0];
+    _swipingItem = null;
+    _mapPosition.clear();
   }
 
   void update(T t) {}
@@ -136,8 +137,8 @@ abstract class PokerAdapter<T> {
   int _itemIndex(PokerItem item) => _items.indexWhere((e) => e.key == item.key);
 
   void onPanDown(PokerItem item) {
-    _swipedItem = item;
-    _onPanItem = item;
+    _updatePercentItem = item;
+    _swipingItem = item;
     int indexItem = _itemIndex(item); // 屏幕点击在_items序列中的index，当前为_items.length - 1
     int indexData = _firstIndex + (_items.length - 1 - indexItem);
     int prepareIndex = indexData + PokerConfig.idleCardNum;
@@ -146,11 +147,11 @@ abstract class PokerAdapter<T> {
     _view?.update(_items);
   }
 
-  void onPanEnd() => _onPanItem = null;
+  void onPanEnd() => _swipingItem = null;
 
-  PokerItem? swipingItem() => _onPanItem;
+  PokerItem? swipingItem() => _swipingItem;
 
-  bool isCurrentSwipeItem(PokerItem item) => item == _swipedItem;
+  bool isCurrentSwipeItem(PokerItem item) => item == _updatePercentItem;
 
   void swipePercent(double pX, double pY) {
     if (pY.abs() >= pX.abs()) {
@@ -160,7 +161,7 @@ abstract class PokerAdapter<T> {
       _percentX.add((pX > 0 ? 1 : -1) * min(1, pX.abs() - pY.abs()));
       _percentY.add(0);
     }
-    int index = _itemIndex(_swipedItem!);
+    int index = _itemIndex(_updatePercentItem!);
     // next
     int next = index - 1;
     for (int i = next; i >= 0; i--) {
@@ -195,11 +196,12 @@ abstract class PokerAdapter<T> {
     }
   }
 
-  bool toNext(PokerItem item) {
-    if (item == _swipedItem) {
+  bool toNext(PokerItem item, Offset dif) {
+    _mapPosition[id(item.data)] = dif;
+    if (item == _updatePercentItem) {
       _percentX.add(0);
       _percentY.add(0);
-      _swipedItem = null;
+      _updatePercentItem = null;
     }
     // 将current向后移1位
     int current = _firstIndex + 1;
