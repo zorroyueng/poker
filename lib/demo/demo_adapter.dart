@@ -24,7 +24,7 @@ class DemoAdapter extends PokerAdapter<DemoData> {
                   fit: BoxFit.cover,
                   image: CachedNetworkImageProvider(t.url),
                   filterQuality: FilterQuality.low,
-                  isAntiAlias: true,
+                  // isAntiAlias: true,
                 ),
                 borderRadius: BorderRadius.circular(30),
               ),

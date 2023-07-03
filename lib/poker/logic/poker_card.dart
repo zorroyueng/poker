@@ -50,7 +50,7 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
 
   @override
   void didUpdateWidget(PokerCard oldWidget) {
-    widget.item.card = this;
+    super.didUpdateWidget(oldWidget);
     _init();
   }
 
@@ -138,12 +138,12 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
             }
           }
         },
-        child: SingleTouch(
-          child: Transform.rotate(
-            angle: rotate(dif, widget.rect, dragAtTop(widget.rect)),
-            alignment: byDown(widget.rect),
+        child: Transform.rotate(
+          angle: rotate(dif, widget.rect, dragAtTop(widget.rect)),
+          alignment: byDown(widget.rect),
+          child: SingleTouch(
             child: StreamBuilder<double>(
-              stream: widget.item.percent.stream().distinct(),
+              stream: widget.item.percent.distinct(),
               initialData: widget.item.percent.value(),
               builder: (_, __) => Transform.scale(
                 scale: backScale(widget.item.percent.value()),

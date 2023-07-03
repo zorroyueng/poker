@@ -31,19 +31,13 @@ class OnlyOnePointerRecognizer extends OneSequenceGestureRecognizer {
 
 class SingleTouch extends StatelessWidget {
   final Widget child;
+  final Map<Type, GestureRecognizerFactory> gestures = {
+    OnlyOnePointerRecognizer:
+        GestureRecognizerFactoryWithHandlers<OnlyOnePointerRecognizer>(() => OnlyOnePointerRecognizer(), (_) {}),
+  };
 
-  const SingleTouch({super.key, required this.child});
+  SingleTouch({super.key, required this.child});
 
   @override
-  Widget build(BuildContext context) {
-    return RawGestureDetector(
-      gestures: <Type, GestureRecognizerFactory>{
-        OnlyOnePointerRecognizer: GestureRecognizerFactoryWithHandlers<OnlyOnePointerRecognizer>(
-          () => OnlyOnePointerRecognizer(),
-          (OnlyOnePointerRecognizer instance) {},
-        ),
-      },
-      child: child,
-    );
-  }
+  Widget build(BuildContext context) => RawGestureDetector(gestures: gestures, child: child);
 }

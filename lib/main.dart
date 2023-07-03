@@ -37,23 +37,20 @@ class _HomePage extends StatelessWidget {
         child: PercentBuilder(
           percent: percent ?? 0,
           duration: Duration(milliseconds: percent == 0 ? 200 : 0),
-          builder: (_, p) => Transform.scale(
-            scale: 1 + (percent != null ? (p * .2) : 0),
-            child: IconButton(
-              onPressed: onPressed,
-              alignment: Alignment.center,
-              style: percent != null
-                  ? ButtonStyle(
-                      backgroundColor: MaterialStateProperty.resolveWith((_) => color.withOpacity(.2 * p)),
-                    )
-                  : null,
-              icon: RotatedBox(
-                quarterTurns: rotate ? -2 : 0,
-                child: Icon(
-                  icon,
-                  color: percent != null ? color.withOpacity(.2 + .8 * p) : color,
-                  size: 50,
-                ),
+          builder: (_, p) => IconButton(
+            onPressed: onPressed,
+            alignment: Alignment.center,
+            style: percent != null
+                ? ButtonStyle(
+                    backgroundColor: MaterialStateProperty.resolveWith((_) => color.withOpacity(.2 * p)),
+                  )
+                : null,
+            icon: RotatedBox(
+              quarterTurns: rotate ? -2 : 0,
+              child: Icon(
+                icon,
+                color: percent != null ? color.withOpacity(.2 + .8 * p) : color,
+                size: 50,
               ),
             ),
           ),
