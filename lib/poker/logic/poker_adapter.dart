@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:poker/poker/base/broadcast.dart';
+import 'package:poker/poker/logic/poker_card.dart';
+import 'package:poker/poker/logic/touch_mixin.dart';
 import 'package:poker/poker/poker_config.dart';
 
 abstract class PokerAdapter<T> {
@@ -11,7 +13,7 @@ abstract class PokerAdapter<T> {
   final List<PokerItem> _items = [];
   final Map<Object, PokerItem> _cache = {};
   PokerItem? _swipedItem; // 最新操作的item，计算滑动percent
-  PokerItem? _onPanItem; // 正在相应手势的item
+  PokerItem? _onPanItem; // 正在相应手势的item，为屏蔽多指触摸使用
   final Broadcast<double> _percentX = Broadcast(0);
   final Broadcast<double> _percentY = Broadcast(0);
 
@@ -30,6 +32,34 @@ abstract class PokerAdapter<T> {
   Broadcast<double> percentX() => _percentX;
 
   Broadcast<double> percentY() => _percentY;
+
+  PokerItem? _canSwipe() {
+    PokerItem? can;
+    for (int i = _items.length - 1; i >= 0; i--) {
+      PokerItem item = _items[i];
+      if (item.card != null && item.card!.dif == Offset.zero && item.percent.value() == 1) {
+        can = item;
+        break;
+      } else if (item == _swipedItem) {
+        // 屏蔽此种情况：当卡片被滑动过程中，造成后面卡片的percent=1
+        break;
+      }
+    }
+    return can;
+  }
+
+  bool swipe(SwipeType type) {
+    bool can = false;
+    PokerItem? item = _canSwipe();
+    if (item != null && handle(item.data, type)) {
+      item.card!.onPanDown(Offset.zero);
+      onPanDown(item);
+      _onPanItem = null;
+      item.card!.animTo(type, 0, 0);
+      can = true;
+    }
+    return can;
+  }
 
   void setView(AdapterView view) {
     _view = view;
@@ -183,6 +213,8 @@ class PokerItem<T> {
 
   // 0 为back状态，1为展示状态
   final Broadcast<double> percent = Broadcast(0);
+
+  PokerCardState? card;
 
   PokerItem({required this.key, required this.data, required this.item});
 }

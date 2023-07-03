@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:poker/demo/demo_adapter.dart';
 import 'package:poker/demo/demo_helper.dart';
 import 'package:poker/poker/base/percent_builder.dart';
+import 'package:poker/poker/logic/poker_adapter.dart';
 import 'package:poker/poker/poker_view.dart';
 
 void main() {
@@ -94,7 +95,7 @@ class _HomePage extends StatelessWidget {
                   builder: (_, snap) => _btn(
                     color: Colors.lime,
                     icon: Icons.recommend,
-                    onPressed: () {},
+                    onPressed: () => adapter.swipe(SwipeType.left),
                     percent: snap.data!,
                     rotate: true,
                   ),
@@ -111,7 +112,7 @@ class _HomePage extends StatelessWidget {
                   builder: (_, snap) => _btn(
                     color: Colors.blueGrey,
                     icon: Icons.upload,
-                    onPressed: () {},
+                    onPressed: () => adapter.swipe(SwipeType.up),
                     percent: snap.data!,
                   ),
                 ),
@@ -127,7 +128,7 @@ class _HomePage extends StatelessWidget {
                   builder: (_, snap) => _btn(
                     color: Colors.pinkAccent,
                     icon: Icons.recommend,
-                    onPressed: () {},
+                    onPressed: () => adapter.swipe(SwipeType.right),
                     percent: snap.data!,
                   ),
                 ),

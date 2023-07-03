@@ -6,6 +6,7 @@ mixin TouchMixin {
   Offset? _down;
   Offset dif = Offset.zero;
   static const double maxSwipeV = 3; // 滑动速度判断swipeOut最大值
+  static const double minSwipeV = 1; // 滑动速度判断swipeOut最小值
   static const double maxAnimV = 7; // 动画速度最大值
 
   void onPanDown(Offset d) => _down = d;

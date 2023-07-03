@@ -31,10 +31,10 @@ mixin LayoutMixin {
     } else {
       if (x) {
         double p = dif.dx.abs() / (rect.shortestSide * k);
-        return unit ? math.min(1, p) : p * (dif.dx >= 0 ? 1 : -1);
+        return (unit ? math.min(1, p) : p) * (dif.dx >= 0 ? 1 : -1);
       } else {
         double p = dif.dy.abs() / (rect.shortestSide * k);
-        return unit ? math.min(1, p) : p * (dif.dy <= 0 ? -1 : 1);
+        return (unit ? math.min(1, p) : p) * (dif.dy <= 0 ? -1 : 1);
       }
     }
   }
