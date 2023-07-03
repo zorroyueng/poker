@@ -85,12 +85,15 @@ class DemoAdapter extends PokerAdapter<DemoData> {
   }
 
   @override
-  bool handle(DemoData t, SwipeType type) {
+  bool canSwipe(DemoData t, SwipeType type) {
     return true;
   }
 
   @override
   Widget onLoading() => const Center(child: CircularProgressIndicator());
+
+  @override
+  bool canUndo(DemoData t) => true;
 }
 
 class DemoData {

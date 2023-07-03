@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:poker/poker/base/broadcast.dart';
 import 'package:poker/poker/logic/poker_card.dart';
-import 'package:poker/poker/logic/touch_mixin.dart';
 import 'package:poker/poker/poker_config.dart';
 
 abstract class PokerAdapter<T> {
@@ -24,7 +23,9 @@ abstract class PokerAdapter<T> {
 
   void onPreload(T t, int index, int total); // 预加载t；还剩下几个数据
 
-  bool handle(T t, SwipeType type); // 判断卡片是否可以执行操作
+  bool canSwipe(T t, SwipeType type); // 判断卡片是否可以执行操作
+
+  bool canUndo(T t);
 
   Widget onLoading(); // 没有卡片时展示的loading动画
 
@@ -51,12 +52,36 @@ abstract class PokerAdapter<T> {
   bool swipe(SwipeType type) {
     bool can = false;
     PokerItem? item = _canSwipe();
-    if (item != null && handle(item.data, type)) {
+    if (item != null && canSwipe(item.data, type)) {
       item.card!.onPanDown(Offset.zero);
       onPanDown(item);
       _onPanItem = null;
       item.card!.animTo(type, 0, 0);
       can = true;
+    }
+    return can;
+  }
+
+  bool undo() {
+    bool can = false;
+    if (_canSwipe() != null) {
+      int current = _firstIndex - 1;
+      if (current >= 0 && current < _lstData.length) {
+        if (canUndo(_lstData[current])) {
+          _firstIndex = current;
+          _buildItems(from: _firstIndex, to: _firstIndex + PokerConfig.idleCardNum);
+          PokerItem item = _items[_items.length - 1];
+          item.dif = const Offset(-1000, -1000);
+          _swipedItem = item;
+          _view?.update(_items);
+          //需要设置back卡片初始percent，因为top卡片后画，会先绘制出percent为0的情况
+          int nextIndex = _items.length - 2;
+          if (nextIndex >= 0) {
+            _items[nextIndex].percent.add(1);
+          }
+          can = true;
+        }
+      }
     }
     return can;
   }
@@ -72,9 +97,7 @@ abstract class PokerAdapter<T> {
     _lstData.addAll(lst);
     _firstIndex = 0;
     _buildItems(from: _firstIndex, to: _firstIndex + PokerConfig.idleCardNum - 1);
-    if (_view != null) {
-      _view!.update(_items);
-    }
+    _view?.update(_items);
     _swipedItem = _items.isEmpty ? null : _items[0];
     _onPanItem = null;
   }
@@ -91,6 +114,8 @@ abstract class PokerAdapter<T> {
       if (w != null) {
         if (i == from) {
           w.percent.add(1);
+        } else {
+          w.percent.add(0);
         }
         _items.insert(0, w);
       } else {
@@ -117,7 +142,8 @@ abstract class PokerAdapter<T> {
     int indexData = _firstIndex + (_items.length - 1 - indexItem);
     int prepareIndex = indexData + PokerConfig.idleCardNum;
     _buildItems(from: _firstIndex, to: prepareIndex);
-    _view!.update(_items);
+    item.percent.add(1); // 被滑动的card强制percent为1，解决在back状态下被操作
+    _view?.update(_items);
   }
 
   void onPanEnd() => _onPanItem = null;
@@ -188,18 +214,6 @@ abstract class PokerAdapter<T> {
       return false;
     }
   }
-
-  bool toLast() {
-    // 将current向前移1位
-    int current = _firstIndex - 1;
-    if (current >= 0 && _lstData.isNotEmpty) {
-      _firstIndex = current;
-      // todo
-      return true;
-    } else {
-      return false;
-    }
-  }
 }
 
 mixin AdapterView {
@@ -211,9 +225,8 @@ class PokerItem<T> {
   final T data;
   final Widget item;
 
-  // 0 为back状态，1为展示状态
-  final Broadcast<double> percent = Broadcast(0);
-
+  final Broadcast<double> percent = Broadcast(0); // 0 为back状态，1为展示状态
+  Offset? dif;
   PokerCardState? card;
 
   PokerItem({required this.key, required this.data, required this.item});

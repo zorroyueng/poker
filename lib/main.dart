@@ -81,7 +81,7 @@ class _HomePage extends StatelessWidget {
                 _btn(
                   color: Colors.yellow,
                   icon: Icons.redo,
-                  onPressed: () {},
+                  onPressed: () => adapter.undo(),
                 ),
                 StreamBuilder(
                   initialData: adapter.percentX().value(),

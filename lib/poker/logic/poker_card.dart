@@ -33,6 +33,11 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
   void initState() {
     initAnim(this, () => setState(() => _updateDif(byAnim())));
     widget.item.card = this;
+    if (widget.item.dif != null) {
+      dif = widget.item.dif!;
+      toIdle(dif);
+      widget.item.dif = null;
+    }
     super.initState();
   }
 
@@ -48,14 +53,12 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
     super.dispose();
   }
 
-  void animTo(
-    SwipeType type,
-    double vX,
-    double vY, [
-    Curve curve = Curves.easeIn,
-  ]) {
-    print('$type: vX=${vX.floor()}, vY=${vY.floor()}');
-    if (widget.adapter.handle(widget.item.data, type)) {
+  void animTo(SwipeType type,
+      double vX,
+      double vY, [
+        Curve curve = Curves.easeIn,
+      ]) {
+    if (widget.adapter.canSwipe(widget.item.data, type)) {
       bool? right;
       if (type == SwipeType.right) {
         right = true;
@@ -127,16 +130,17 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
             child: StreamBuilder<double>(
               stream: widget.item.percent.stream().distinct(),
               initialData: widget.item.percent.value(),
-              builder: (_, __) => Transform.scale(
-                scale: backScale(widget.item.percent.value()),
-                child: Transform.translate(
-                  offset: backOffset(widget.item.percent.value(), widget.rect),
-                  child: AbsorbPointer(
-                    absorbing: widget.item.percent.value() != 1,
-                    child: widget.item.item,
+              builder: (_, __) =>
+                  Transform.scale(
+                    scale: backScale(widget.item.percent.value()),
+                    child: Transform.translate(
+                      offset: backOffset(widget.item.percent.value(), widget.rect),
+                      child: AbsorbPointer(
+                        absorbing: widget.item.percent.value() != 1,
+                        child: widget.item.item,
+                      ),
+                    ),
                   ),
-                ),
-              ),
             ),
           ),
         ),
