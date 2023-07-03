@@ -51,7 +51,4 @@ class _PokerViewState extends State<PokerView> with PokerMixin, AdapterView {
 
   @override
   void update(List<PokerItem> items) => setState(() => _items = items);
-
-  @override
-  BuildContext getContext() => context;
 }

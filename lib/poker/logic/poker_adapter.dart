@@ -71,7 +71,7 @@ abstract class PokerAdapter<T> {
           _firstIndex = current;
           _buildItems(from: _firstIndex, to: _firstIndex + PokerConfig.idleCardNum);
           PokerItem item = _items[_items.length - 1];
-          item.dif = _mapPosition[id(item.data)];
+          item.difK = _mapPosition[id(item.data)];
           _updatePercentItem = item;
           _view?.update(_items);
           //需要设置back卡片初始percent，因为top卡片后画，会先绘制出percent为0的情况
@@ -98,9 +98,22 @@ abstract class PokerAdapter<T> {
     _lstData.addAll(lst);
     _firstIndex = 0;
     _buildItems(from: _firstIndex, to: _firstIndex + PokerConfig.idleCardNum - 1);
+    for (int i = _items.length - 1; i >= 0; i--) {
+      PokerItem item = _items[i];
+      Offset difK = Offset(
+        (Random().nextDouble() >= .5 ? 1 : -1) * Random().nextDouble(),
+        (Random().nextDouble() >= .5 ? 1 : -1) * Random().nextDouble(),
+      );
+      // if (item.card != null) {
+      //   item.card!.toIdle(dif);
+      // } else {
+      item.difK = difK;
+      // }
+    }
     _view?.update(_items);
     _updatePercentItem = _items.isEmpty ? null : _items[0];
     _swipingItem = null;
+    _updatePercentItem = null;
     _mapPosition.clear();
   }
 
@@ -116,7 +129,7 @@ abstract class PokerAdapter<T> {
       if (w != null) {
         if (i == from) {
           w.percent.add(1);
-        } else {
+        } else if (_swipingItem == null) { // 非触摸状态下，更新back的percent
           w.percent.add(0);
         }
         _items.insert(0, w);
@@ -229,7 +242,7 @@ class PokerItem<T> {
   final Widget item;
 
   final Broadcast<double> percent = Broadcast(0); // 0 为back状态，1为展示状态
-  Offset? dif;
+  Offset? difK;
   PokerCardState? card;
 
   PokerItem({required this.key, required this.data, required this.item});

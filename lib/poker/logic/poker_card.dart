@@ -29,21 +29,29 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
     }
   }
 
+  void _init() {
+    widget.item.card = this;
+    if (widget.item.difK != null) {
+      dif = Offset(
+        widget.item.difK!.dx * widget.rect.width,
+        widget.item.difK!.dy * widget.rect.height,
+      );
+      toIdle(dif);
+      widget.item.difK = null;
+    }
+  }
+
   @override
   void initState() {
     initAnim(this, () => setState(() => _updateDif(byAnim())));
-    widget.item.card = this;
-    if (widget.item.dif != null) {
-      dif = widget.item.dif!;
-      toIdle(dif);
-      widget.item.dif = null;
-    }
+    _init();
     super.initState();
   }
 
   @override
   void didUpdateWidget(PokerCard oldWidget) {
     widget.item.card = this;
+    _init();
   }
 
   @override
@@ -72,7 +80,12 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
         end: endDif,
         duration: duration(vX, vY),
         curve: curve,
-        onEnd: () => widget.adapter.toNext(widget.item, endDif),
+        onEnd: () => widget.adapter.toNext(
+            widget.item,
+            Offset(
+              endDif.dx / widget.rect.width,
+              endDif.dy / widget.rect.height,
+            )),
       );
     } else {
       toIdle(dif);
