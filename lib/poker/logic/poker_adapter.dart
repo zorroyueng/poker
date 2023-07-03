@@ -93,6 +93,7 @@ abstract class PokerAdapter<T> {
   }
 
   void setData(List<T> lst) {
+    _cache.clear();
     _lstData.clear();
     _lstData.addAll(lst);
     _firstIndex = 0;

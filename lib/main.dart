@@ -135,7 +135,7 @@ class _HomePage extends StatelessWidget {
                 _btn(
                   color: Colors.orangeAccent,
                   icon: Icons.sync,
-                  onPressed: () {},
+                  onPressed: () => adapter.setData(DemoHelper.data()),
                 ),
               ],
             ),

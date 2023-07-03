@@ -7,6 +7,7 @@ class DemoHelper {
     List<String> pics = DemoHelper._stars + DemoHelper._nights + DemoHelper._scenery + DemoHelper._relaxed;
     // List<String> pics = DemoHelper._stars;
     pics.shuffle();
+    _name.shuffle();
     List<DemoData> data = [];
     for (int i = 0; i < pics.length; i++) {
       data.add(DemoData(id: i, name: _name[i % _name.length], url: pics[i]));
