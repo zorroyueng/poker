@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:poker/demo/demo_adapter.dart';
 import 'package:poker/demo/demo_helper.dart';
-import 'package:poker/poker/base/percent_builder.dart';
+import 'package:base/src/percent_builder.dart';
 import 'package:poker/poker/logic/poker_adapter.dart';
 import 'package:poker/poker/poker_view.dart';
 

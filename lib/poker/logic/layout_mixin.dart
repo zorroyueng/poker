@@ -1,20 +1,13 @@
-import 'dart:math' as math;
 import 'dart:ui';
-
-import 'package:poker/poker/poker_config.dart';
+import 'dart:math' as math;
+import 'package:poker/poker/config.dart';
 
 mixin LayoutMixin {
-  static const double _percentSwipeK = .3; // 滑动超出宽高范围，计算滑动百分比使用，back也使用做变换
-  static const double _percentRotateK = 1; // 滑动超出宽高范围，计算旋转百分比使用
-  static const double _swipeK = .2; // 滑动超出宽高范围，判断滑动阈值
-  static const double _maxRotate = 10 * math.pi / 180; // 卡片横向滑动最大旋转角度
-  static const double _disappearK = 2.7; // 消失边界为宽or高的倍数
-
   bool canSwipeOut(bool x, Offset dif, Rect rect) {
     if (x) {
-      return dif.dx.abs() >= _swipeK * rect.shortestSide && dif.dx.abs() >= dif.dy.abs(); // 左右滑动
+      return dif.dx.abs() >= Config.swipeK * rect.shortestSide && dif.dx.abs() >= dif.dy.abs(); // 左右滑动
     } else {
-      return -dif.dy >= _swipeK * rect.shortestSide && dif.dy.abs() >= dif.dx.abs(); // 向上滑动
+      return -dif.dy >= Config.swipeK * rect.shortestSide && dif.dy.abs() >= dif.dx.abs(); // 向上滑动
     }
   }
 
@@ -23,7 +16,7 @@ mixin LayoutMixin {
     required bool x,
     required Offset dif,
     required Rect rect,
-    double k = _percentSwipeK,
+    double k = Config.percentSwipeK,
     bool unit = true,
   }) {
     if (rect.isEmpty) {
@@ -44,9 +37,9 @@ mixin LayoutMixin {
         x: true,
         dif: dif,
         rect: rect,
-        k: _percentRotateK,
+        k: Config.percentRotateK,
       ) *
-      _maxRotate *
+      Config.maxRotate *
       (up ? 1 : -1);
 
   Offset end(
@@ -59,8 +52,8 @@ mixin LayoutMixin {
     // 消失边界
     Rect rc = Rect.fromCenter(
       center: rect.center,
-      width: rect.width * _disappearK,
-      height: rect.height * _disappearK,
+      width: rect.width * Config.disappearK,
+      height: rect.height * Config.disappearK,
     );
     late Offset end;
     if (right != null) {
@@ -87,10 +80,10 @@ mixin LayoutMixin {
     return end;
   }
 
-  double backScale(double percent) => PokerConfig.backCardScale + (1 - PokerConfig.backCardScale) * percent;
+  double backScale(double percent) => Config.backCardScale + (1 - Config.backCardScale) * percent;
 
   Offset backOffset(double percent, Rect rect) => Offset(
-        rect.width * PokerConfig.backCardOffset.dx * (1 - percent),
-        rect.height * PokerConfig.backCardOffset.dy * (1 - percent),
+        rect.width * Config.backCardOffset.dx * (1 - percent),
+        rect.height * Config.backCardOffset.dy * (1 - percent),
       );
 }

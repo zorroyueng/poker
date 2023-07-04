@@ -1,24 +1,25 @@
 import 'dart:ui';
 
-mixin PokerMixin {
-  static const double _paddingK = .05; // 最小边比例
-  static const double _aspectRatio = .66; // 卡片宽高比
+import 'package:poker/poker/config.dart';
 
+mixin PokerMixin {
   Size _size = Size.zero;
   Rect _rect = Rect.zero;
+
+  Size size() => _size;
 
   Rect idle(Size size) {
     if (size != _size) {
       _size = size;
       double centerX = size.width / 2;
       double centerY = size.height / 2;
-      double p = size.shortestSide * _paddingK;
+      double p = size.shortestSide * Config.paddingK;
       double width = size.width - 2 * p;
       double height = size.height - 2 * p;
-      if (width / height >= _aspectRatio) {
-        width = height * _aspectRatio;
+      if (width / height >= Config.aspectRatio) {
+        width = height * Config.aspectRatio;
       } else {
-        height = width / _aspectRatio;
+        height = width / Config.aspectRatio;
       }
       _rect = Rect.fromLTWH(
         centerX - width / 2,

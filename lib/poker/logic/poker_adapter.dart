@@ -1,9 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:poker/poker/base/broadcast.dart';
+import 'package:base/src/broadcast.dart';
 import 'package:poker/poker/logic/poker_card.dart';
-import 'package:poker/poker/poker_config.dart';
+import 'package:poker/poker/config.dart';
 
 abstract class PokerAdapter<T> {
   AdapterView? _view;
@@ -81,7 +81,7 @@ abstract class PokerAdapter<T> {
       if (current >= 0 && current < _lstData.length) {
         if (canUndo(_lstData[current])) {
           _firstIndex = current;
-          _buildItems(from: _firstIndex, to: _firstIndex + PokerConfig.idleCardNum);
+          _buildItems(from: _firstIndex, to: _firstIndex + Config.idleCardNum);
           PokerItem item = _items[_items.length - 1];
           item.difK = _mapPosition[id(item.data)];
           _updatePercentItem = item;
@@ -101,7 +101,7 @@ abstract class PokerAdapter<T> {
   void setView(AdapterView view) {
     _view = view;
     _view!.update(_items);
-    _preload(_firstIndex, _firstIndex + PokerConfig.idleCardNum + PokerConfig.preloadNum);
+    _preload(_firstIndex, _firstIndex + Config.idleCardNum + Config.preloadNum);
   }
 
   void setData(List<T> lst) {
@@ -109,7 +109,7 @@ abstract class PokerAdapter<T> {
     _lstData.clear();
     _lstData.addAll(lst);
     _firstIndex = 0;
-    _buildItems(from: _firstIndex, to: _firstIndex + PokerConfig.idleCardNum - 1);
+    _buildItems(from: _firstIndex, to: _firstIndex + Config.idleCardNum - 1);
     for (int i = _items.length - 1; i >= 0; i--) {
       PokerItem item = _items[i];
       Offset difK = Offset(
@@ -147,7 +147,7 @@ abstract class PokerAdapter<T> {
       }
     }
     if (_view != null) {
-      _preload(to + 1, to + PokerConfig.preloadNum);
+      _preload(to + 1, to + Config.preloadNum);
     }
   }
 
@@ -164,7 +164,7 @@ abstract class PokerAdapter<T> {
     _swipingItem = item;
     int indexItem = _itemIndex(item); // 屏幕点击在_items序列中的index，当前为_items.length - 1
     int indexData = _firstIndex + (_items.length - 1 - indexItem);
-    int prepareIndex = indexData + PokerConfig.idleCardNum;
+    int prepareIndex = indexData + Config.idleCardNum;
     _buildItems(from: _firstIndex, to: prepareIndex);
     item.percent.add(1); // 被滑动的card强制percent为1，解决在back状态下被操作
     _view?.update(_items);
@@ -181,9 +181,9 @@ abstract class PokerAdapter<T> {
       _percentX.add(0);
       double y = pY.abs() - pX.abs();
       if (_swipingItem == null) {
-        if (y > 1 && y < PokerConfig.maxIconPercent) {
-          y = PokerConfig.maxIconPercent - y;
-        } else if (y >= PokerConfig.maxIconPercent) {
+        if (y > 1 && y < Config.maxIconPercent) {
+          y = Config.maxIconPercent - y;
+        } else if (y >= Config.maxIconPercent) {
           y = 0;
         }
       }
@@ -191,9 +191,9 @@ abstract class PokerAdapter<T> {
     } else {
       double x = pX.abs() - pY.abs();
       if (_swipingItem == null) {
-        if (x > 1 && x < PokerConfig.maxIconPercent) {
-          x = PokerConfig.maxIconPercent - x;
-        } else if (x >= PokerConfig.maxIconPercent) {
+        if (x > 1 && x < Config.maxIconPercent) {
+          x = Config.maxIconPercent - x;
+        } else if (x >= Config.maxIconPercent) {
           x = 0;
         }
       }

@@ -1,13 +1,11 @@
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
+import 'package:poker/poker/config.dart';
 
 mixin TouchMixin {
   Offset? _down;
   Offset _dif = Offset.zero;
-  static const double maxSwipeV = 3; // 滑动速度判断swipeOut最大值
-  static const double minSwipeV = 1; // 滑动速度判断swipeOut最小值
-  static const double maxAnimV = 7; // 动画速度最大值
 
   void onPanDown(Offset d) => _down = d;
 
@@ -49,8 +47,8 @@ mixin TouchMixin {
   }
 
   int duration(double vX, double vY) {
-    double v = min(maxAnimV, max(vX.abs(), vY.abs()));
-    int d = 600 - (100 * (v / maxAnimV)).toInt();
+    double v = min(Config.maxAnimV, max(vX.abs(), vY.abs()));
+    int d = 600 - (100 * (v / Config.maxAnimV)).toInt();
     return d;
   }
 }

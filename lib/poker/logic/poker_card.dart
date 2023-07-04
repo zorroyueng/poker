@@ -1,7 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:poker/poker/base/single_touch.dart';
+import 'package:base/src/single_touch.dart';
+import 'package:poker/poker/config.dart';
 import 'package:poker/poker/logic/anim_mixin.dart';
 import 'package:poker/poker/logic/layout_mixin.dart';
 import 'package:poker/poker/logic/poker_adapter.dart';
@@ -60,13 +61,13 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
           Offset v = d.velocity.pixelsPerSecond;
           double vX = velocity(true, v, widget.rect);
           double vY = velocity(false, v, widget.rect);
-          if (-vY > TouchMixin.maxSwipeV && -vY >= vX.abs()) {
+          if (-vY > Config.maxSwipeV && -vY >= vX.abs()) {
             animTo(SwipeType.up, vX, vY, Curves.decelerate);
-          } else if (vX >= TouchMixin.maxSwipeV && vX >= vY.abs()) {
+          } else if (vX >= Config.maxSwipeV && vX >= vY.abs()) {
             animTo(SwipeType.right, vX, vY, Curves.decelerate);
-          } else if (-vX >= TouchMixin.maxSwipeV && -vX >= vY.abs()) {
+          } else if (-vX >= Config.maxSwipeV && -vX >= vY.abs()) {
             animTo(SwipeType.left, vX, vY, Curves.decelerate);
-          } else if (vY >= vX.abs() && vY >= TouchMixin.minSwipeV) {
+          } else if (vY >= vX.abs() && vY >= Config.minSwipeV) {
             // 判断为向下滑动时，返回idle
             toIdle(dif);
           } else if (canSwipeOut(false, dif, widget.rect)) {
