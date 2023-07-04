@@ -80,14 +80,10 @@ class DemoAdapter extends PokerAdapter<DemoData> {
       );
 
   @override
-  void onPreload(DemoData t, int index, int total) {
-    precacheImage(CachedNetworkImageProvider(t.url), _context);
-  }
+  void onPreload(DemoData t, int index, int total) => precacheImage(CachedNetworkImageProvider(t.url), _context);
 
   @override
-  bool canSwipe(DemoData t, SwipeType type) {
-    return true;
-  }
+  bool canSwipe(DemoData t, SwipeType type) => true;
 
   @override
   Widget onLoading() => const Center(child: CircularProgressIndicator());
