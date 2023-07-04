@@ -27,7 +27,7 @@ class Percent extends Broadcast<double> {
   void add(double t) {
     if (space > 0) {
       int n = t ~/ space;
-      double d = t % space;
+      double d = t - n * space;
       t = (n + (d >= space / 2 ? 1 : 0)) * space;
     }
     super.add(t);
