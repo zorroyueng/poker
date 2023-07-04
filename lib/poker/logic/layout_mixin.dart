@@ -42,13 +42,13 @@ mixin LayoutMixin {
       Config.maxRotate *
       (up ? 1 : -1);
 
-  Offset end(
+  Offset end({
     bool? right, // true: right, false: left, null: up
-    Offset dif,
-    Rect rect,
-    double vX,
-    double vY,
-  ) {
+    required Offset dif,
+    required Rect rect,
+    required double vX,
+    required double vY,
+  }) {
     // 消失边界
     Rect rc = Rect.fromCenter(
       center: rect.center,

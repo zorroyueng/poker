@@ -1,58 +1,115 @@
+import 'package:base/base.dart';
 import 'package:flutter/material.dart';
+import 'package:poker/poker/config.dart';
 import 'package:poker/poker/logic/poker_adapter.dart';
 import 'package:poker/poker/logic/poker_card.dart';
-import 'package:poker/poker/logic/poker_mixin.dart';
 
-class PokerView<T> extends StatefulWidget with PokerMixin {
+class PokerView<T> extends StatelessWidget {
   final PokerAdapter<T> adapter;
 
-  PokerView({super.key, required this.adapter});
+  const PokerView({super.key, required this.adapter});
 
-  @override
-  State<PokerView> createState() => _PokerViewState();
-}
-
-class _PokerViewState extends State<PokerView> with PokerMixin, AdapterView {
-  List<PokerItem> _items = [];
-
-  @override
-  void initState() {
-    widget.adapter.setView(this);
-    super.initState();
-  }
-
-  @override
-  void didUpdateWidget(PokerView oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    widget.adapter.setView(this);
+  Rect _cardRect(Size size) {
+    double centerX = size.width / 2;
+    double centerY = size.height / 2;
+    double p = size.shortestSide * Config.paddingK;
+    double width = size.width - 2 * p;
+    double height = size.height - 2 * p;
+    if (width / height >= Config.aspectRatio) {
+      width = height * Config.aspectRatio;
+    } else {
+      height = width / Config.aspectRatio;
+    }
+    return Rect.fromLTWH(
+      centerX - width / 2,
+      centerY - height / 2,
+      width,
+      height,
+    );
   }
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
         builder: (_, bc) {
-          Rect rect = idle(Size(bc.maxWidth, bc.maxHeight));
-          List<Widget> children = _items.isNotEmpty
-              ? _items.map((item) {
-                  if (item.card == null || rect != item.card!.widget.rect) {
-                    return PokerCard(
-                      key: ValueKey(item.key),
-                      rect: rect,
-                      adapter: widget.adapter,
-                      item: item,
-                    );
-                  } else {
-                    return item.card!.widget;
-                  }
-                }).toList()
-              : [widget.adapter.onLoading()];
-          return Stack(
-            clipBehavior: Clip.none,
-            fit: StackFit.expand,
-            children: children,
+          Size pokerSize = Size(bc.maxWidth, bc.maxHeight);
+          Rect cardRect = _cardRect(pokerSize);
+          return _Poker<T>(
+            adapter: adapter,
+            pokerSize: pokerSize,
+            cardRect: cardRect,
+            cardSize: cardRect.size * HpDevice.pixelRatio(context),
           );
         },
       );
+}
+
+class _Poker<T> extends StatefulWidget {
+  final PokerAdapter<T> adapter;
+  final Rect cardRect;
+  final Size cardSize;
+  final Size pokerSize;
+
+  const _Poker({
+    super.key,
+    required this.adapter,
+    required this.cardRect,
+    required this.cardSize,
+    required this.pokerSize,
+  });
+
+  @override
+  State<_Poker> createState() => _PokerState();
+}
+
+class _PokerState extends State<_Poker> with AdapterView {
+  List<PokerItem> _items = [];
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> children = _items.isNotEmpty
+        ? _items.map((item) {
+            if (item.card == null || widget.cardRect != item.card!.widget.rect) {
+              return PokerCard(
+                key: ValueKey(item.key),
+                rect: widget.cardRect,
+                adapter: widget.adapter,
+                item: item,
+              );
+            } else {
+              return item.card!.widget;
+            }
+          }).toList()
+        : [widget.adapter.onLoading()];
+    return Stack(
+      clipBehavior: Clip.none,
+      fit: StackFit.expand,
+      children: children,
+    );
+  }
 
   @override
   void update(List<PokerItem> items) => setState(() => _items = items);
+
+  void _init() => widget.adapter.setView(this);
+
+  @override
+  void initState() {
+    super.initState();
+    _init();
+  }
+
+  @override
+  void didUpdateWidget(_Poker oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _init();
+  }
+
+  @override
+  Rect cardRect() => widget.cardRect;
+
+  @override
+  Size pokerSize() => widget.pokerSize;
+
+  @override
+  Size cardSize() => widget.cardSize;
 }

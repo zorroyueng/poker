@@ -11,7 +11,7 @@ class DemoAdapter extends PokerAdapter<DemoData> {
   Object id(DemoData t) => t.id;
 
   @override
-  Widget item(DemoData t) => Stack(
+  Widget item(DemoData t, Size size) => Stack(
         fit: StackFit.expand,
         clipBehavior: Clip.none,
         children: [
@@ -22,7 +22,11 @@ class DemoAdapter extends PokerAdapter<DemoData> {
                 color: Colors.white,
                 image: DecorationImage(
                   fit: BoxFit.cover,
-                  image: CachedNetworkImageProvider(t.url),
+                  image: CachedNetworkImageProvider(
+                    t.url,
+                    maxWidth: size.width.toInt(),
+                    maxHeight: size.height.toInt(),
+                  ),
                   filterQuality: FilterQuality.low,
                   // isAntiAlias: true,
                 ),
@@ -80,7 +84,8 @@ class DemoAdapter extends PokerAdapter<DemoData> {
       );
 
   @override
-  void onPreload(DemoData t, int index, int total) => precacheImage(CachedNetworkImageProvider(t.url), _context);
+  void onPreload(DemoData t, Size size, int index, int total) =>
+      precacheImage(CachedNetworkImageProvider(t.url), _context);
 
   @override
   bool canSwipe(DemoData t, SwipeType type) => true;

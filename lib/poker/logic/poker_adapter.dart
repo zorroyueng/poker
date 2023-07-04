@@ -1,13 +1,14 @@
 import 'dart:math';
 
+import 'package:base/base.dart';
 import 'package:flutter/material.dart';
-import 'package:base/src/broadcast.dart';
 import 'package:poker/poker/logic/poker_card.dart';
 import 'package:poker/poker/config.dart';
 
 abstract class PokerAdapter<T> {
   AdapterView? _view;
   final List<T> _lstData = [];
+  final List<T> _lstTemp = [];
   int _firstIndex = 0;
   final List<PokerItem> _items = [];
   final Map<Object, PokerItem> _cache = {};
@@ -20,9 +21,9 @@ abstract class PokerAdapter<T> {
   /// interface
   Object id(T t);
 
-  Widget item(T t);
+  Widget item(T t, Size size);
 
-  void onPreload(T t, int index, int total); // 预加载t；还剩下几个数据
+  void onPreload(T t, Size size, int index, int total); // 预加载t；还剩下几个数据
 
   bool canSwipe(T t, SwipeType type); // 判断卡片是否可以执行操作
 
@@ -99,30 +100,40 @@ abstract class PokerAdapter<T> {
   }
 
   void setView(AdapterView view) {
-    _view = view;
-    _view!.update(_items);
-    _preload(_firstIndex, _firstIndex + Config.idleCardNum + Config.preloadNum);
+    bool change = _view != view;
+    if (change) {
+      _view = view;
+      setData(_lstTemp);
+      _lstTemp.clear();
+      _view!.update(_items);
+      _preload(_firstIndex, _firstIndex + Config.idleCardNum + Config.preloadNum);
+    }
   }
 
   void setData(List<T> lst) {
-    _cache.clear();
-    _lstData.clear();
-    _lstData.addAll(lst);
-    _firstIndex = 0;
-    _buildItems(from: _firstIndex, to: _firstIndex + Config.idleCardNum - 1);
-    for (int i = _items.length - 1; i >= 0; i--) {
-      PokerItem item = _items[i];
-      Offset difK = Offset(
-        (Random().nextDouble() >= .5 ? 1 : -1) * Random().nextDouble(),
-        (Random().nextDouble() >= .5 ? 1 : -1) * Random().nextDouble(),
-      );
-      item.difK = difK;
+    if (_view == null) {
+      _lstTemp.clear();
+      _lstTemp.addAll(lst);
+    } else {
+      _cache.clear();
+      _lstData.clear();
+      _lstData.addAll(lst);
+      _firstIndex = 0;
+      _buildItems(from: _firstIndex, to: _firstIndex + Config.idleCardNum - 1);
+      for (int i = _items.length - 1; i >= 0; i--) {
+        PokerItem item = _items[i];
+        Offset difK = Offset(
+          (Random().nextDouble() >= .5 ? 1 : -1) * Random().nextDouble(),
+          (Random().nextDouble() >= .5 ? 1 : -1) * Random().nextDouble(),
+        );
+        item.difK = difK;
+      }
+      _view?.update(_items);
+      _updatePercentItem = _items.isEmpty ? null : _items[0];
+      _swipingItem = null;
+      _updatePercentItem = null;
+      _mapPosition.clear();
     }
-    _view?.update(_items);
-    _updatePercentItem = _items.isEmpty ? null : _items[0];
-    _swipingItem = null;
-    _updatePercentItem = null;
-    _mapPosition.clear();
   }
 
   void update(T t) {}
@@ -153,7 +164,7 @@ abstract class PokerAdapter<T> {
 
   void _preload(int from, int to) {
     for (int i = from; i <= min(to, _lstData.length - 1); i++) {
-      onPreload(_lstData[i], i, _lstData.length);
+      onPreload(_lstData[i], _view!.cardSize(), i, _lstData.length);
     }
   }
 
@@ -219,7 +230,11 @@ abstract class PokerAdapter<T> {
       Object key = id(t);
       PokerItem? w = _cache[key];
       if (w == null) {
-        w = PokerItem(key: key, data: t, item: item(t));
+        w = PokerItem(
+          key: key,
+          data: t,
+          item: item(t, _view!.cardSize()),
+        );
         if (_cache.length >= 10) {
           _cache.remove(_cache.keys.first);
         }
@@ -259,6 +274,12 @@ abstract class PokerAdapter<T> {
 
 mixin AdapterView {
   void update(List<PokerItem> widgets);
+
+  Size pokerSize();
+
+  Size cardSize();
+
+  Rect cardRect();
 }
 
 class PokerItem<T> {

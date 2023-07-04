@@ -1,7 +1,7 @@
 import 'dart:math';
 
+import 'package:base/base.dart';
 import 'package:flutter/material.dart';
-import 'package:base/src/single_touch.dart';
 import 'package:poker/poker/config.dart';
 import 'package:poker/poker/logic/anim_mixin.dart';
 import 'package:poker/poker/logic/layout_mixin.dart';
@@ -140,7 +140,13 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
       } else if (type == SwipeType.left) {
         right = false;
       }
-      Offset endDif = end(right, dif, widget.rect, vX, vY);
+      Offset endDif = end(
+        right: right,
+        dif: dif,
+        rect: widget.rect,
+        vX: vX,
+        vY: vY,
+      );
       anim(
         begin: dif,
         end: endDif,
