@@ -5,7 +5,7 @@ class Broadcast<T> {
   late T _value;
 
   Broadcast(this._value) {
-    _ctrl.add(_value);
+    add(_value);
   }
 
   Stream<T> stream() => _ctrl.stream;
@@ -16,4 +16,20 @@ class Broadcast<T> {
   }
 
   T value() => _value;
+}
+
+class Percent extends Broadcast<double> {
+  final double space;
+
+  Percent(super.value, {this.space = .05});
+
+  @override
+  void add(double t) {
+    if (space > 0) {
+      int n = t ~/ space;
+      double d = t % space;
+      t = (n + (d >= space / 2 ? 1 : 0)) * space;
+    }
+    super.add(t);
+  }
 }

@@ -13,8 +13,8 @@ abstract class PokerAdapter<T> {
   final Map<Object, PokerItem> _cache = {};
   PokerItem? _updatePercentItem; // 最新操作的item，计算滑动percent
   PokerItem? _swipingItem; // 正在相应手势的item，为屏蔽多指触摸使用
-  final Broadcast<double> _percentX = Broadcast(0);
-  final Broadcast<double> _percentY = Broadcast(0);
+  final Percent _percentX = Percent(0);
+  final Percent _percentY = Percent(0);
   final Map<Object, Offset> _mapPosition = {};
 
   /// interface
@@ -104,11 +104,7 @@ abstract class PokerAdapter<T> {
         (Random().nextDouble() >= .5 ? 1 : -1) * Random().nextDouble(),
         (Random().nextDouble() >= .5 ? 1 : -1) * Random().nextDouble(),
       );
-      // if (item.card != null) {
-      //   item.card!.toIdle(dif);
-      // } else {
       item.difK = difK;
-      // }
     }
     _view?.update(_items);
     _updatePercentItem = _items.isEmpty ? null : _items[0];
@@ -129,7 +125,8 @@ abstract class PokerAdapter<T> {
       if (w != null) {
         if (i == from) {
           w.percent.add(1);
-        } else if (_swipingItem == null) { // 非触摸状态下，更新back的percent
+        } else if (_swipingItem == null) {
+          // 非触摸状态下，更新back的percent
           w.percent.add(0);
         }
         _items.insert(0, w);
@@ -241,7 +238,7 @@ class PokerItem<T> {
   final T data;
   final Widget item;
 
-  final Broadcast<double> percent = Broadcast(0); // 0 为back状态，1为展示状态
+  final Percent percent = Percent(0, space: 0); // 0 为back状态，1为展示状态
   Offset? difK;
   PokerCardState? card;
 
