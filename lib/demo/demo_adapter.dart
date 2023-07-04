@@ -84,8 +84,14 @@ class DemoAdapter extends PokerAdapter<DemoData> {
       );
 
   @override
-  void onPreload(DemoData t, Size size, int index, int total) =>
-      precacheImage(CachedNetworkImageProvider(t.url), _context);
+  void onPreload(DemoData t, Size size, int index, int total) => precacheImage(
+        CachedNetworkImageProvider(
+          t.url,
+          maxWidth: size.width.toInt(),
+          maxHeight: size.height.toInt(),
+        ),
+        _context,
+      );
 
   @override
   bool canSwipe(DemoData t, SwipeType type) => true;
