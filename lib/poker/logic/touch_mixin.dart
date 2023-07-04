@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 
 mixin TouchMixin {
   Offset? _down;
-  Offset dif = Offset.zero;
+  Offset _dif = Offset.zero;
   static const double maxSwipeV = 3; // 滑动速度判断swipeOut最大值
   static const double minSwipeV = 1; // 滑动速度判断swipeOut最小值
   static const double maxAnimV = 7; // 动画速度最大值
@@ -14,6 +14,10 @@ mixin TouchMixin {
   Offset byMove(Offset move) => move - _down!;
 
   Offset lastMove(Offset dif) => _down! + dif;
+
+  Offset get dif => _dif;
+
+  set dif(Offset dif) => _dif = dif;
 
   Alignment byDown(Rect rc) {
     if (_down == null) {

@@ -19,6 +19,8 @@ class PokerCard extends StatefulWidget {
 }
 
 class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixin, TouchMixin, AnimMixin, LayoutMixin {
+  late Widget _child;
+
   void _updateDif(Offset o) {
     dif = o;
     if (widget.adapter.isCurrentSwipeItem(widget.item)) {
@@ -29,7 +31,7 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
     }
   }
 
-  void _init() {
+  void _initByWidget() {
     widget.item.card = this;
     if (widget.item.difK != null) {
       dif = Offset(
@@ -39,19 +41,78 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
       toIdle(dif);
       widget.item.difK = null;
     }
+    _child = GestureDetector(
+      onPanDown: (d) {
+        if (widget.adapter.swipingItem() == null) {
+          stopAnim();
+          onPanDown(d.localPosition - dif);
+          widget.adapter.onPanDown(widget.item);
+        }
+      },
+      onPanUpdate: (d) {
+        if (widget.adapter.swipingItem() == widget.item) {
+          setState(() => _updateDif(byMove(d.localPosition)));
+        }
+      },
+      onPanEnd: (d) {
+        if (widget.adapter.swipingItem() == widget.item) {
+          widget.adapter.onPanEnd();
+          Offset v = d.velocity.pixelsPerSecond;
+          double vX = velocity(true, v, widget.rect);
+          double vY = velocity(false, v, widget.rect);
+          if (-vY > TouchMixin.maxSwipeV && -vY >= vX.abs()) {
+            animTo(SwipeType.up, vX, vY, Curves.decelerate);
+          } else if (vX >= TouchMixin.maxSwipeV && vX >= vY.abs()) {
+            animTo(SwipeType.right, vX, vY, Curves.decelerate);
+          } else if (-vX >= TouchMixin.maxSwipeV && -vX >= vY.abs()) {
+            animTo(SwipeType.left, vX, vY, Curves.decelerate);
+          } else if (vY >= vX.abs() && vY >= TouchMixin.minSwipeV) {
+            // 判断为向下滑动时，返回idle
+            toIdle(dif);
+          } else if (canSwipeOut(false, dif, widget.rect)) {
+            // 如果卡片速度方向 与 目标位移方向 相反，则速度置0
+            animTo(SwipeType.up, vX, min(vY, 0));
+          } else if (canSwipeOut(true, dif, widget.rect)) {
+            if (dif.dx > 0) {
+              animTo(SwipeType.right, max(vX, 0), vY);
+            } else {
+              animTo(SwipeType.left, min(vX, 0), vY);
+            }
+          } else {
+            toIdle(dif);
+          }
+        }
+      },
+      child: SingleTouch(
+        child: StreamBuilder<double>(
+          stream: widget.item.percent.stream().distinct(),
+          initialData: widget.item.percent.value(),
+          builder: (_, __) => Transform.scale(
+            scale: backScale(widget.item.percent.value()),
+            child: Transform.translate(
+              offset: backOffset(widget.item.percent.value(), widget.rect),
+              child: AbsorbPointer(
+                absorbing: widget.item.percent.value() != 1,
+                child: widget.item.item,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   @override
   void initState() {
     initAnim(this, () => setState(() => _updateDif(byAnim())));
-    _init();
+    _initByWidget();
     super.initState();
   }
 
   @override
   void didUpdateWidget(PokerCard oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _init();
+    _initByWidget();
   }
 
   @override
@@ -93,72 +154,12 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Positioned.fromRect(
-      rect: widget.rect.translate(dif.dx, dif.dy),
-      child: GestureDetector(
-        onPanDown: (d) {
-          if (widget.adapter.swipingItem() == null) {
-            stopAnim();
-            onPanDown(d.localPosition - dif);
-            widget.adapter.onPanDown(widget.item);
-          }
-        },
-        onPanUpdate: (d) {
-          if (widget.adapter.swipingItem() == widget.item) {
-            setState(() => _updateDif(byMove(d.localPosition)));
-          }
-        },
-        onPanEnd: (d) {
-          if (widget.adapter.swipingItem() == widget.item) {
-            widget.adapter.onPanEnd();
-            Offset v = d.velocity.pixelsPerSecond;
-            double vX = velocity(true, v, widget.rect);
-            double vY = velocity(false, v, widget.rect);
-            if (-vY > TouchMixin.maxSwipeV && -vY >= vX.abs()) {
-              animTo(SwipeType.up, vX, vY, Curves.decelerate);
-            } else if (vX >= TouchMixin.maxSwipeV && vX >= vY.abs()) {
-              animTo(SwipeType.right, vX, vY, Curves.decelerate);
-            } else if (-vX >= TouchMixin.maxSwipeV && -vX >= vY.abs()) {
-              animTo(SwipeType.left, vX, vY, Curves.decelerate);
-            } else if (vY >= vX.abs() && vY >= TouchMixin.minSwipeV) {
-              // 判断为向下滑动时，返回idle
-              toIdle(dif);
-            } else if (canSwipeOut(false, dif, widget.rect)) {
-              // 如果卡片速度方向 与 目标位移方向 相反，则速度置0
-              animTo(SwipeType.up, vX, min(vY, 0));
-            } else if (canSwipeOut(true, dif, widget.rect)) {
-              if (dif.dx > 0) {
-                animTo(SwipeType.right, max(vX, 0), vY);
-              } else {
-                animTo(SwipeType.left, min(vX, 0), vY);
-              }
-            } else {
-              toIdle(dif);
-            }
-          }
-        },
+  Widget build(BuildContext context) => Positioned.fromRect(
+        rect: widget.rect.translate(dif.dx, dif.dy),
         child: Transform.rotate(
           angle: rotate(dif, widget.rect, dragAtTop(widget.rect)),
           alignment: byDown(widget.rect),
-          child: SingleTouch(
-            child: StreamBuilder<double>(
-              stream: widget.item.percent.distinct(),
-              initialData: widget.item.percent.value(),
-              builder: (_, __) => Transform.scale(
-                scale: backScale(widget.item.percent.value()),
-                child: Transform.translate(
-                  offset: backOffset(widget.item.percent.value(), widget.rect),
-                  child: AbsorbPointer(
-                    absorbing: widget.item.percent.value() != 1,
-                    child: widget.item.item,
-                  ),
-                ),
-              ),
-            ),
-          ),
+          child: _child,
         ),
-      ),
-    );
-  }
+      );
 }

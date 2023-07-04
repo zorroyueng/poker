@@ -32,14 +32,18 @@ class _PokerViewState extends State<PokerView> with PokerMixin, AdapterView {
         builder: (_, bc) {
           Rect rect = idle(Size(bc.maxWidth, bc.maxHeight));
           List<Widget> children = _items.isNotEmpty
-              ? _items
-                  .map((item) => PokerCard(
-                        key: ValueKey(item.key),
-                        rect: rect,
-                        adapter: widget.adapter,
-                        item: item,
-                      ))
-                  .toList()
+              ? _items.map((item) {
+                  if (item.card == null) {
+                    return PokerCard(
+                      key: ValueKey(item.key),
+                      rect: rect,
+                      adapter: widget.adapter,
+                      item: item,
+                    );
+                  } else {
+                    return item.card!.widget;
+                  }
+                }).toList()
               : [widget.adapter.onLoading()];
           return Stack(
             clipBehavior: Clip.none,

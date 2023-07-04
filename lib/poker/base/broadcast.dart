@@ -10,8 +10,6 @@ class Broadcast<T> {
 
   Stream<T> stream() => _ctrl.stream;
 
-  Stream<T> distinct() => stream().distinct();
-
   void add(T t) {
     _value = t;
     _ctrl.add(t);
