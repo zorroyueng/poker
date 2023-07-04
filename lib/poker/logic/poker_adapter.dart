@@ -56,6 +56,17 @@ abstract class PokerAdapter<T> {
       item.card!.onPanDown(Offset.zero);
       onPanDown(item);
       _swipingItem = null;
+      switch (type) {
+        case SwipeType.right:
+          _percentX.add(1);
+          break;
+        case SwipeType.left:
+          _percentX.add(-1);
+          break;
+        case SwipeType.up:
+          _percentY.add(-1);
+          break;
+      }
       item.card!.animTo(type, 0, 0);
       can = true;
     }
@@ -167,9 +178,17 @@ abstract class PokerAdapter<T> {
   void swipePercent(double pX, double pY) {
     if (pY.abs() >= pX.abs()) {
       _percentX.add(0);
-      _percentY.add((pY > 0 ? 1 : -1) * min(1, pY.abs() - pX.abs()));
+      if (_swipingItem != null) {
+        _percentY.add((pY > 0 ? 1 : -1) * min(1, pY.abs() - pX.abs()));
+      } else {
+        _percentY.add(0);
+      }
     } else {
-      _percentX.add((pX > 0 ? 1 : -1) * min(1, pX.abs() - pY.abs()));
+      if (_swipingItem != null) {
+        _percentX.add((pX > 0 ? 1 : -1) * min(1, pX.abs() - pY.abs()));
+      } else {
+        _percentX.add(0);
+      }
       _percentY.add(0);
     }
     int index = _itemIndex(_updatePercentItem!);
