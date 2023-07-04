@@ -83,6 +83,10 @@ class PokerCardState extends State<PokerCard> with SingleTickerProviderStateMixi
           }
         }
       },
+      onPanCancel: () {
+        widget.adapter.onPanEnd();
+        toIdle(dif);
+      },
       child: SingleTouch(
         child: StreamBuilder<double>(
           stream: widget.item.percent.stream().distinct(),

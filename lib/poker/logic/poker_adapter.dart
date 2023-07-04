@@ -49,6 +49,18 @@ abstract class PokerAdapter<T> {
     return can;
   }
 
+  // 提供给undo使用，需要在idle状态撤回卡片
+  bool _isIdle() {
+    bool isIdle = true;
+    for (PokerItem item in _items) {
+      if (item.card != null && item.card!.dif != Offset.zero) {
+        isIdle = false;
+        break;
+      }
+    }
+    return isIdle;
+  }
+
   bool swipe(SwipeType type) {
     bool can = false;
     PokerItem? item = _canSwipe();
@@ -64,7 +76,7 @@ abstract class PokerAdapter<T> {
 
   bool undo() {
     bool can = false;
-    if (_canSwipe() != null) {
+    if (_isIdle()) {
       int current = _firstIndex - 1;
       if (current >= 0 && current < _lstData.length) {
         if (canUndo(_lstData[current])) {
