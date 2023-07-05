@@ -7,6 +7,7 @@ import 'package:poker/poker/logic/poker_adapter.dart';
 
 class DemoAdapter extends PokerAdapter<DemoData> {
   final BuildContext _context;
+
   DemoAdapter(this._context);
 
   @override
@@ -88,7 +89,7 @@ class DemoAdapter extends PokerAdapter<DemoData> {
           Positioned.fill(
             child: Common.click(
               onTap: () {
-                NavigatorObs.push(
+                NavigatorObs.push2(
                   NavigatorObs.ctx(),
                   DetailPage(
                     info: DetailInfo(
