@@ -39,122 +39,124 @@ class DetailPage extends StatelessWidget {
     double h = HpDevice.screenMin(context);
     _bind(context, h);
     return Scaffold(
-      body: Common.scrollbar(
-        ctx: context,
-        controller: scrollCtrl,
-        child: CustomScrollView(
+      body: SafeArea(
+        child: Common.scrollbar(
+          ctx: context,
           controller: scrollCtrl,
-          slivers: [
-            SliverAppBar(
-              leading: const BackButton(color: Colors.white),
-              pinned: true,
-              stretch: true,
-              actions: [
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.more_horiz,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-              backgroundColor: Colors.white,
-              expandedHeight: h,
-              flexibleSpace: FlexibleSpaceBar(
-                titlePadding: const EdgeInsets.all(0),
-                title: StreamWidget<double>(
-                  stream: barCtrl.stream().distinct(),
-                  initialData: barCtrl.value(),
-                  builder: (_, snap, ___) => Container(
-                    width: double.infinity,
-                    height: kToolbarHeight,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: const Alignment(0, 1),
-                        end: const Alignment(0, -1),
-                        colors: [
-                          Colors.black.withOpacity(snap.data!),
-                          Colors.transparent,
-                        ],
-                        stops: [
-                          snap.data!,
-                          1,
-                        ],
-                      ),
-                    ),
-                    child: Center(
-                      child: Text(
-                        info.data.name,
-                        style: Common.textStyle(
-                          context,
-                          scale: 1.2,
-                        ).copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                background: Hero(
-                  tag: info.data.id,
-                  child: Container(
-                    clipBehavior: Clip.none,
-                    decoration: BoxDecoration(
+          child: CustomScrollView(
+            controller: scrollCtrl,
+            slivers: [
+              SliverAppBar(
+                leading: const BackButton(color: Colors.white),
+                pinned: true,
+                stretch: true,
+                actions: [
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.more_horiz,
                       color: Colors.white,
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: CachedNetworkImageProvider(
-                          info.data.url,
-                          maxWidth: info.w,
-                          maxHeight: info.h,
+                    ),
+                  ),
+                ],
+                backgroundColor: Colors.white,
+                expandedHeight: h,
+                flexibleSpace: FlexibleSpaceBar(
+                  titlePadding: const EdgeInsets.all(0),
+                  title: StreamWidget<double>(
+                    stream: barCtrl.stream().distinct(),
+                    initialData: barCtrl.value(),
+                    builder: (_, snap, ___) => Container(
+                      width: double.infinity,
+                      height: kToolbarHeight,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: const Alignment(0, 1),
+                          end: const Alignment(0, -1),
+                          colors: [
+                            Colors.black.withOpacity(snap.data!),
+                            Colors.transparent,
+                          ],
+                          stops: [
+                            snap.data!,
+                            1,
+                          ],
                         ),
-                        filterQuality: FilterQuality.low,
-                        // isAntiAlias: true,
+                      ),
+                      child: Center(
+                        child: Text(
+                          info.data.name,
+                          style: Common.textStyle(
+                            context,
+                            scale: 1.2,
+                          ).copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  background: Hero(
+                    tag: info.data.id,
+                    child: Container(
+                      clipBehavior: Clip.none,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: CachedNetworkImageProvider(
+                            info.data.url,
+                            maxWidth: info.w,
+                            maxHeight: info.h,
+                          ),
+                          filterQuality: FilterQuality.low,
+                          // isAntiAlias: true,
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                childCount: DemoHelper.name.length,
-                (_, i) => Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Container(
-                    decoration: Common.roundRect(
-                      context,
-                      scale: .5,
-                      bgColor: Colors.white,
-                      borderColor: Colors.grey.withOpacity(.2),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text(
-                            DemoHelper.name[i],
-                            style: Common.textStyle(
-                              context,
-                              color: Colors.black,
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  childCount: DemoHelper.name.length,
+                  (_, i) => Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Container(
+                      decoration: Common.roundRect(
+                        context,
+                        scale: .5,
+                        bgColor: Colors.white,
+                        borderColor: Colors.grey.withOpacity(.2),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              DemoHelper.name[i],
+                              style: Common.textStyle(
+                                context,
+                                color: Colors.black,
+                              ),
                             ),
-                          ),
-                          Text(
-                            DemoHelper.relaxed[i],
-                            style: Common.textStyle(
-                              context,
-                              color: Colors.grey,
+                            Text(
+                              DemoHelper.relaxed[i],
+                              style: Common.textStyle(
+                                context,
+                                color: Colors.grey,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
