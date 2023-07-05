@@ -1,10 +1,12 @@
+import 'package:base/base.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:poker/base/common.dart';
+import 'package:poker/demo/detail_page.dart';
 import 'package:poker/poker/logic/poker_adapter.dart';
 
 class DemoAdapter extends PokerAdapter<DemoData> {
   final BuildContext _context;
-
   DemoAdapter(this._context);
 
   @override
@@ -16,21 +18,24 @@ class DemoAdapter extends PokerAdapter<DemoData> {
         clipBehavior: Clip.none,
         children: [
           Positioned.fill(
-            child: Container(
-              clipBehavior: Clip.none,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: CachedNetworkImageProvider(
-                    t.url,
-                    maxWidth: size.width.toInt(),
-                    maxHeight: size.height.toInt(),
+            child: Hero(
+              tag: t.id,
+              child: Container(
+                clipBehavior: Clip.none,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: CachedNetworkImageProvider(
+                      t.url,
+                      maxWidth: size.width.toInt(),
+                      maxHeight: size.height.toInt(),
+                    ),
+                    filterQuality: FilterQuality.low,
+                    // isAntiAlias: true,
                   ),
-                  filterQuality: FilterQuality.low,
-                  // isAntiAlias: true,
+                  borderRadius: BorderRadius.circular(30),
                 ),
-                borderRadius: BorderRadius.circular(30),
               ),
             ),
           ),
@@ -79,7 +84,24 @@ class DemoAdapter extends PokerAdapter<DemoData> {
                 ),
               ),
             ),
-          )
+          ),
+          Positioned.fill(
+            child: Common.click(
+              onTap: () {
+                NavigatorObs.push(
+                  NavigatorObs.ctx(),
+                  DetailPage(
+                    info: DetailInfo(
+                      data: t,
+                      w: size.width.toInt(),
+                      h: size.height.toInt(),
+                    ),
+                  ),
+                );
+              },
+              r: BorderRadius.circular(30),
+            ),
+          ),
         ],
       );
 

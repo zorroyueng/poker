@@ -4,18 +4,18 @@ class DemoHelper {
   DemoHelper._();
 
   static List<DemoData> data() {
-    List<String> pics = DemoHelper._stars + DemoHelper._nights + DemoHelper._scenery + DemoHelper._relaxed;
+    List<String> pics = DemoHelper._stars + DemoHelper._nights + DemoHelper._scenery + DemoHelper.relaxed;
     // List<String> pics = DemoHelper._stars;
     pics.shuffle();
-    _name.shuffle();
+    name.shuffle();
     List<DemoData> data = [];
     for (int i = 0; i < pics.length; i++) {
-      data.add(DemoData(id: i, name: _name[i % _name.length], url: pics[i]));
+      data.add(DemoData(id: i, name: name[i % name.length], url: pics[i]));
     }
     return data;
   }
 
-  static final List<String> _name = [
+  static final List<String> name = [
     'Marco Chen',
     'Deacon Zhao',
     'Nash Chen',
@@ -117,7 +117,7 @@ class DemoHelper {
     'https://hbimg.huabanimg.com/4753ffdd2f5604232c7d40f67798e488eb8e4d6cddeed-TVcsQl',
   ];
 
-  static final List<String> _relaxed = [
+  static final List<String> relaxed = [
     'https://gd-hbimg.huaban.com/4264b59610af5988b88750aeab3776f6fbe7d3fc4af19-HvmZgX_fw1200webp',
     'https://gd-hbimg.huaban.com/ce887ae3bdfac2f1d7e5151dd31204b51c02b64d6e0fd-Zr6jUA_fw1200webp',
     'https://gd-hbimg.huaban.com/f17458109003e6d105f738d0a487e648a7d01c12a891f-KE3SdK_fw1200webp',

@@ -1,12 +1,15 @@
+import 'package:base/base.dart';
 import 'package:flutter/material.dart';
 import 'package:poker/demo/demo_adapter.dart';
 import 'package:poker/demo/demo_helper.dart';
-import 'package:base/src/percent_builder.dart';
 import 'package:poker/poker/logic/poker_adapter.dart';
 import 'package:poker/poker/poker_view.dart';
 
 void main() {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  Future.wait([
+    Sp.init(), // sp初始化
+  ]).then((_) => runApp(const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -21,6 +24,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: _HomePage(),
+      navigatorObservers: [NavigatorObs.obs()],
     );
   }
 }
