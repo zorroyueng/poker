@@ -37,6 +37,7 @@ class MyApp extends StatelessWidget {
 }
 
 class _HomePage extends StatelessWidget {
+  late final DemoAdapter adapter = DemoAdapter(NavigatorObs.ctx());
   Widget _btn({
     required Color color,
     required IconData icon,
@@ -70,7 +71,7 @@ class _HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final DemoAdapter adapter = DemoAdapter(context);
+    HpDevice.log('build');
     adapter.setData(DemoHelper.data());
     return Scaffold(
       body: SafeArea(

@@ -66,6 +66,7 @@ class DemoAdapter extends PokerAdapter<DemoData> {
                     maxLines: 1,
                     style: Common.textStyle(
                       _context,
+                      color: ColorProvider.base(),
                       scale: 1.5,
                     ).copyWith(fontWeight: FontWeight.w700),
                   ),
@@ -74,7 +75,7 @@ class DemoAdapter extends PokerAdapter<DemoData> {
                     maxLines: 3,
                     style: Common.textStyle(
                       _context,
-                      alpha: .7,
+                      color: ColorProvider.base(.7),
                     ),
                   ),
                 ],

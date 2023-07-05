@@ -48,7 +48,7 @@ class DetailPage extends StatelessWidget {
             controller: scrollCtrl,
             slivers: [
               SliverAppBar(
-                leading: BackButton(color: ColorProvider.icon()),
+                leading: BackButton(color: ColorProvider.base()),
                 pinned: true,
                 stretch: true,
                 actions: [
@@ -56,7 +56,7 @@ class DetailPage extends StatelessWidget {
                     onPressed: () {},
                     icon: Icon(
                       Icons.more_horiz,
-                      color: ColorProvider.icon(),
+                      color: ColorProvider.base(),
                     ),
                   ),
                 ],

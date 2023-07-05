@@ -9,7 +9,7 @@ class ColorProvider {
 
   static Color itemBg([bool? dark]) => dark ?? ThemeProvider.isDark() ? const Color(0xFF171717) : Colors.grey[50]!;
 
-  static Color icon() => Colors.white;
+  static Color base([double alpha = 1]) => Colors.white.withOpacity(alpha);
 
   static Color textColor() => ThemeProvider.isDark() ? Colors.white : Colors.black;
 
