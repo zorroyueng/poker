@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:poker/poker/logic/offset_tween.dart';
 import 'package:poker/poker/logic/poker_card.dart';
 
 mixin AnimMixin {
@@ -19,7 +18,7 @@ mixin AnimMixin {
     VoidCallback? onEnd,
   }) {
     stopAnim();
-    _animation = OffsetTween(
+    _animation = Tween<Offset>(
       begin: begin,
       end: end,
     ).animate(CurvedAnimation(
@@ -43,7 +42,7 @@ mixin AnimMixin {
 
   void toIdle(Offset dif) {
     stopAnim();
-    _animation = OffsetTween(
+    _animation = Tween<Offset>(
       begin: dif,
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutBack));
