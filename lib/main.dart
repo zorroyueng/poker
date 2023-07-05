@@ -11,12 +11,12 @@ void main() {
   Future.wait([
     Sp.init(), // sp初始化
   ]).then((_) {
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarIconBrightness: Brightness.light, // 状态栏白字
-        statusBarColor: Colors.black, // 状态栏背景
-      ),
-    );
+    // SystemChrome.setSystemUIOverlayStyle(
+    //   const SystemUiOverlayStyle(
+    //     statusBarIconBrightness: Brightness.light, // 状态栏白字
+    //     statusBarColor: Colors.black, // 状态栏背景
+    //   ),
+    // );
     runApp(const MyApp());
   });
 }
@@ -29,9 +29,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-      ),
+      theme: ThemeProvider.data(),
       home: _HomePage(),
       navigatorObservers: [NavigatorObs.obs()],
     );

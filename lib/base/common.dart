@@ -1,4 +1,5 @@
 import 'package:base/base.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -437,4 +438,31 @@ class Common {
       ),
     );
   }
+
+  static Widget netImage({
+    required String url,
+    required int w,
+    required int h,
+    BorderRadiusGeometry? borderRadius,
+  }) =>
+      CachedNetworkImage(
+        imageUrl: url,
+        maxWidthDiskCache: w,
+        maxHeightDiskCache: h,
+        fadeInDuration: const Duration(milliseconds: 300),
+        fadeOutDuration: const Duration(milliseconds: 200),
+        imageBuilder: (_, imageProvider) => Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: imageProvider,
+              fit: BoxFit.cover,
+              filterQuality: FilterQuality.low,
+              // isAntiAlias: true,
+            ),
+            borderRadius: borderRadius,
+          ),
+        ),
+        placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+        errorWidget: (context, url, error) => const Center(child: Icon(Icons.error)),
+      );
 }
