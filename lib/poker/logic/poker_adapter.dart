@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:base/base.dart';
 import 'package:flutter/material.dart';
+import 'package:poker/poker/logic/anim_mixin.dart';
 import 'package:poker/poker/logic/poker_card.dart';
 import 'package:poker/poker/config.dart';
 
@@ -69,7 +70,7 @@ abstract class PokerAdapter<T> {
       item.card!.onPanDown(Offset.zero);
       onPanDown(item);
       _swipingItem = null;
-      item.card!.animTo(type, 0, 0);
+      item.card!.animTo(type, 0, 0, Jump());
       can = true;
     }
     return can;

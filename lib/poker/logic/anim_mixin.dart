@@ -78,3 +78,12 @@ class AlignmentTween extends Tween<Alignment> {
   @override
   Alignment lerp(double t) => Alignment.lerp(begin, end, t)!;
 }
+
+class Jump extends Curve {
+  final double _k = .8;
+
+  @override
+  double transform(double t) {
+    return t * t * ((_k + 1) * t - _k);
+  }
+}
