@@ -61,10 +61,6 @@ class DetailPage extends StatelessWidget {
               backgroundColor: Colors.white,
               expandedHeight: h,
               flexibleSpace: FlexibleSpaceBar(
-                stretchModes: const [
-                  StretchMode.zoomBackground,
-                  StretchMode.fadeTitle,
-                ],
                 titlePadding: const EdgeInsets.all(0),
                 title: StreamWidget<double>(
                   stream: barCtrl.stream().distinct(),
@@ -157,7 +153,7 @@ class DetailPage extends StatelessWidget {
                   ),
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
