@@ -22,7 +22,6 @@ class DemoAdapter extends PokerAdapter<DemoData> {
             child: Hero(
               tag: t.id,
               child: Container(
-                clipBehavior: Clip.none,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   image: DecorationImage(
@@ -45,7 +44,6 @@ class DemoAdapter extends PokerAdapter<DemoData> {
             bottom: 0,
             right: 0,
             child: Container(
-              clipBehavior: Clip.none,
               decoration: BoxDecoration(
                 borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(30),
@@ -89,7 +87,7 @@ class DemoAdapter extends PokerAdapter<DemoData> {
           Positioned.fill(
             child: Common.click(
               onTap: () {
-                NavigatorObs.push2(
+                NavigatorObs.pushAlpha(
                   NavigatorObs.ctx(),
                   DetailPage(
                     info: DetailInfo(

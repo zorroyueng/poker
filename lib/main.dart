@@ -66,8 +66,7 @@ class _HomePage extends StatelessWidget {
     final DemoAdapter adapter = DemoAdapter(context);
     adapter.setData(DemoHelper.data());
     return Scaffold(
-        body: SafeArea(
-      child: Stack(
+      body: Stack(
         fit: StackFit.expand,
         children: [
           PokerView(adapter: adapter),
@@ -145,6 +144,6 @@ class _HomePage extends StatelessWidget {
           )
         ],
       ),
-    ));
+    );
   }
 }
