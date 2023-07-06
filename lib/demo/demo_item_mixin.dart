@@ -4,40 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:poker/base/color_provider.dart';
 import 'package:poker/base/common.dart';
 import 'package:poker/demo/demo_adapter.dart';
+import 'package:poker/demo/demo_item_cards.dart';
 import 'package:poker/demo/detail_page.dart';
 
 mixin DemoItemMixin {
   Widget build(DemoAdapter adapter, DemoData t, Size size) {
     Percent alpha = Percent(1);
     return ThemeWidget(
-      builder: (ctx, _) {
+      builder: (ctx, child) {
         double radius = Common.radius(ctx);
-        return Stack(
-          fit: StackFit.expand,
-          clipBehavior: Clip.none,
-          children: [
-            Positioned.fill(
-              child: Hero(
-                tag: t.id,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: ColorProvider.itemBg(),
-                    borderRadius: BorderRadius.circular(radius),
-                  ),
-                  child: Common.netImage(
-                    url: t.url,
-                    w: size.width.toInt(),
-                    h: size.height.toInt(),
-                    borderRadius: BorderRadius.circular(radius),
-                  ),
-                ),
-              ),
-            ),
-            // 露出border
-            Positioned(
-              left: 0,
-              bottom: 0,
-              right: 0,
+        return Hero(
+          tag: t.id,
+          child: DemoItemCards(
+            urls: t.urls,
+            index: 0,
+            size: size,
+            bottom: Common.click(
               child: PercentWidget(
                 percent: alpha,
                 builder: (_, p, __) => Container(
@@ -69,7 +51,7 @@ mixin DemoItemMixin {
                           ).copyWith(fontWeight: FontWeight.w700),
                         ),
                         Text(
-                          t.url,
+                          t.urls[0],
                           maxLines: 3,
                           style: Common.textStyle(
                             ctx,
@@ -81,34 +63,23 @@ mixin DemoItemMixin {
                   ),
                 ),
               ),
+              onTap: () {
+                DetailPage page = DetailPage(info: DetailInfo(data: t, size: size));
+                bool send = false;
+                NavigatorObs.pushAlpha(
+                  ctx,
+                  page,
+                  onBack: (p) {
+                    if (p == 0 && !send) {
+                      alpha.add(0);
+                      alpha.anim(1, ms: 200);
+                      send = true;
+                    }
+                  },
+                );
+              },
             ),
-            Positioned.fill(
-              child: Common.click(
-                onTap: () {
-                  DetailPage page = DetailPage(
-                    info: DetailInfo(
-                      data: t,
-                      w: size.width.toInt(),
-                      h: size.height.toInt(),
-                    ),
-                  );
-                  bool send = false;
-                  NavigatorObs.pushAlpha(
-                    ctx,
-                    page,
-                    onBack: (p) {
-                      if (p == 0 && !send) {
-                        alpha.add(0);
-                        alpha.anim(1, ms: 200);
-                        send = true;
-                      }
-                    },
-                  );
-                },
-                r: BorderRadius.circular(radius),
-              ),
-            ),
-          ],
+          ),
         );
       },
     );
@@ -118,8 +89,9 @@ mixin DemoItemMixin {
     BuildContext? ctx = NavigatorObs.ctx();
     if (ctx != null) {
       precacheImage(
+        size: size,
         CachedNetworkImageProvider(
-          t.url,
+          t.urls[0],
           maxWidth: size.width.toInt(),
           maxHeight: size.height.toInt(),
         ),

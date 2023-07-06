@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:poker/demo/demo_adapter.dart';
 
 class DemoHelper {
@@ -10,7 +12,16 @@ class DemoHelper {
     name.shuffle();
     List<DemoData> data = [];
     for (int i = 0; i < pics.length; i++) {
-      data.add(DemoData(id: i, name: name[i % name.length], url: pics[i]));
+      List<String> urls = [pics[i]];
+      int max = Random().nextInt(8);
+      for (int j = 0; j < max; j++) {
+        urls.add(pics[Random().nextInt(pics.length)]);
+      }
+      data.add(DemoData(
+        id: i,
+        name: name[i % name.length],
+        urls: urls,
+      ));
     }
     return data;
   }

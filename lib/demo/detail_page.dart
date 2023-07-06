@@ -129,9 +129,9 @@ class DetailPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(30),
                       ),
                       child: Common.netImage(
-                        url: info.data.url,
-                        w: info.w,
-                        h: info.h,
+                        url: info.data.urls[0],
+                        w: info.size.width,
+                        h: info.size.height,
                       ),
                     ),
                   ),
@@ -198,12 +198,10 @@ class DetailPage extends StatelessWidget {
 
 class DetailInfo {
   final DemoData data;
-  final int w;
-  final int h;
+  final Size size;
 
   DetailInfo({
     required this.data,
-    required this.w,
-    required this.h,
+    required this.size,
   });
 }

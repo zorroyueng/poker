@@ -441,16 +441,16 @@ class Common {
 
   static Widget netImage({
     required String url,
-    required int w,
-    required int h,
+    required double w,
+    required double h,
     BorderRadiusGeometry? borderRadius,
   }) =>
       CachedNetworkImage(
         imageUrl: url,
-        width: w.toDouble(),
-        height: h.toDouble(),
-        maxWidthDiskCache: w,
-        maxHeightDiskCache: h,
+        width: w,
+        height: h,
+        maxWidthDiskCache: w.toInt(),
+        maxHeightDiskCache: h.toInt(),
         fadeInDuration: const Duration(milliseconds: 300),
         fadeOutDuration: const Duration(milliseconds: 200),
         imageBuilder: (_, imageProvider) => Container(

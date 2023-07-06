@@ -30,8 +30,8 @@ class DemoAdapter extends PokerAdapter<DemoData> with DemoItemMixin {
 
 class DemoData {
   final int id;
-  final String url;
+  final List<String> urls;
   final String name;
 
-  DemoData({required this.id, required this.name, required this.url});
+  DemoData({required this.id, required this.name, required this.urls});
 }
