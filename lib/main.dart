@@ -47,27 +47,25 @@ class _HomePage extends StatelessWidget {
     required Color color,
     required IconData icon,
     required VoidCallback onPressed,
-    double? percent,
+    required double percent,
     bool rotate = false,
   }) =>
       Expanded(
         child: PercentBuilder(
-          percent: percent ?? 0,
+          percent: percent,
           duration: Duration(milliseconds: percent == 0 ? 200 : 0),
-          builder: (_, p) => IconButton(
+          builder: (ctx, p) => IconButton(
             onPressed: onPressed,
             alignment: Alignment.center,
-            style: percent != null
-                ? ButtonStyle(
-                    backgroundColor: MaterialStateProperty.resolveWith((_) => color.withOpacity(.2 * p)),
-                  )
-                : null,
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.resolveWith((_) => color.withOpacity(.3 * p)),
+            ),
             icon: RotatedBox(
               quarterTurns: rotate ? -2 : 0,
               child: Icon(
                 icon,
-                color: percent != null ? color.withOpacity(.2 + .8 * p) : color,
-                size: 50,
+                color: color.withOpacity(.5 + .5 * p),
+                size: Common.base(ctx, 1.5),
               ),
             ),
           ),
@@ -121,7 +119,7 @@ class _HomePage extends StatelessWidget {
                                 }
                               }).distinct(),
                               builder: (_, snap) => _btn(
-                                color: Colors.blueGrey,
+                                color: Colors.blue,
                                 icon: Icons.upload,
                                 onPressed: () => adapter.swipe(SwipeType.up),
                                 percent: snap.data!,
