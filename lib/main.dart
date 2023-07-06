@@ -78,7 +78,6 @@ class _HomePage extends StatelessWidget {
         child: ThemeWidget(
           key: _homeKey,
           builder: (_) {
-            HpDevice.log('ThemeWidget in');
             return Scaffold(
               body: SafeArea(
                 child: Stack(

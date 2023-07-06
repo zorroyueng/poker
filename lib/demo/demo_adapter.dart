@@ -11,99 +11,104 @@ class DemoAdapter extends PokerAdapter<DemoData> {
   Object id(DemoData t) => t.id;
 
   @override
-  Widget item(BuildContext ctx, DemoData t, Size size) {
-    double radius = Common.radius(ctx);
-    return ThemeWidget(
-      builder: (_) => Stack(
-        fit: StackFit.expand,
-        clipBehavior: Clip.none,
-        children: [
-          Positioned.fill(
-            child: Hero(
-              tag: t.id,
-              child: Container(
-                decoration: Common.roundRect(
-                  ctx,
-                  bgColor: ColorProvider.itemBg(),
-                ),
-                child: Common.netImage(
-                  url: t.url,
-                  w: size.width.toInt(),
-                  h: size.height.toInt(),
-                  borderRadius: BorderRadius.circular(radius),
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            left: 0,
-            bottom: 0,
-            right: 0,
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(radius),
-                  bottomRight: Radius.circular(radius),
-                ),
-                gradient: LinearGradient(
-                  begin: const Alignment(0, 1),
-                  end: const Alignment(0, -1),
-                  colors: [Colors.black.withOpacity(.5), Colors.transparent],
-                  stops: const [.5, 1],
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '${t.name} ${t.id}',
-                      maxLines: 1,
-                      style: Common.textStyle(
+  Widget item(DemoData t, Size size) => LayoutBuilder(
+        builder: (ctx, _) {
+          double radius = Common.radius(ctx);
+          return ThemeWidget(
+            builder: (_) => Stack(
+              fit: StackFit.expand,
+              clipBehavior: Clip.none,
+              children: [
+                Positioned.fill(
+                  child: Hero(
+                    tag: t.id,
+                    child: Container(
+                      decoration: Common.roundRect(
                         ctx,
-                        color: ColorProvider.base(),
-                        scale: 2,
-                      ).copyWith(fontWeight: FontWeight.w700),
-                    ),
-                    Text(
-                      t.url,
-                      maxLines: 3,
-                      style: Common.textStyle(
-                        ctx,
-                        color: ColorProvider.base(.7),
+                        bgColor: ColorProvider.itemBg(),
+                      ),
+                      child: Common.netImage(
+                        url: t.url,
+                        w: size.width.toInt(),
+                        h: size.height.toInt(),
+                        borderRadius: BorderRadius.circular(radius),
                       ),
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          ),
-          Positioned.fill(
-            child: Common.click(
-              onTap: () {
-                NavigatorObs.pushAlpha(
-                  ctx,
-                  DetailPage(
-                    info: DetailInfo(
-                      data: t,
-                      w: size.width.toInt(),
-                      h: size.height.toInt(),
+                Positioned(
+                  left: 0,
+                  bottom: 0,
+                  right: 0,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(radius),
+                        bottomRight: Radius.circular(radius),
+                      ),
+                      gradient: LinearGradient(
+                        begin: const Alignment(0, 1),
+                        end: const Alignment(0, -1),
+                        colors: [Colors.black.withOpacity(.5), Colors.transparent],
+                        stops: const [.5, 1],
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${t.name} ${t.id}',
+                            maxLines: 1,
+                            style: Common.textStyle(
+                              ctx,
+                              color: ColorProvider.base(),
+                              scale: 2,
+                            ).copyWith(fontWeight: FontWeight.w700),
+                          ),
+                          Text(
+                            t.url,
+                            maxLines: 3,
+                            style: Common.textStyle(
+                              ctx,
+                              color: ColorProvider.base(.7),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                );
-              },
-              r: BorderRadius.circular(radius),
+                ),
+                Positioned.fill(
+                  child: Common.click(
+                    onTap: () {
+                      NavigatorObs.pushAlpha(
+                        ctx,
+                        DetailPage(
+                          info: DetailInfo(
+                            data: t,
+                            w: size.width.toInt(),
+                            h: size.height.toInt(),
+                          ),
+                        ),
+                      );
+                    },
+                    r: BorderRadius.circular(radius),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
-    );
-  }
+          );
+        },
+      );
 
   @override
-  void onPreload(BuildContext ctx, DemoData t, Size size, int index, int total) => precacheImage(
+  void onPreload(DemoData t, Size size, int index, int total) {
+    BuildContext? ctx = NavigatorObs.ctx();
+    if (ctx != null) {
+      precacheImage(
         CachedNetworkImageProvider(
           t.url,
           maxWidth: size.width.toInt(),
@@ -111,6 +116,10 @@ class DemoAdapter extends PokerAdapter<DemoData> {
         ),
         ctx,
       );
+    } else {
+      HpDevice.log('no ctx');
+    }
+  }
 
   @override
   bool canSwipe(DemoData t, SwipeType type) => true;

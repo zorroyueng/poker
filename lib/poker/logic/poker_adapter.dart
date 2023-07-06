@@ -8,7 +8,6 @@ import 'package:poker/poker/logic/poker_card.dart';
 
 abstract class PokerAdapter<T> {
   AdapterView? _view;
-  late BuildContext _ctx;
   final List<T> _lstData = [];
   final List<T> _lstTemp = [];
   int _firstIndex = 0;
@@ -23,9 +22,9 @@ abstract class PokerAdapter<T> {
   /// interface
   Object id(T t);
 
-  Widget item(BuildContext ctx, T t, Size size);
+  Widget item(T t, Size size);
 
-  void onPreload(BuildContext ctx, T t, Size size, int index, int total); // 预加载t；还剩下几个数据
+  void onPreload(T t, Size size, int index, int total); // 预加载t；还剩下几个数据
 
   bool canSwipe(T t, SwipeType type); // 判断卡片是否可以执行操作
 
@@ -37,8 +36,6 @@ abstract class PokerAdapter<T> {
   Broadcast<double> percentX() => _percentX;
 
   Broadcast<double> percentY() => _percentY;
-
-  void setContext(BuildContext context) => _ctx = context;
 
   PokerItem? _canSwipe() {
     PokerItem? can;
@@ -109,8 +106,8 @@ abstract class PokerAdapter<T> {
       _view = view;
       setData(_lstTemp);
       _lstTemp.clear();
-      _view!.update(_items);
-      _preload(_firstIndex, _firstIndex + Config.idleCardNum + Config.preloadNum);
+      // _view!.update(_items);
+      // _preload(_firstIndex, _firstIndex + Config.idleCardNum + Config.preloadNum);
     }
   }
 
@@ -161,14 +158,12 @@ abstract class PokerAdapter<T> {
         break;
       }
     }
-    if (_view != null) {
-      _preload(to + 1, to + Config.preloadNum);
-    }
+    _preload(to + 1, to + Config.preloadNum);
   }
 
   void _preload(int from, int to) {
     for (int i = from; i <= min(to, _lstData.length - 1); i++) {
-      onPreload(_ctx, _lstData[i], _view!.cardSize(), i, _lstData.length);
+      onPreload(_lstData[i], _view!.cardSize(), i, _lstData.length);
     }
   }
 
@@ -237,7 +232,7 @@ abstract class PokerAdapter<T> {
         w = PokerItem(
           key: key,
           data: t,
-          item: item(_ctx, t, _view!.cardSize()),
+          item: item(t, _view!.cardSize()),
         );
         if (_cache.length >= 10) {
           _cache.remove(_cache.keys.first);
