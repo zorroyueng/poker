@@ -447,6 +447,8 @@ class Common {
   }) =>
       CachedNetworkImage(
         imageUrl: url,
+        width: w.toDouble(),
+        height: h.toDouble(),
         maxWidthDiskCache: w,
         maxHeightDiskCache: h,
         fadeInDuration: const Duration(milliseconds: 300),
