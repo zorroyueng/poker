@@ -13,90 +13,92 @@ class DemoAdapter extends PokerAdapter<DemoData> {
   @override
   Widget item(BuildContext ctx, DemoData t, Size size) {
     double radius = Common.radius(ctx);
-    return Stack(
-      fit: StackFit.expand,
-      clipBehavior: Clip.none,
-      children: [
-        Positioned.fill(
-          child: Hero(
-            tag: t.id,
-            child: Container(
-              decoration: Common.roundRect(
-                ctx,
-                bgColor: ColorProvider.itemBg(),
-              ),
-              child: Common.netImage(
-                url: t.url,
-                w: size.width.toInt(),
-                h: size.height.toInt(),
-                borderRadius: BorderRadius.circular(radius),
+    return ThemeWidget(
+      builder: (_) => Stack(
+        fit: StackFit.expand,
+        clipBehavior: Clip.none,
+        children: [
+          Positioned.fill(
+            child: Hero(
+              tag: t.id,
+              child: Container(
+                decoration: Common.roundRect(
+                  ctx,
+                  bgColor: ColorProvider.itemBg(),
+                ),
+                child: Common.netImage(
+                  url: t.url,
+                  w: size.width.toInt(),
+                  h: size.height.toInt(),
+                  borderRadius: BorderRadius.circular(radius),
+                ),
               ),
             ),
           ),
-        ),
-        Positioned(
-          left: 0,
-          bottom: 0,
-          right: 0,
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(radius),
-                bottomRight: Radius.circular(radius),
+          Positioned(
+            left: 0,
+            bottom: 0,
+            right: 0,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(radius),
+                  bottomRight: Radius.circular(radius),
+                ),
+                gradient: LinearGradient(
+                  begin: const Alignment(0, 1),
+                  end: const Alignment(0, -1),
+                  colors: [Colors.black.withOpacity(.5), Colors.transparent],
+                  stops: const [.5, 1],
+                ),
               ),
-              gradient: LinearGradient(
-                begin: const Alignment(0, 1),
-                end: const Alignment(0, -1),
-                colors: [Colors.black.withOpacity(.5), Colors.transparent],
-                stops: const [.5, 1],
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${t.name} ${t.id}',
+                      maxLines: 1,
+                      style: Common.textStyle(
+                        ctx,
+                        color: ColorProvider.base(),
+                        scale: 2,
+                      ).copyWith(fontWeight: FontWeight.w700),
+                    ),
+                    Text(
+                      t.url,
+                      maxLines: 3,
+                      style: Common.textStyle(
+                        ctx,
+                        color: ColorProvider.base(.7),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '${t.name} ${t.id}',
-                    maxLines: 1,
-                    style: Common.textStyle(
-                      ctx,
-                      color: ColorProvider.base(),
-                      scale: 1.5,
-                    ).copyWith(fontWeight: FontWeight.w700),
-                  ),
-                  Text(
-                    t.url,
-                    maxLines: 3,
-                    style: Common.textStyle(
-                      ctx,
-                      color: ColorProvider.base(.7),
+          ),
+          Positioned.fill(
+            child: Common.click(
+              onTap: () {
+                NavigatorObs.pushAlpha(
+                  ctx,
+                  DetailPage(
+                    info: DetailInfo(
+                      data: t,
+                      w: size.width.toInt(),
+                      h: size.height.toInt(),
                     ),
                   ),
-                ],
-              ),
+                );
+              },
+              r: BorderRadius.circular(radius),
             ),
           ),
-        ),
-        Positioned.fill(
-          child: Common.click(
-            onTap: () {
-              NavigatorObs.pushAlpha(
-                ctx,
-                DetailPage(
-                  info: DetailInfo(
-                    data: t,
-                    w: size.width.toInt(),
-                    h: size.height.toInt(),
-                  ),
-                ),
-              );
-            },
-            r: BorderRadius.circular(radius),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
