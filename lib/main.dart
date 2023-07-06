@@ -1,5 +1,6 @@
 import 'package:base/base.dart';
 import 'package:flutter/material.dart';
+import 'package:poker/base/color_provider.dart';
 import 'package:poker/demo/demo_adapter.dart';
 import 'package:poker/demo/demo_helper.dart';
 import 'package:poker/poker/logic/poker_adapter.dart';

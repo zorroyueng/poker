@@ -11,8 +11,8 @@ class DemoAdapter extends PokerAdapter<DemoData> {
   Object id(DemoData t) => t.id;
 
   @override
-  Widget item(DemoData t, Size size) {
-    double radius = Common.radius(context);
+  Widget item(BuildContext ctx, DemoData t, Size size) {
+    double radius = Common.radius(ctx);
     return Stack(
       fit: StackFit.expand,
       clipBehavior: Clip.none,
@@ -21,9 +21,9 @@ class DemoAdapter extends PokerAdapter<DemoData> {
           child: Hero(
             tag: t.id,
             child: Container(
-              decoration: BoxDecoration(
-                color: ColorProvider.itemBg(),
-                borderRadius: BorderRadius.circular(radius),
+              decoration: Common.roundRect(
+                ctx,
+                bgColor: ColorProvider.itemBg(),
               ),
               child: Common.netImage(
                 url: t.url,
@@ -61,7 +61,7 @@ class DemoAdapter extends PokerAdapter<DemoData> {
                     '${t.name} ${t.id}',
                     maxLines: 1,
                     style: Common.textStyle(
-                      context,
+                      ctx,
                       color: ColorProvider.base(),
                       scale: 1.5,
                     ).copyWith(fontWeight: FontWeight.w700),
@@ -70,7 +70,7 @@ class DemoAdapter extends PokerAdapter<DemoData> {
                     t.url,
                     maxLines: 3,
                     style: Common.textStyle(
-                      context,
+                      ctx,
                       color: ColorProvider.base(.7),
                     ),
                   ),
@@ -83,7 +83,7 @@ class DemoAdapter extends PokerAdapter<DemoData> {
           child: Common.click(
             onTap: () {
               NavigatorObs.pushAlpha(
-                context,
+                ctx,
                 DetailPage(
                   info: DetailInfo(
                     data: t,
@@ -101,13 +101,13 @@ class DemoAdapter extends PokerAdapter<DemoData> {
   }
 
   @override
-  void onPreload(DemoData t, Size size, int index, int total) => precacheImage(
+  void onPreload(BuildContext ctx, DemoData t, Size size, int index, int total) => precacheImage(
         CachedNetworkImageProvider(
           t.url,
           maxWidth: size.width.toInt(),
           maxHeight: size.height.toInt(),
         ),
-        context,
+        ctx,
       );
 
   @override

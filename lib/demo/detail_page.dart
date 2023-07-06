@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:base/base.dart';
 import 'package:flutter/material.dart';
 import 'package:poker/base/color_provider.dart';
@@ -8,7 +10,7 @@ import 'package:poker/demo/demo_helper.dart';
 class DetailPage extends StatelessWidget {
   final DetailInfo info;
   final ScrollController scrollCtrl = ScrollController();
-  final Broadcast<double> barCtrl = Broadcast(0);
+  final Percent barCtrl = Percent(0);
   VoidCallback? changeBar;
 
   DetailPage({super.key, required this.info});
@@ -20,7 +22,11 @@ class DetailPage extends StatelessWidget {
     changeBar = () {
       double max = h - kToolbarHeight;
       if (scrollCtrl.offset >= max) {
-        barCtrl.add(1);
+        if (scrollCtrl.offset >= h) {
+          barCtrl.add(2);
+        } else {
+          barCtrl.add(1 + (scrollCtrl.offset - max) / kToolbarHeight);
+        }
       } else {
         double limit = kToolbarHeight * .5;
         double zero = max - limit;
@@ -47,15 +53,31 @@ class DetailPage extends StatelessWidget {
             controller: scrollCtrl,
             slivers: [
               SliverAppBar(
-                leading: BackButton(color: ColorProvider.base()),
+                leading: PercentWidget(
+                  percent: barCtrl,
+                  builder: (_, v, __) => BackButton(
+                    color: ColorTween(
+                      begin: ColorProvider.base(),
+                      end: ColorProvider.textColor(),
+                    ).lerp(max(0, v - 1)),
+                  ),
+                ),
                 pinned: true,
                 stretch: true,
+                elevation: 4,
+                shadowColor: ColorProvider.itemBg(),
                 actions: [
                   IconButton(
                     onPressed: () {},
-                    icon: Icon(
-                      Icons.more_horiz,
-                      color: ColorProvider.base(),
+                    icon: PercentWidget(
+                      percent: barCtrl,
+                      builder: (_, v, __) => Icon(
+                        Icons.more_horiz,
+                        color: ColorTween(
+                          begin: ColorProvider.base(),
+                          end: ColorProvider.textColor(),
+                        ).lerp(max(0, v - 1)),
+                      ),
                     ),
                   ),
                 ],
@@ -63,10 +85,9 @@ class DetailPage extends StatelessWidget {
                 expandedHeight: h,
                 flexibleSpace: FlexibleSpaceBar(
                   titlePadding: const EdgeInsets.all(0),
-                  title: StreamWidget<double>(
-                    stream: barCtrl.stream().distinct(),
-                    initialData: barCtrl.value(),
-                    builder: (_, snap, ___) => Container(
+                  title: PercentWidget(
+                    percent: barCtrl,
+                    builder: (_, v, ___) => Container(
                       width: double.infinity,
                       height: kToolbarHeight,
                       decoration: BoxDecoration(
@@ -74,24 +95,27 @@ class DetailPage extends StatelessWidget {
                           begin: const Alignment(0, 1),
                           end: const Alignment(0, -1),
                           colors: [
-                            Colors.black.withOpacity(snap.data!),
+                            ColorProvider.bg().withOpacity(min(1, v)),
                             Colors.transparent,
                           ],
                           stops: [
-                            snap.data!,
+                            min(1, v),
                             1,
                           ],
                         ),
                       ),
                       child: Center(
-                        child: Text(
-                          info.data.name,
-                          style: Common.textStyle(
-                            context,
-                            scale: 1.5,
-                            color: ColorProvider.base(),
-                          ).copyWith(
-                            fontWeight: FontWeight.w700,
+                        child: Transform.translate(
+                          offset: Offset(0, kToolbarHeight * (2 - v)),
+                          child: Text(
+                            info.data.name,
+                            style: Common.textStyle(
+                              context,
+                              scale: 1.5,
+                              alpha: Curves.easeIn.transform(max(0, v - 1)),
+                            ).copyWith(
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ),
                       ),
@@ -113,6 +137,20 @@ class DetailPage extends StatelessWidget {
                   ),
                 ),
               ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Text(
+                    info.data.name,
+                    style: Common.textStyle(
+                      context,
+                      scale: 1.5,
+                    ).copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ),
               SliverList(
                 delegate: SliverChildBuilderDelegate(
                   childCount: DemoHelper.name.length,
@@ -123,7 +161,6 @@ class DetailPage extends StatelessWidget {
                         context,
                         scale: .5,
                         bgColor: ColorProvider.itemBg(),
-                        borderColor: Colors.grey.withOpacity(.2),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(10),
