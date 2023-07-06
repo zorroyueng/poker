@@ -26,17 +26,15 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) => MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeProvider.data(),
-      home: _HomePage(),
-      navigatorObservers: [NavigatorObs.obs()],
-    );
+        debugShowCheckedModeBanner: false,
+        theme: ThemeProvider.data(),
+        home: _HomePage(),
+        navigatorObservers: [NavigatorObs.obs()],
+      );
 }
 
 class _HomePage extends StatelessWidget {
-  late final DemoAdapter adapter = DemoAdapter();
-
-
+  late final DemoAdapter adapter = DemoAdapter()..setData(DemoHelper.data());
 
   Widget _btn({
     required Color color,
@@ -70,89 +68,86 @@ class _HomePage extends StatelessWidget {
       );
 
   @override
-  Widget build(BuildContext context) {
-    adapter.setData(DemoHelper.data());
-    return Scaffold(
-      body: SafeArea(
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            PokerView(adapter: adapter),
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    _btn(
-                      color: Colors.yellow,
-                      icon: Icons.redo,
-                      onPressed: () => adapter.undo(),
-                    ),
-                    StreamBuilder(
-                      initialData: adapter.percentX().value(),
-                      stream: adapter.percentX().stream().map<double>((v) {
-                        if (v < 0) {
-                          return -v;
-                        } else {
-                          return 0;
-                        }
-                      }).distinct(),
-                      builder: (_, snap) => _btn(
-                        color: Colors.lime,
-                        icon: Icons.recommend,
-                        onPressed: () => adapter.swipe(SwipeType.left),
-                        percent: snap.data!,
-                        rotate: true,
+  Widget build(BuildContext context) => Scaffold(
+        body: SafeArea(
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              PokerView(adapter: adapter),
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      _btn(
+                        color: Colors.yellow,
+                        icon: Icons.redo,
+                        onPressed: () => adapter.undo(),
                       ),
-                    ),
-                    StreamBuilder(
-                      initialData: adapter.percentY().value(),
-                      stream: adapter.percentY().stream().map<double>((v) {
-                        if (v < 0) {
-                          return -v;
-                        } else {
-                          return 0;
-                        }
-                      }).distinct(),
-                      builder: (_, snap) => _btn(
-                        color: Colors.blueGrey,
-                        icon: Icons.upload,
-                        onPressed: () => adapter.swipe(SwipeType.up),
-                        percent: snap.data!,
+                      StreamBuilder(
+                        initialData: adapter.percentX().value(),
+                        stream: adapter.percentX().stream().map<double>((v) {
+                          if (v < 0) {
+                            return -v;
+                          } else {
+                            return 0;
+                          }
+                        }).distinct(),
+                        builder: (_, snap) => _btn(
+                          color: Colors.lime,
+                          icon: Icons.recommend,
+                          onPressed: () => adapter.swipe(SwipeType.left),
+                          percent: snap.data!,
+                          rotate: true,
+                        ),
                       ),
-                    ),
-                    StreamBuilder(
-                      initialData: adapter.percentX().value(),
-                      stream: adapter.percentX().stream().map<double>((v) {
-                        if (v < 0) {
-                          return 0;
-                        } else {
-                          return v;
-                        }
-                      }).distinct(),
-                      builder: (_, snap) => _btn(
-                        color: Colors.pinkAccent,
-                        icon: Icons.recommend,
-                        onPressed: () => adapter.swipe(SwipeType.right),
-                        percent: snap.data!,
+                      StreamBuilder(
+                        initialData: adapter.percentY().value(),
+                        stream: adapter.percentY().stream().map<double>((v) {
+                          if (v < 0) {
+                            return -v;
+                          } else {
+                            return 0;
+                          }
+                        }).distinct(),
+                        builder: (_, snap) => _btn(
+                          color: Colors.blueGrey,
+                          icon: Icons.upload,
+                          onPressed: () => adapter.swipe(SwipeType.up),
+                          percent: snap.data!,
+                        ),
                       ),
-                    ),
-                    _btn(
-                      color: Colors.orangeAccent,
-                      icon: Icons.sync,
-                      onPressed: () => adapter.setData(DemoHelper.data()),
-                    ),
-                  ],
+                      StreamBuilder(
+                        initialData: adapter.percentX().value(),
+                        stream: adapter.percentX().stream().map<double>((v) {
+                          if (v < 0) {
+                            return 0;
+                          } else {
+                            return v;
+                          }
+                        }).distinct(),
+                        builder: (_, snap) => _btn(
+                          color: Colors.pinkAccent,
+                          icon: Icons.recommend,
+                          onPressed: () => adapter.swipe(SwipeType.right),
+                          percent: snap.data!,
+                        ),
+                      ),
+                      _btn(
+                        color: Colors.orangeAccent,
+                        icon: Icons.sync,
+                        onPressed: () => adapter.setData(DemoHelper.data()),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
-      ),
-    );
-  }
+      );
 }

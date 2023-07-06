@@ -8,6 +8,7 @@ import 'package:poker/poker/logic/poker_card.dart';
 
 abstract class PokerAdapter<T> {
   AdapterView? _view;
+  late BuildContext _context;
   final List<T> _lstData = [];
   final List<T> _lstTemp = [];
   int _firstIndex = 0;
@@ -37,7 +38,9 @@ abstract class PokerAdapter<T> {
 
   Broadcast<double> percentY() => _percentY;
 
-  BuildContext get context => _view!.ctx();
+  BuildContext get context => _context;
+
+  void setContext(BuildContext context) => _context = context;
 
   PokerItem? _canSwipe() {
     PokerItem? can;
@@ -283,8 +286,6 @@ mixin AdapterView {
   Size cardSize();
 
   Rect cardRect();
-
-  BuildContext ctx();
 }
 
 class PokerItem<T> {

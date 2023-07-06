@@ -33,6 +33,7 @@ class PokerView<T> extends StatelessWidget {
         builder: (_, bc) {
           Size pokerSize = Size(bc.maxWidth, bc.maxHeight);
           Rect cardRect = _cardRect(pokerSize);
+          adapter.setContext(context);
           return _Poker<T>(
             adapter: adapter,
             pokerSize: pokerSize,
@@ -112,7 +113,4 @@ class _PokerState extends State<_Poker> with AdapterView {
 
   @override
   Size cardSize() => widget.cardSize;
-
-  @override
-  BuildContext ctx() => context;
 }
