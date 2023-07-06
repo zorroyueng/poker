@@ -9,10 +9,9 @@ import 'package:poker/demo/detail_page.dart';
 mixin DemoItemMixin {
   Widget build(DemoAdapter adapter, DemoData t, Size size) {
     Percent alpha = Percent(1);
-    double scale = 1;
     return ThemeWidget(
       builder: (ctx, _) {
-        double radius = Common.radius(ctx, scale);
+        double radius = Common.radius(ctx);
         return Stack(
           fit: StackFit.expand,
           clipBehavior: Clip.none,
@@ -21,10 +20,9 @@ mixin DemoItemMixin {
               child: Hero(
                 tag: t.id,
                 child: Container(
-                  decoration: Common.roundRect(
-                    ctx,
-                    bgColor: ColorProvider.itemBg(),
-                    scale: scale,
+                  decoration: BoxDecoration(
+                    color: ColorProvider.itemBg(),
+                    borderRadius: BorderRadius.circular(radius),
                   ),
                   child: Common.netImage(
                     url: t.url,
@@ -37,9 +35,9 @@ mixin DemoItemMixin {
             ),
             // 露出border
             Positioned(
-              left: 1,
-              bottom: 1,
-              right: 1,
+              left: 0,
+              bottom: 0,
+              right: 0,
               child: PercentWidget(
                 percent: alpha,
                 builder: (_, p, __) => Container(
