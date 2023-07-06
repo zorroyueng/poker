@@ -10,7 +10,7 @@ import 'package:poker/demo/demo_helper.dart';
 class DetailPage extends StatelessWidget {
   final DetailInfo info;
   final ScrollController scrollCtrl = ScrollController();
-  final Percent barCtrl = Percent(0);
+  final Percent barCtrl = Percent(0, space: 0);
   VoidCallback? changeBar;
 
   DetailPage({super.key, required this.info});
