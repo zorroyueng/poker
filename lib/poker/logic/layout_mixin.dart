@@ -11,7 +11,7 @@ mixin LayoutMixin {
     }
   }
 
-  // 滑动百分比为[-1,1]
+  // 滑动百分比为 unit==true?[-1,1]:[?,?]
   double swipePercent({
     required bool x,
     required Offset dif,

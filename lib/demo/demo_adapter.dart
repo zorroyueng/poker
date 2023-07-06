@@ -5,15 +5,12 @@ import 'package:poker/demo/demo_item_mixin.dart';
 import 'package:poker/poker/logic/poker_adapter.dart';
 
 class DemoAdapter extends PokerAdapter<DemoData> with DemoItemMixin {
-  final Percent pRoute;
   late final Widget _loading = GestureDetector(
     onTap: () => setData(DemoHelper.data()),
     child: ThemeWidget(
-      builder: (_) => const Center(child: CircularProgressIndicator()),
+      builder: (_,__) => const Center(child: CircularProgressIndicator()),
     ),
   );
-
-  DemoAdapter(this.pRoute);
 
   @override
   Widget item(DemoData t, Size size) => build(this, t, size);
