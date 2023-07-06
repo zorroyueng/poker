@@ -70,7 +70,7 @@ abstract class PokerAdapter<T> {
       item.card!.onPanDown(Offset.zero);
       onPanDown(item);
       _swipingItem = null;
-      item.card!.animTo(type, 0, 0, Jump());
+      item.card!.animTo(type, 0, 0, type == SwipeType.up ? Jump() : Curves.easeIn);
       can = true;
     }
     return can;
