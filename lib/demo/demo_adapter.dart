@@ -7,16 +7,12 @@ import 'package:poker/demo/detail_page.dart';
 import 'package:poker/poker/logic/poker_adapter.dart';
 
 class DemoAdapter extends PokerAdapter<DemoData> {
-  final BuildContext _context;
-
-  DemoAdapter(this._context);
-
   @override
   Object id(DemoData t) => t.id;
 
   @override
   Widget item(DemoData t, Size size) {
-    double radius = Common.radius(_context);
+    double radius = Common.radius(context);
     return Stack(
       fit: StackFit.expand,
       clipBehavior: Clip.none,
@@ -65,7 +61,7 @@ class DemoAdapter extends PokerAdapter<DemoData> {
                     '${t.name} ${t.id}',
                     maxLines: 1,
                     style: Common.textStyle(
-                      _context,
+                      context,
                       color: ColorProvider.base(),
                       scale: 1.5,
                     ).copyWith(fontWeight: FontWeight.w700),
@@ -74,7 +70,7 @@ class DemoAdapter extends PokerAdapter<DemoData> {
                     t.url,
                     maxLines: 3,
                     style: Common.textStyle(
-                      _context,
+                      context,
                       color: ColorProvider.base(.7),
                     ),
                   ),
@@ -87,7 +83,7 @@ class DemoAdapter extends PokerAdapter<DemoData> {
           child: Common.click(
             onTap: () {
               NavigatorObs.pushAlpha(
-                NavigatorObs.ctx(),
+                context,
                 DetailPage(
                   info: DetailInfo(
                     data: t,
@@ -111,7 +107,7 @@ class DemoAdapter extends PokerAdapter<DemoData> {
           maxWidth: size.width.toInt(),
           maxHeight: size.height.toInt(),
         ),
-        _context,
+        context,
       );
 
   @override

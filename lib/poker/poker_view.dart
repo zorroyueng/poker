@@ -112,4 +112,7 @@ class _PokerState extends State<_Poker> with AdapterView {
 
   @override
   Size cardSize() => widget.cardSize;
+
+  @override
+  BuildContext ctx() => context;
 }

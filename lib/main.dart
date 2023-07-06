@@ -1,6 +1,5 @@
 import 'package:base/base.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:poker/demo/demo_adapter.dart';
 import 'package:poker/demo/demo_helper.dart';
 import 'package:poker/poker/logic/poker_adapter.dart';
@@ -26,18 +25,19 @@ class MyApp extends StatelessWidget {
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
+  Widget build(BuildContext context) => MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeProvider.data(),
       home: _HomePage(),
       navigatorObservers: [NavigatorObs.obs()],
     );
-  }
 }
 
 class _HomePage extends StatelessWidget {
-  late final DemoAdapter adapter = DemoAdapter(NavigatorObs.ctx());
+  late final DemoAdapter adapter = DemoAdapter();
+
+
+
   Widget _btn({
     required Color color,
     required IconData icon,
@@ -71,7 +71,6 @@ class _HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    HpDevice.log('build');
     adapter.setData(DemoHelper.data());
     return Scaffold(
       body: SafeArea(

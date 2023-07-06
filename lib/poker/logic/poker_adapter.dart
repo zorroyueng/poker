@@ -2,9 +2,9 @@ import 'dart:math';
 
 import 'package:base/base.dart';
 import 'package:flutter/material.dart';
+import 'package:poker/poker/config.dart';
 import 'package:poker/poker/logic/anim_mixin.dart';
 import 'package:poker/poker/logic/poker_card.dart';
-import 'package:poker/poker/config.dart';
 
 abstract class PokerAdapter<T> {
   AdapterView? _view;
@@ -36,6 +36,8 @@ abstract class PokerAdapter<T> {
   Broadcast<double> percentX() => _percentX;
 
   Broadcast<double> percentY() => _percentY;
+
+  BuildContext get context => _view!.ctx();
 
   PokerItem? _canSwipe() {
     PokerItem? can;
@@ -281,6 +283,8 @@ mixin AdapterView {
   Size cardSize();
 
   Rect cardRect();
+
+  BuildContext ctx();
 }
 
 class PokerItem<T> {

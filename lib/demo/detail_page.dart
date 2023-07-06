@@ -1,5 +1,4 @@
 import 'package:base/base.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:poker/base/color_provider.dart';
 import 'package:poker/base/common.dart';
@@ -90,6 +89,7 @@ class DetailPage extends StatelessWidget {
                           style: Common.textStyle(
                             context,
                             scale: 1.5,
+                            color: ColorProvider.base(),
                           ).copyWith(
                             fontWeight: FontWeight.w700,
                           ),
