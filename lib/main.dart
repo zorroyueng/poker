@@ -39,8 +39,9 @@ class MyApp extends StatelessWidget {
 }
 
 class _HomePage extends StatelessWidget {
-  late final DemoAdapter adapter = DemoAdapter()..setData(DemoHelper.data());
+  late final DemoAdapter adapter = DemoAdapter(_pRoute)..setData(DemoHelper.data());
   final GlobalKey _homeKey = GlobalKey();
+  final Percent _pRoute = Percent(0);
 
   Widget _btn({
     required Color color,
@@ -93,11 +94,6 @@ class _HomePage extends StatelessWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.max,
                           children: [
-                            _btn(
-                              color: Colors.yellow,
-                              icon: Icons.redo,
-                              onPressed: () => adapter.undo(),
-                            ),
                             StreamBuilder(
                               initialData: adapter.percentX().value(),
                               stream: adapter.percentX().stream().map<double>((v) {
@@ -146,11 +142,6 @@ class _HomePage extends StatelessWidget {
                                 onPressed: () => adapter.swipe(SwipeType.right),
                                 percent: snap.data!,
                               ),
-                            ),
-                            _btn(
-                              color: Colors.orangeAccent,
-                              icon: Icons.sync,
-                              onPressed: () => adapter.setData(DemoHelper.data()),
                             ),
                           ],
                         ),
@@ -234,6 +225,21 @@ class _HomePage extends StatelessWidget {
                               ),
                             );
                           },
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      left: 0,
+                      top: 0,
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.redo,
+                            size: Common.base(context),
+                            color: ColorProvider.textColor().withOpacity(.5),
+                          ),
+                          onPressed: () => adapter.undo(),
                         ),
                       ),
                     ),
