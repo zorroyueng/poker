@@ -1,5 +1,4 @@
 import 'package:base/base.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:poker/base/color_provider.dart';
 import 'package:poker/base/common.dart';
@@ -10,13 +9,14 @@ import 'package:poker/demo/detail_page.dart';
 mixin DemoItemMixin {
   Widget build(DemoAdapter adapter, DemoData t, Size size) {
     Percent alpha = Percent(1);
+    Broadcast<int> index = Broadcast(0);
     return ThemeWidget(
       builder: (ctx, child) {
         double radius = Common.radius(ctx);
         return DemoItemCards(
           tag: t.id,
           urls: t.urls,
-          index: 0,
+          index: index,
           size: size,
           bottom: Common.click(
             r: BorderRadius.only(
@@ -71,7 +71,13 @@ mixin DemoItemMixin {
               ),
             ),
             onTap: () {
-              DetailPage page = DetailPage(info: DetailInfo(data: t, size: size));
+              DetailPage page = DetailPage(
+                info: DetailInfo(
+                  data: t,
+                  size: size,
+                  index: index,
+                ),
+              );
               bool send = false;
               NavigatorObs.pushAlpha(
                 ctx,
@@ -94,15 +100,7 @@ mixin DemoItemMixin {
   void onPreload(DemoData t, Size size, int index, int total) {
     BuildContext? ctx = NavigatorObs.ctx();
     if (ctx != null) {
-      precacheImage(
-        size: size,
-        CachedNetworkImageProvider(
-          t.urls[0],
-          maxWidth: size.width.toInt(),
-          maxHeight: size.height.toInt(),
-        ),
-        ctx,
-      );
+      Common.precache(ctx, t.urls[0], size);
     } else {
       HpDevice.log('no ctx');
     }

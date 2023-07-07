@@ -467,4 +467,14 @@ class Common {
         placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
         errorWidget: (context, url, error) => const Center(child: Icon(Icons.error)),
       );
+
+  static void precache(BuildContext ctx, String url, Size size) => precacheImage(
+        size: size,
+        CachedNetworkImageProvider(
+          url,
+          maxWidth: size.width.toInt(),
+          maxHeight: size.height.toInt(),
+        ),
+        ctx,
+      );
 }

@@ -13,7 +13,7 @@ class DemoHelper {
     List<DemoData> data = [];
     for (int i = 0; i < pics.length; i++) {
       List<String> urls = [pics[i]];
-      int max = Random().nextInt(8);
+      int max = Random().nextInt(6);
       for (int j = 0; j < max; j++) {
         urls.add(pics[Random().nextInt(pics.length)]);
       }

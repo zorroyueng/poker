@@ -6,6 +6,7 @@ import 'package:poker/base/color_provider.dart';
 import 'package:poker/base/common.dart';
 import 'package:poker/demo/demo_adapter.dart';
 import 'package:poker/demo/demo_helper.dart';
+import 'package:poker/demo/demo_item_cards.dart';
 
 class DetailPage extends StatelessWidget {
   final DetailInfo info;
@@ -121,19 +122,12 @@ class DetailPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  background: Hero(
+                  background: DemoItemCards(
                     tag: info.data.id,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: ColorProvider.itemBg(),
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: Common.netImage(
-                        url: info.data.urls[0],
-                        w: info.size.width,
-                        h: info.size.height,
-                      ),
-                    ),
+                    urls: info.data.urls,
+                    index: info.index,
+                    size: info.size,
+                    hasRadius: false,
                   ),
                 ),
               ),
@@ -199,9 +193,11 @@ class DetailPage extends StatelessWidget {
 class DetailInfo {
   final DemoData data;
   final Size size;
+  final Broadcast<int> index;
 
   DetailInfo({
     required this.data,
     required this.size,
+    required this.index,
   });
 }

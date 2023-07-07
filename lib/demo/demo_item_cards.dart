@@ -6,28 +6,28 @@ import 'package:poker/base/common.dart';
 
 class DemoItemCards extends StatelessWidget {
   final List<String> urls;
-  late final Broadcast<int> ctrl;
+  final Broadcast<int> index;
   final Size size;
   final Object tag;
   final Widget? bottom;
+  final bool hasRadius;
 
-  DemoItemCards({
+  const DemoItemCards({
     super.key,
-    required this.urls,
-    required int index,
-    required this.size,
-    required this.bottom,
     required this.tag,
-  }) {
-    ctrl = Broadcast(index);
-  }
+    required this.urls,
+    required this.size,
+    required this.index,
+    this.bottom,
+    this.hasRadius = true,
+  });
 
   Widget _progressBar(double radius) {
     List<Widget> lst = [];
     if (urls.length > 1) {
       double d = radius / 10;
       for (int i = 0; i < urls.length; i++) {
-        bool current = i == ctrl.value();
+        bool current = i == index.value();
         lst.add(Expanded(
           child: AnimatedContainer(
             height: d,
@@ -61,9 +61,9 @@ class DemoItemCards extends StatelessWidget {
               child: Common.click(
                 r: BorderRadius.only(topLeft: Radius.circular(radius)),
                 onTap: () {
-                  int n = ctrl.value() - 1;
+                  int n = index.value() - 1;
                   if (n >= 0) {
-                    ctrl.add(n);
+                    index.add(n);
                   } else {
                     HapticFeedback.lightImpact();
                   }
@@ -74,9 +74,9 @@ class DemoItemCards extends StatelessWidget {
               child: Common.click(
                 r: BorderRadius.only(topRight: Radius.circular(radius)),
                 onTap: () {
-                  int n = ctrl.value() + 1;
+                  int n = index.value() + 1;
                   if (n < urls.length) {
-                    ctrl.add(n);
+                    index.add(n);
                   } else {
                     HapticFeedback.lightImpact();
                   }
@@ -90,6 +90,7 @@ class DemoItemCards extends StatelessWidget {
     if (bottom != null) {
       children.add(bottom!);
     }
+    BorderRadius? borderRadius = hasRadius ? BorderRadius.circular(radius) : null;
     return Stack(
       clipBehavior: Clip.none,
       fit: StackFit.expand,
@@ -100,16 +101,16 @@ class DemoItemCards extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 color: ColorProvider.itemBg(),
-                borderRadius: BorderRadius.circular(radius),
+                borderRadius: borderRadius,
               ),
               child: StreamWidget(
-                stream: ctrl.stream().distinct(),
-                initialData: ctrl.value(),
+                stream: index.stream().distinct(),
+                initialData: index.value(),
                 builder: (_, __, ___) => Common.netImage(
-                  url: urls[ctrl.value()],
+                  url: urls[index.value()],
                   w: size.width,
                   h: size.height,
-                  borderRadius: BorderRadius.circular(radius),
+                  borderRadius: borderRadius,
                 ),
               ),
             ),
@@ -120,8 +121,8 @@ class DemoItemCards extends StatelessWidget {
           top: radius / 2,
           right: radius / 2,
           child: StreamWidget(
-            stream: ctrl.stream().distinct(),
-            initialData: ctrl.value(),
+            stream: index.stream().distinct(),
+            initialData: index.value(),
             builder: (_, __, ___) => _progressBar(radius),
           ),
         ),
