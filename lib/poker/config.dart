@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 import 'dart:math' as math;
 
@@ -22,4 +23,7 @@ class Config {
   static const double maxSwipeV = 3; // 滑动速度判断swipeOut最大值
   static const double minSwipeV = 1; // 滑动速度判断swipeOut最小值
   static const double maxAnimV = 7; // 动画速度最大值
+
+  // switch
+  static const double rotateY = pi / 10;
 }

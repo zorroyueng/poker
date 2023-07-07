@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:poker/base/color_provider.dart';
 import 'package:poker/base/common.dart';
+import 'package:poker/poker/config.dart';
 
 class DemoItemCards extends StatelessWidget {
   final List<String> urls;
@@ -11,8 +12,9 @@ class DemoItemCards extends StatelessWidget {
   final Object tag;
   final Widget? bottom;
   final bool hasRadius;
+  final Percent rotate = Percent(0, space: 0);
 
-  const DemoItemCards({
+  DemoItemCards({
     super.key,
     required this.tag,
     required this.urls,
@@ -63,21 +65,25 @@ class DemoItemCards extends StatelessWidget {
           children: [
             Expanded(
               child: Common.click(
-                r: BorderRadius.only(topLeft: Radius.circular(radius)),
+                r: hasRadius ? BorderRadius.only(topLeft: Radius.circular(radius)) : null,
                 onTap: () {
                   int n = index.value() - 1;
                   if (n >= 0) {
                     index.add(n);
                     HapticFeedback.lightImpact();
                   } else {
-                    HapticFeedback.heavyImpact();
+                    if (!rotate.inAnim()) {
+                      rotate.add(0);
+                      rotate.anim(1, ms: 200, curve: _Sin());
+                      HapticFeedback.heavyImpact();
+                    }
                   }
                 },
               ),
             ),
             Expanded(
               child: Common.click(
-                r: BorderRadius.only(topRight: Radius.circular(radius)),
+                r: hasRadius ? BorderRadius.only(topRight: Radius.circular(radius)) : null,
                 onTap: () {
                   int n = index.value() + 1;
                   if (n < urls.length) {
@@ -88,7 +94,11 @@ class DemoItemCards extends StatelessWidget {
                     }
                     HapticFeedback.lightImpact();
                   } else {
-                    HapticFeedback.heavyImpact();
+                    if (!rotate.inAnim()) {
+                      rotate.add(0);
+                      rotate.anim(-1, ms: 200, curve: _Sin());
+                      HapticFeedback.heavyImpact();
+                    }
                   }
                 },
               ),
@@ -101,48 +111,65 @@ class DemoItemCards extends StatelessWidget {
       children.add(bottom!);
     }
     BorderRadius? borderRadius = hasRadius ? BorderRadius.circular(radius) : null;
-    return Stack(
-      clipBehavior: Clip.none,
-      fit: StackFit.expand,
-      children: [
-        Positioned.fill(
-          child: Hero(
-            tag: tag,
-            child: Container(
-              decoration: BoxDecoration(
-                color: ColorProvider.itemBg(),
-                borderRadius: borderRadius,
-              ),
-              child: StreamWidget(
-                stream: index.stream().distinct(),
-                initialData: index.value(),
-                builder: (_, __, ___) => Common.netImage(
-                  url: urls[index.value()],
-                  w: size.width,
-                  h: size.height,
+    return PercentWidget(
+      percent: rotate,
+      builder: (_, p, child) {
+        return Transform(
+          transform: Matrix4.identity()
+            ..setEntry(3, 2, .0005)
+            ..rotateY(Config.rotateY * p),
+          alignment: const Alignment(0, 0),
+          child: child,
+        );
+      },
+      child: Stack(
+        clipBehavior: Clip.none,
+        fit: StackFit.expand,
+        children: [
+          Positioned.fill(
+            child: Hero(
+              tag: tag,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: ColorProvider.itemBg(),
                   borderRadius: borderRadius,
+                ),
+                child: StreamWidget(
+                  stream: index.stream().distinct(),
+                  initialData: index.value(),
+                  builder: (_, __, ___) => Common.netImage(
+                    url: urls[index.value()],
+                    w: size.width,
+                    h: size.height,
+                    borderRadius: borderRadius,
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-        Positioned(
-          top: barPaddingV,
-          left: barPaddingH,
-          right: barPaddingH,
-          child: StreamWidget(
-            stream: index.stream().distinct(),
-            initialData: index.value(),
-            builder: (_, __, ___) => _progressBar(radius),
+          Positioned(
+            top: barPaddingV,
+            left: barPaddingH,
+            right: barPaddingH,
+            child: StreamWidget(
+              stream: index.stream().distinct(),
+              initialData: index.value(),
+              builder: (_, __, ___) => _progressBar(radius),
+            ),
           ),
-        ),
-        Positioned.fill(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: children,
+          Positioned.fill(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: children,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
+}
+
+class _Sin extends Curve {
+  @override
+  double transform(double t) => 4 * t * (1 - t);
 }
