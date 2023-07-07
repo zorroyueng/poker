@@ -110,7 +110,7 @@ class _HomePage extends StatelessWidget {
                             }).distinct(),
                             builder: (_, snap) => _btn(
                               color: Colors.blue,
-                              icon: Icons.upload,
+                              icon: Icons.stars,
                               onPressed: () => adapter.swipe(SwipeType.up),
                               percent: snap.data!,
                             ),

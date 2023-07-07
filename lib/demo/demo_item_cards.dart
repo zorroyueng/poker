@@ -39,7 +39,7 @@ class DemoItemCards extends StatelessWidget {
               borderRadius: BorderRadius.circular(d),
               color: ColorProvider.base(current ? 1 : .3),
             ),
-            duration: const Duration(milliseconds: 200),
+            duration: const Duration(milliseconds: 400),
           ),
         ));
         if (i < urls.length - 1) {

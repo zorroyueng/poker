@@ -101,14 +101,10 @@ mixin DemoItemMixin {
   }
 
   void onPreload(DemoData t, Size size, int index, int total) {
-    BuildContext? ctx = NavigatorObs.ctx();
-    if (ctx != null) {
-      Common.precache(ctx, t.urls[0], size);
-      if (t.urls.length > 1) {
-        Common.precache(ctx, t.urls[1], size);
-      }
-    } else {
-      HpDevice.log('no ctx');
+    BuildContext ctx = NavigatorObs.ctx()!;
+    Common.precache(ctx, t.urls[0], size);
+    if (t.urls.length > 1) {
+      Common.precache(ctx, t.urls[1], size);
     }
   }
 }

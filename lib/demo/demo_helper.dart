@@ -67,7 +67,8 @@ class DemoHelper {
     Icons.mail,
     Icons.near_me,
     Icons.offline_bolt,
-    Icons.paid
+    Icons.paid,
+    Icons.stars,
   ];
 
   static final List<String> _stars = [

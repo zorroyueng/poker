@@ -25,5 +25,5 @@ class Config {
   static const double maxAnimV = 7; // 动画速度最大值
 
   // switch
-  static const double rotateY = pi / 10;
+  static const double rotateY = pi / 18;
 }
