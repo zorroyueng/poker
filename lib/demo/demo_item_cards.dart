@@ -68,8 +68,9 @@ class DemoItemCards extends StatelessWidget {
                   int n = index.value() - 1;
                   if (n >= 0) {
                     index.add(n);
-                  } else {
                     HapticFeedback.lightImpact();
+                  } else {
+                    HapticFeedback.heavyImpact();
                   }
                 },
               ),
@@ -85,8 +86,9 @@ class DemoItemCards extends StatelessWidget {
                     if (next < urls.length) {
                       Common.precache(context, urls[next], size);
                     }
-                  } else {
                     HapticFeedback.lightImpact();
+                  } else {
+                    HapticFeedback.heavyImpact();
                   }
                 },
               ),
