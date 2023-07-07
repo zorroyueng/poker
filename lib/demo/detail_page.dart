@@ -109,14 +109,18 @@ class DetailPage extends StatelessWidget {
                         child: Center(
                           child: Transform.translate(
                             offset: Offset(0, kToolbarHeight * (2 - v)),
-                            child: Text(
-                              info.data.name,
-                              style: Common.textStyle(
-                                context,
-                                scale: 1.5,
-                                alpha: Curves.easeIn.transform(max(0, v - 1)),
-                              ).copyWith(
-                                fontWeight: FontWeight.w700,
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                info.data.name,
+                                maxLines: 1,
+                                style: Common.textStyle(
+                                  context,
+                                  scale: 1.5,
+                                  alpha: Curves.easeIn.transform(max(0, v - 1)),
+                                ).copyWith(
+                                  fontWeight: FontWeight.w700,
+                                ),
                               ),
                             ),
                           ),
@@ -136,13 +140,20 @@ class DetailPage extends StatelessWidget {
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.all(10),
-                  child: Text(
-                    info.data.name,
-                    style: Common.textStyle(
-                      context,
-                      scale: 1.5,
-                    ).copyWith(
-                      fontWeight: FontWeight.w700,
+                  child: Align(
+                    alignment: const Alignment(-1, 0),
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        info.data.name,
+                        maxLines: 1,
+                        style: Common.textStyle(
+                          context,
+                          scale: 1.5,
+                        ).copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                     ),
                   ),
                 ),

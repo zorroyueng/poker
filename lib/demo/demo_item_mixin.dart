@@ -48,14 +48,17 @@ mixin DemoItemMixin {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        '${t.name} ${t.id}',
-                        maxLines: 1,
-                        style: Common.textStyle(
-                          ctx,
-                          color: ColorProvider.base(p),
-                          scale: 2,
-                        ).copyWith(fontWeight: FontWeight.w700),
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          '${t.name} ${t.id}',
+                          maxLines: 1,
+                          style: Common.textStyle(
+                            ctx,
+                            color: ColorProvider.base(p),
+                            scale: 2,
+                          ).copyWith(fontWeight: FontWeight.w700),
+                        ),
                       ),
                       Text(
                         t.urls[0],
