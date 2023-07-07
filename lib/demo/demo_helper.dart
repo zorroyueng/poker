@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/material.dart';
 import 'package:poker/demo/demo_adapter.dart';
 
 class DemoHelper {
@@ -15,11 +16,11 @@ class DemoHelper {
       List<String> urls = [pics[i]];
       int max = Random().nextInt(6);
       for (int j = 0; j < max; j++) {
-        urls.add(pics[Random().nextInt(pics.length)]);
+        urls.add(random(pics));
       }
       data.add(DemoData(
         id: i,
-        name: name[i % name.length],
+        name: random(name),
         urls: urls,
       ));
     }
@@ -42,11 +43,33 @@ class DemoHelper {
     'Sophia,Istanbul',
     'Taj Mahal,India',
     'Angkor Wat,Cambodia',
-    'Bali,Indonesia',
     'Borobudur,Indonesia',
     'Sentosa,Singapore',
     'Babylon,Iraq',
   ];
+
+  static final List<IconData> icon = [
+    Icons.adb,
+    Icons.ac_unit,
+    Icons.access_time_filled,
+    Icons.account_balance,
+    Icons.backup,
+    Icons.cabin,
+    Icons.dark_mode,
+    Icons.eco_sharp,
+    Icons.face,
+    Icons.gamepad_outlined,
+    Icons.handshake,
+    Icons.icecream,
+    Icons.javascript,
+    Icons.kayaking,
+    Icons.landscape,
+    Icons.mail,
+    Icons.near_me,
+    Icons.offline_bolt,
+    Icons.paid
+  ];
+
   static final List<String> _stars = [
     'https://hbimg.huabanimg.com/6d3cc986621ab853d3834ed47aa9609f24f1b4b8318b28-QTIb9i_fw1200',
     'https://hbimg.huabanimg.com/931ac4833cc3e6837bd1c1704a5198db8c536af162282-xE7EgQ_fw1200',
@@ -149,4 +172,6 @@ class DemoHelper {
     'https://gd-hbimg.huaban.com/fb95cb5b653671063c46059eef75ec6851dfd65b5ef43-9dFusw_fw1200webp',
     'https://gd-hbimg.huaban.com/6940a9fa8dd4e9ef0075e22b83d5c61ee91b0f1b250f6-zs0Kvo_fw1200webp',
   ];
+
+  static T random<T>(List<T> lst) => lst[Random().nextInt(lst.length)];
 }

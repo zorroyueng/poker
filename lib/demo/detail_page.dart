@@ -41,6 +41,189 @@ class DetailPage extends StatelessWidget {
     scrollCtrl.addListener(changeBar!);
   }
 
+  Widget _head(BuildContext context, double h) => SliverAppBar(
+        leading: PercentWidget(
+          percent: barCtrl,
+          builder: (_, v, __) => BackButton(
+            color: ColorTween(
+              begin: ColorProvider.base(),
+              end: ColorProvider.textColor(),
+            ).lerp(max(0, v - 1)),
+          ),
+        ),
+        pinned: true,
+        stretch: true,
+        elevation: 4,
+        shadowColor: ColorProvider.itemBg(),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: PercentWidget(
+              percent: barCtrl,
+              builder: (_, v, __) => Icon(
+                Icons.more_horiz,
+                color: ColorTween(
+                  begin: ColorProvider.base(),
+                  end: ColorProvider.textColor(),
+                ).lerp(max(0, v - 1)),
+              ),
+            ),
+          ),
+        ],
+        backgroundColor: ColorProvider.bg(),
+        expandedHeight: h,
+        flexibleSpace: FlexibleSpaceBar(
+          titlePadding: const EdgeInsets.all(0),
+          title: IgnorePointer(
+            child: PercentWidget(
+              percent: barCtrl,
+              builder: (_, v, ___) => Container(
+                width: double.infinity,
+                height: kToolbarHeight,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: const Alignment(0, 1),
+                    end: const Alignment(0, -1),
+                    colors: [
+                      ColorProvider.bg().withOpacity(min(1, v)),
+                      Colors.transparent,
+                    ],
+                    stops: [
+                      min(1, v),
+                      1,
+                    ],
+                  ),
+                ),
+                child: Center(
+                  child: Transform.translate(
+                    offset: Offset(0, kToolbarHeight * (2 - v)),
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        info.data.name,
+                        maxLines: 1,
+                        style: Common.textStyle(
+                          context,
+                          scale: 1.5,
+                          alpha: Curves.easeIn.transform(max(0, v - 1)),
+                        ).copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          background: DemoItemCards(
+            tag: info.data.id,
+            urls: info.data.urls,
+            index: info.index,
+            size: info.size,
+            hasRadius: false,
+          ),
+        ),
+      );
+
+  Widget _title(BuildContext context) => SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Align(
+            alignment: const Alignment(-1, 0),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                info.data.name,
+                maxLines: 1,
+                style: Common.textStyle(
+                  context,
+                  scale: 1.5,
+                ).copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+  Widget _tags(BuildContext context) {
+    double d = Common.base(context, .2);
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Wrap(
+          spacing: d,
+          runSpacing: d,
+          children: List.generate(
+            DemoHelper.name.length ~/ 3,
+            (i) => Container(
+              decoration: Common.roundRect(
+                context,
+                scale: .5,
+                bgColor: ColorProvider.itemBg(),
+              ),
+              padding: EdgeInsets.all(d),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    DemoHelper.random(DemoHelper.icon),
+                    color: ThemeProvider.currentColor(),
+                  ),
+                  SizedBox(width: d / 2),
+                  Text(
+                    DemoHelper.random(DemoHelper.name).split(',')[0].split(' ')[0],
+                    style: Common.textStyle(context),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _details(BuildContext context) => SliverList(
+        delegate: SliverChildBuilderDelegate(
+          childCount: DemoHelper.name.length,
+          (_, i) => Padding(
+            padding: const EdgeInsets.all(10),
+            child: Container(
+              decoration: Common.roundRect(
+                context,
+                scale: .5,
+                bgColor: ColorProvider.itemBg(),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      DemoHelper.name[i],
+                      style: Common.textStyle(
+                        context,
+                        color: ColorProvider.textColor(),
+                      ),
+                    ),
+                    Text(
+                      DemoHelper.relaxed[i],
+                      style: Common.textStyle(
+                        context,
+                        alpha: .5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     double h = HpDevice.screenMin(context);
@@ -53,148 +236,10 @@ class DetailPage extends StatelessWidget {
           child: CustomScrollView(
             controller: scrollCtrl,
             slivers: [
-              SliverAppBar(
-                leading: PercentWidget(
-                  percent: barCtrl,
-                  builder: (_, v, __) => BackButton(
-                    color: ColorTween(
-                      begin: ColorProvider.base(),
-                      end: ColorProvider.textColor(),
-                    ).lerp(max(0, v - 1)),
-                  ),
-                ),
-                pinned: true,
-                stretch: true,
-                elevation: 4,
-                shadowColor: ColorProvider.itemBg(),
-                actions: [
-                  IconButton(
-                    onPressed: () {},
-                    icon: PercentWidget(
-                      percent: barCtrl,
-                      builder: (_, v, __) => Icon(
-                        Icons.more_horiz,
-                        color: ColorTween(
-                          begin: ColorProvider.base(),
-                          end: ColorProvider.textColor(),
-                        ).lerp(max(0, v - 1)),
-                      ),
-                    ),
-                  ),
-                ],
-                backgroundColor: ColorProvider.bg(),
-                expandedHeight: h,
-                flexibleSpace: FlexibleSpaceBar(
-                  titlePadding: const EdgeInsets.all(0),
-                  title: IgnorePointer(
-                    child: PercentWidget(
-                      percent: barCtrl,
-                      builder: (_, v, ___) => Container(
-                        width: double.infinity,
-                        height: kToolbarHeight,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: const Alignment(0, 1),
-                            end: const Alignment(0, -1),
-                            colors: [
-                              ColorProvider.bg().withOpacity(min(1, v)),
-                              Colors.transparent,
-                            ],
-                            stops: [
-                              min(1, v),
-                              1,
-                            ],
-                          ),
-                        ),
-                        child: Center(
-                          child: Transform.translate(
-                            offset: Offset(0, kToolbarHeight * (2 - v)),
-                            child: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: Text(
-                                info.data.name,
-                                maxLines: 1,
-                                style: Common.textStyle(
-                                  context,
-                                  scale: 1.5,
-                                  alpha: Curves.easeIn.transform(max(0, v - 1)),
-                                ).copyWith(
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  background: DemoItemCards(
-                    tag: info.data.id,
-                    urls: info.data.urls,
-                    index: info.index,
-                    size: info.size,
-                    hasRadius: false,
-                  ),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Align(
-                    alignment: const Alignment(-1, 0),
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        info.data.name,
-                        maxLines: 1,
-                        style: Common.textStyle(
-                          context,
-                          scale: 1.5,
-                        ).copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  childCount: DemoHelper.name.length,
-                  (_, i) => Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Container(
-                      decoration: Common.roundRect(
-                        context,
-                        scale: .5,
-                        bgColor: ColorProvider.itemBg(),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Text(
-                              DemoHelper.name[i],
-                              style: Common.textStyle(
-                                context,
-                                color: ColorProvider.textColor(),
-                              ),
-                            ),
-                            Text(
-                              DemoHelper.relaxed[i],
-                              style: Common.textStyle(
-                                context,
-                                alpha: .5,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              _head(context, h),
+              _title(context),
+              _tags(context),
+              _details(context),
             ],
           ),
         ),
