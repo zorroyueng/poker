@@ -22,10 +22,12 @@ class DemoItemCards extends StatelessWidget {
     this.hasRadius = true,
   });
 
+  double _barHeight(double radius) => radius / 10;
+
   Widget _progressBar(double radius) {
     List<Widget> lst = [];
     if (urls.length > 1) {
-      double d = radius / 10;
+      double d = _barHeight(radius);
       for (int i = 0; i < urls.length; i++) {
         bool current = i == index.value();
         lst.add(Expanded(
@@ -52,6 +54,8 @@ class DemoItemCards extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double radius = Common.radius(context);
+    double barPaddingV = hasRadius ? radius / 2 : (kToolbarHeight - _barHeight(radius)) / 2;
+    double barPaddingH = hasRadius ? barPaddingV : barPaddingV * 2;
     List<Widget> children = [];
     children.add(
       Expanded(
@@ -77,6 +81,10 @@ class DemoItemCards extends StatelessWidget {
                   int n = index.value() + 1;
                   if (n < urls.length) {
                     index.add(n);
+                    int next = n + 1;
+                    if (next < urls.length) {
+                      Common.precache(context, urls[next], size);
+                    }
                   } else {
                     HapticFeedback.lightImpact();
                   }
@@ -117,9 +125,9 @@ class DemoItemCards extends StatelessWidget {
           ),
         ),
         Positioned(
-          left: radius / 2,
-          top: radius / 2,
-          right: radius / 2,
+          top: barPaddingV,
+          left: barPaddingH,
+          right: barPaddingH,
           child: StreamWidget(
             stream: index.stream().distinct(),
             initialData: index.value(),

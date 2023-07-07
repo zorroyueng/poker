@@ -86,36 +86,38 @@ class DetailPage extends StatelessWidget {
                 expandedHeight: h,
                 flexibleSpace: FlexibleSpaceBar(
                   titlePadding: const EdgeInsets.all(0),
-                  title: PercentWidget(
-                    percent: barCtrl,
-                    builder: (_, v, ___) => Container(
-                      width: double.infinity,
-                      height: kToolbarHeight,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: const Alignment(0, 1),
-                          end: const Alignment(0, -1),
-                          colors: [
-                            ColorProvider.bg().withOpacity(min(1, v)),
-                            Colors.transparent,
-                          ],
-                          stops: [
-                            min(1, v),
-                            1,
-                          ],
+                  title: IgnorePointer(
+                    child: PercentWidget(
+                      percent: barCtrl,
+                      builder: (_, v, ___) => Container(
+                        width: double.infinity,
+                        height: kToolbarHeight,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: const Alignment(0, 1),
+                            end: const Alignment(0, -1),
+                            colors: [
+                              ColorProvider.bg().withOpacity(min(1, v)),
+                              Colors.transparent,
+                            ],
+                            stops: [
+                              min(1, v),
+                              1,
+                            ],
+                          ),
                         ),
-                      ),
-                      child: Center(
-                        child: Transform.translate(
-                          offset: Offset(0, kToolbarHeight * (2 - v)),
-                          child: Text(
-                            info.data.name,
-                            style: Common.textStyle(
-                              context,
-                              scale: 1.5,
-                              alpha: Curves.easeIn.transform(max(0, v - 1)),
-                            ).copyWith(
-                              fontWeight: FontWeight.w700,
+                        child: Center(
+                          child: Transform.translate(
+                            offset: Offset(0, kToolbarHeight * (2 - v)),
+                            child: Text(
+                              info.data.name,
+                              style: Common.textStyle(
+                                context,
+                                scale: 1.5,
+                                alpha: Curves.easeIn.transform(max(0, v - 1)),
+                              ).copyWith(
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                           ),
                         ),
