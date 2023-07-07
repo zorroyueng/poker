@@ -228,23 +228,49 @@ class DetailPage extends StatelessWidget {
         ),
       );
 
+  Widget _quit({required BuildContext context, required Widget child}) {
+    Offset? from;
+    double w = HpDevice.screenMin(context) / 10;
+    return GestureDetector(
+      onPanDown: (d) {
+        from = d.localPosition;
+        if (from!.dx > w) {
+          from = null;
+        }
+      },
+      onPanUpdate: (d) {
+        if (from != null) {
+          if (d.localPosition.dx - from!.dx >= w && (d.localPosition.dy - from!.dy).abs() <= w) {
+            Navigator.of(context).pop();
+          }
+        }
+      },
+      onPanEnd: (d) => from = null,
+      onPanCancel: () => from = null,
+      child: child,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double h = HpDevice.screenMin(context);
     _bind(context, h);
     return Scaffold(
       body: SafeArea(
-        child: Common.scrollbar(
-          ctx: context,
-          controller: scrollCtrl,
-          child: CustomScrollView(
+        child: _quit(
+          context: context,
+          child: Common.scrollbar(
+            ctx: context,
             controller: scrollCtrl,
-            slivers: [
-              _head(context, h),
-              _title(context),
-              _tags(context),
-              _details(context),
-            ],
+            child: CustomScrollView(
+              controller: scrollCtrl,
+              slivers: [
+                _head(context, h),
+                _title(context),
+                _tags(context),
+                _details(context),
+              ],
+            ),
           ),
         ),
       ),
