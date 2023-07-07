@@ -13,72 +13,78 @@ mixin DemoItemMixin {
     return ThemeWidget(
       builder: (ctx, child) {
         double radius = Common.radius(ctx);
-        return Hero(
+        return DemoItemCards(
           tag: t.id,
-          child: DemoItemCards(
-            urls: t.urls,
-            index: 0,
-            size: size,
-            bottom: Common.click(
-              child: PercentWidget(
-                percent: alpha,
-                builder: (_, p, __) => Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(radius),
-                      bottomRight: Radius.circular(radius),
-                    ),
-                    gradient: LinearGradient(
-                      begin: const Alignment(0, 1),
-                      end: const Alignment(0, -1),
-                      colors: [Colors.black.withOpacity(.5 * p), Colors.transparent],
-                      stops: const [.5, 1],
-                    ),
+          urls: t.urls,
+          index: 0,
+          size: size,
+          bottom: Common.click(
+            r: BorderRadius.only(
+              bottomLeft: Radius.circular(radius),
+              bottomRight: Radius.circular(radius),
+            ),
+            child: PercentWidget(
+              percent: alpha,
+              builder: (_, p, __) => Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(radius),
+                    bottomRight: Radius.circular(radius),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '${t.name} ${t.id}',
-                          maxLines: 1,
-                          style: Common.textStyle(
-                            ctx,
-                            color: ColorProvider.base(p),
-                            scale: 2,
-                          ).copyWith(fontWeight: FontWeight.w700),
+                  gradient: LinearGradient(
+                    begin: const Alignment(0, 1),
+                    end: const Alignment(0, -1),
+                    colors: [Colors.black.withOpacity(.5 * p), Colors.transparent],
+                    stops: const [.5, 1],
+                  ),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: radius / 2,
+                    right: radius / 2,
+                    bottom: radius / 2,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${t.name} ${t.id}',
+                        maxLines: 1,
+                        style: Common.textStyle(
+                          ctx,
+                          color: ColorProvider.base(p),
+                          scale: 2,
+                        ).copyWith(fontWeight: FontWeight.w700),
+                      ),
+                      Text(
+                        t.urls[0],
+                        maxLines: 3,
+                        style: Common.textStyle(
+                          ctx,
+                          color: ColorProvider.base(.7 * p),
                         ),
-                        Text(
-                          t.urls[0],
-                          maxLines: 3,
-                          style: Common.textStyle(
-                            ctx,
-                            color: ColorProvider.base(.7 * p),
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-              onTap: () {
-                DetailPage page = DetailPage(info: DetailInfo(data: t, size: size));
-                bool send = false;
-                NavigatorObs.pushAlpha(
-                  ctx,
-                  page,
-                  onBack: (p) {
-                    if (p == 0 && !send) {
-                      alpha.add(0);
-                      alpha.anim(1, ms: 200);
-                      send = true;
-                    }
-                  },
-                );
-              },
             ),
+            onTap: () {
+              DetailPage page = DetailPage(info: DetailInfo(data: t, size: size));
+              bool send = false;
+              NavigatorObs.pushAlpha(
+                ctx,
+                page,
+                onBack: (p) {
+                  if (p == 0 && !send) {
+                    alpha.add(0);
+                    alpha.anim(1, ms: 200);
+                    send = true;
+                  }
+                },
+              );
+            },
           ),
         );
       },

@@ -8,6 +8,7 @@ class DemoItemCards extends StatelessWidget {
   final List<String> urls;
   late final Broadcast<int> ctrl;
   final Size size;
+  final Object tag;
   final Widget? bottom;
 
   DemoItemCards({
@@ -16,6 +17,7 @@ class DemoItemCards extends StatelessWidget {
     required int index,
     required this.size,
     required this.bottom,
+    required this.tag,
   }) {
     ctrl = Broadcast(index);
   }
@@ -31,7 +33,7 @@ class DemoItemCards extends StatelessWidget {
             height: d,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(d),
-              color: ColorProvider.base(current ? 1 : .5),
+              color: ColorProvider.base(current ? 1 : .3),
             ),
             duration: const Duration(milliseconds: 200),
           ),
@@ -93,19 +95,22 @@ class DemoItemCards extends StatelessWidget {
       fit: StackFit.expand,
       children: [
         Positioned.fill(
-          child: Container(
-            decoration: BoxDecoration(
-              color: ColorProvider.itemBg(),
-              borderRadius: BorderRadius.circular(radius),
-            ),
-            child: StreamWidget(
-              stream: ctrl.stream().distinct(),
-              initialData: ctrl.value(),
-              builder: (_, __, ___) => Common.netImage(
-                url: urls[ctrl.value()],
-                w: size.width,
-                h: size.height,
+          child: Hero(
+            tag: tag,
+            child: Container(
+              decoration: BoxDecoration(
+                color: ColorProvider.itemBg(),
                 borderRadius: BorderRadius.circular(radius),
+              ),
+              child: StreamWidget(
+                stream: ctrl.stream().distinct(),
+                initialData: ctrl.value(),
+                builder: (_, __, ___) => Common.netImage(
+                  url: urls[ctrl.value()],
+                  w: size.width,
+                  h: size.height,
+                  borderRadius: BorderRadius.circular(radius),
+                ),
               ),
             ),
           ),
