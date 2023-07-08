@@ -109,7 +109,7 @@ class _VideoWidgetState extends State<VideoWidget> {
                       initialData: _playing.value(),
                       stream: _playing.stream().distinct(),
                       builder: (_, __, ___) => IconButton(
-                        onPressed: () => _play(_video.value.isPlaying!),
+                        onPressed: () => _play(!_video.value.isPlaying),
                         icon: Icon(
                           _video.value.isPlaying ? Icons.pause_circle_outlined : Icons.play_arrow_outlined,
                           size: Common.base(context, Config.iconK),
