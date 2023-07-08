@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:base/base.dart';
 import 'package:flutter/material.dart';
+import 'package:poker/base/color_provider.dart';
 import 'package:poker/base/common.dart';
 import 'package:poker/poker/config.dart';
 import 'package:video_player/video_player.dart';
@@ -112,6 +113,7 @@ class _VideoWidgetState extends State<VideoWidget> {
                         icon: Icon(
                           _video.value.isPlaying ? Icons.pause_circle_outlined : Icons.play_arrow_outlined,
                           size: Common.base(context, Config.iconK),
+                          color: ColorProvider.base(.5),
                         ),
                       ),
                     ),
