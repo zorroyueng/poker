@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:poker/base/color_provider.dart';
 import 'package:poker/base/common.dart';
+import 'package:poker/base/video_widget.dart';
 import 'package:poker/poker/config.dart';
 
 class DemoItemCards extends StatelessWidget {
@@ -53,14 +54,7 @@ class DemoItemCards extends StatelessWidget {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    double radius = Common.radius(context);
-    double barPaddingV = hasRadius ? radius / 2 : (kToolbarHeight - _barHeight(radius)) / 2;
-    double barPaddingH = hasRadius ? barPaddingV : barPaddingV * 2;
-    List<Widget> children = [];
-    children.add(
-      Expanded(
+  Widget _switch(BuildContext context, double radius) => Expanded(
         child: Row(
           children: [
             Expanded(
@@ -105,11 +99,24 @@ class DemoItemCards extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-    if (bottom != null) {
-      children.add(bottom!);
-    }
+      );
+
+  @override
+  Widget build(BuildContext context) {
+    double radius = Common.radius(context);
+    double barPaddingV = hasRadius ? radius / 2 : (kToolbarHeight - _barHeight(radius)) / 2;
+    double barPaddingH = hasRadius ? barPaddingV : barPaddingV * 2;
+    Widget ctrl = () {
+      List<Widget> children = [];
+      children.add(_switch(context, radius));
+      if (bottom != null) {
+        children.add(bottom!);
+      }
+      return Column(
+        mainAxisSize: MainAxisSize.max,
+        children: children,
+      );
+    }();
     BorderRadius? borderRadius = hasRadius ? BorderRadius.circular(radius) : null;
     return PercentWidget(
       percent: rotate,
@@ -137,12 +144,24 @@ class DemoItemCards extends StatelessWidget {
                 child: StreamWidget(
                   stream: index.stream().distinct(),
                   initialData: index.value(),
-                  builder: (_, __, ___) => Common.netImage(
-                    url: urls[index.value()],
-                    w: size.width,
-                    h: size.height,
-                    borderRadius: borderRadius,
-                  ),
+                  builder: (_, __, ___) {
+                    String url = urls[index.value()];
+                    if (url.endsWith('.mp4')) {
+                      return VideoWidget(
+                        url: url,
+                        ctrl: ctrl,
+                        borderRadius: borderRadius,
+                      );
+                    } else {
+                      return Common.netImage(
+                        url: url,
+                        w: size.width,
+                        h: size.height,
+                        ctrl: ctrl,
+                        borderRadius: borderRadius,
+                      );
+                    }
+                  },
                 ),
               ),
             ),
@@ -155,12 +174,6 @@ class DemoItemCards extends StatelessWidget {
               stream: index.stream().distinct(),
               initialData: index.value(),
               builder: (_, __, ___) => _progressBar(radius),
-            ),
-          ),
-          Positioned.fill(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: children,
             ),
           ),
         ],

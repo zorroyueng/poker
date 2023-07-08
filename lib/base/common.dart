@@ -445,29 +445,39 @@ class Common {
     required String url,
     required double w,
     required double h,
+    required Widget ctrl,
     BorderRadiusGeometry? borderRadius,
   }) =>
-      CachedNetworkImage(
-        imageUrl: url,
-        width: w,
-        height: h,
-        maxWidthDiskCache: w.toInt(),
-        maxHeightDiskCache: h.toInt(),
-        fadeInDuration: const Duration(milliseconds: 300),
-        fadeOutDuration: const Duration(milliseconds: 200),
-        imageBuilder: (_, imageProvider) => Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: imageProvider,
-              fit: BoxFit.cover,
-              filterQuality: FilterQuality.low,
-              // isAntiAlias: true,
+      Stack(
+        clipBehavior: Clip.none,
+        fit: StackFit.expand,
+        children: [
+          Positioned.fill(
+            child: CachedNetworkImage(
+              imageUrl: url,
+              width: w,
+              height: h,
+              maxWidthDiskCache: w.toInt(),
+              maxHeightDiskCache: h.toInt(),
+              fadeInDuration: const Duration(milliseconds: 300),
+              fadeOutDuration: const Duration(milliseconds: 200),
+              imageBuilder: (_, imageProvider) => Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
+                    filterQuality: FilterQuality.low,
+                    // isAntiAlias: true,
+                  ),
+                  borderRadius: borderRadius,
+                ),
+              ),
+              placeholder: (context, url) => loading,
+              errorWidget: (context, url, error) => const Center(child: Icon(Icons.error)),
             ),
-            borderRadius: borderRadius,
           ),
-        ),
-        placeholder: (context, url) => loading,
-        errorWidget: (context, url, error) => const Center(child: Icon(Icons.error)),
+          Positioned.fill(child: ctrl),
+        ],
       );
 
   static void precache(BuildContext ctx, String url, Size size) => precacheImage(

@@ -18,6 +18,7 @@ class DemoHelper {
       for (int j = 0; j < max; j++) {
         urls.add(random(pics));
       }
+      urls.add('https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4');
       data.add(DemoData(
         id: i,
         name: random(name),
