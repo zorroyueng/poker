@@ -26,4 +26,7 @@ class Config {
 
   // switch
   static const double rotateY = pi / 18;
+
+  // icon size
+  static const double iconK = 1.5;
 }

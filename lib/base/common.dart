@@ -439,6 +439,8 @@ class Common {
     );
   }
 
+  static Widget loading = const Center(child: CircularProgressIndicator());
+
   static Widget netImage({
     required String url,
     required double w,
@@ -464,7 +466,7 @@ class Common {
             borderRadius: borderRadius,
           ),
         ),
-        placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+        placeholder: (context, url) => loading,
         errorWidget: (context, url, error) => const Center(child: Icon(Icons.error)),
       );
 
