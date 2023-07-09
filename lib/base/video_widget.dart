@@ -11,12 +11,14 @@ class VideoWidget extends StatefulWidget {
   final String url;
   final Widget ctrl;
   final BorderRadiusGeometry? borderRadius;
+  final Object? tag;
 
   const VideoWidget({
     super.key,
     required this.url,
     this.borderRadius,
     required this.ctrl,
+    this.tag,
   });
 
   @override
@@ -24,16 +26,16 @@ class VideoWidget extends StatefulWidget {
 }
 
 class _VideoWidgetState extends State<VideoWidget> {
-  late VideoPlayerController _video;
+  late VideoPlayerController _videoCtrl;
   final Broadcast<bool> _playing = Broadcast(false);
   final Broadcast<bool> _init = Broadcast(false);
 
   @override
   void initState() {
     super.initState();
-    _video = VideoPlayerController.networkUrl(Uri.parse(widget.url));
-    _video.setLooping(true);
-    _video.initialize().then(
+    _videoCtrl = VideoPlayerController.networkUrl(Uri.parse(widget.url));
+    _videoCtrl.setLooping(true);
+    _videoCtrl.initialize().then(
       (_) {
         _init.add(true);
         _play(true);
@@ -44,84 +46,99 @@ class _VideoWidgetState extends State<VideoWidget> {
   @override
   void dispose() {
     super.dispose();
-    _video.dispose();
+    _videoCtrl.dispose();
   }
 
   void _play(bool play) {
-    play ? _video.play() : _video.pause();
-    _playing.add(_video.value.isPlaying);
+    play ? _videoCtrl.play() : _videoCtrl.pause();
+    _playing.add(_videoCtrl.value.isPlaying);
+  }
+
+  Widget _hero(Widget child) {
+    if (widget.tag != null) {
+      child = Hero(tag: widget.tag!, child: child);
+    }
+    return child;
   }
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
-        builder: (_, constraints) => Container(
-          clipBehavior: Clip.hardEdge,
-          decoration: BoxDecoration(
-            borderRadius: widget.borderRadius,
-          ),
-          child: Stack(
-            clipBehavior: Clip.none,
-            fit: StackFit.expand,
-            children: [
-              StreamWidget(
+        builder: (_, constraints) => Stack(
+          clipBehavior: Clip.none,
+          fit: StackFit.expand,
+          children: [
+            Positioned.fill(
+              child: _hero(
+                Container(
+                  clipBehavior: Clip.hardEdge,
+                  decoration: BoxDecoration(
+                    borderRadius: widget.borderRadius,
+                  ),
+                  child: StreamWidget(
+                    stream: _init.stream().distinct(),
+                    initialData: _init.value(),
+                    builder: (_, __, ___) {
+                      if (_init.value()) {
+                        double left = 0;
+                        double top = 0;
+                        double w = constraints.maxWidth;
+                        double h = constraints.maxHeight;
+                        double k = w / h;
+                        if (_videoCtrl.value.aspectRatio >= k) {
+                          w = h * _videoCtrl.value.aspectRatio;
+                          left = -(w - constraints.maxWidth) / 2;
+                        } else {
+                          h = w / _videoCtrl.value.aspectRatio;
+                          top = -(h - constraints.maxHeight) / 2;
+                        }
+                        return Stack(
+                          children: [
+                            Positioned.fromRect(
+                              rect: Rect.fromLTWH(left, top, w, h),
+                              child: VideoPlayer(_videoCtrl),
+                            ),
+                          ],
+                        );
+                      } else {
+                        return Common.loading;
+                      }
+                    },
+                  ),
+                ),
+              ),
+            ),
+            Positioned.fill(child: widget.ctrl),
+            Positioned.fill(
+              child: StreamWidget(
                 stream: _init.stream().distinct(),
                 initialData: _init.value(),
-                builder: (_, __, ___) {
+                builder: (_, __, child) {
                   if (_init.value()) {
-                    double left = 0;
-                    double top = 0;
-                    double w = constraints.maxWidth;
-                    double h = constraints.maxHeight;
-                    double k = w / h;
-                    if (_video.value.aspectRatio >= k) {
-                      w = h * _video.value.aspectRatio;
-                      left = -(w - constraints.maxWidth) / 2;
-                    } else {
-                      h = w / _video.value.aspectRatio;
-                      top = -(h - constraints.maxHeight) / 2;
-                    }
-                    return Positioned.fromRect(
-                      rect: Rect.fromLTWH(left, top, w, h),
-                      child: VideoPlayer(_video),
-                    );
+                    return child!;
                   } else {
-                    return Common.loading;
+                    return Visibility(
+                      visible: false,
+                      child: child!,
+                    );
                   }
                 },
-              ),
-              Positioned.fill(child: widget.ctrl),
-              Positioned.fill(
-                child: StreamWidget(
-                  stream: _init.stream().distinct(),
-                  initialData: _init.value(),
-                  builder: (_, __, child) {
-                    if (_init.value()) {
-                      return child!;
-                    } else {
-                      return Visibility(
-                        visible: false,
-                        child: child!,
-                      );
-                    }
-                  },
-                  child: Center(
-                    child: StreamWidget<bool>(
-                      initialData: _playing.value(),
-                      stream: _playing.stream().distinct(),
-                      builder: (_, __, ___) => IconButton(
-                        onPressed: () => _play(!_video.value.isPlaying),
-                        icon: Icon(
-                          _video.value.isPlaying ? Icons.pause_circle_outlined : Icons.play_arrow_outlined,
-                          size: Common.base(context, Config.iconK),
-                          color: ColorProvider.base(.5),
-                        ),
+                child: Center(
+                  child: StreamWidget<bool>(
+                    initialData: _playing.value(),
+                    stream: _playing.stream().distinct(),
+                    builder: (_, __, ___) => IconButton(
+                      onPressed: () => _play(!_videoCtrl.value.isPlaying),
+                      icon: Icon(
+                        _videoCtrl.value.isPlaying ? Icons.pause_circle_outlined : Icons.play_arrow_outlined,
+                        size: Common.base(context, Config.iconK),
+                        color: ColorProvider.base(.5),
                       ),
                     ),
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
 }

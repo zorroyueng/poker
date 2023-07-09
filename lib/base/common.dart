@@ -445,42 +445,36 @@ class Common {
     required String url,
     required double w,
     required double h,
-    required Widget ctrl,
     BorderRadiusGeometry? borderRadius,
   }) =>
-      Stack(
-        clipBehavior: Clip.none,
-        fit: StackFit.expand,
-        children: [
-          Positioned.fill(
-            child: CachedNetworkImage(
-              imageUrl: url,
-              width: w,
-              height: h,
-              maxWidthDiskCache: w.toInt(),
-              maxHeightDiskCache: h.toInt(),
-              fadeInDuration: const Duration(milliseconds: 300),
-              fadeOutDuration: const Duration(milliseconds: 200),
-              imageBuilder: (_, imageProvider) => Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: imageProvider,
-                    fit: BoxFit.cover,
-                    filterQuality: FilterQuality.low,
-                    // isAntiAlias: true,
-                  ),
-                  borderRadius: borderRadius,
-                ),
-              ),
-              placeholder: (context, url) => loading,
-              errorWidget: (context, url, error) => const Center(child: Icon(Icons.error)),
+      CachedNetworkImage(
+        imageUrl: url,
+        width: w,
+        height: h,
+        maxWidthDiskCache: w.toInt(),
+        maxHeightDiskCache: h.toInt(),
+        fadeInDuration: const Duration(milliseconds: 300),
+        fadeOutDuration: const Duration(milliseconds: 200),
+        imageBuilder: (_, imageProvider) => Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: imageProvider,
+              fit: BoxFit.cover,
+              filterQuality: FilterQuality.low,
+              // isAntiAlias: true,
             ),
+            borderRadius: borderRadius,
           ),
-          Positioned.fill(child: ctrl),
-        ],
+        ),
+        placeholder: (context, url) => loading,
+        errorWidget: (context, url, error) => const Center(child: Icon(Icons.error)),
       );
 
-  static void precache(BuildContext ctx, String url, Size size) => precacheImage(
+  static bool isVideo(String url) => url.endsWith('.mp4');
+
+  static void precache(BuildContext ctx, String url, Size size) {
+    if (!isVideo(url)) {
+      precacheImage(
         size: size,
         CachedNetworkImageProvider(
           url,
@@ -489,4 +483,6 @@ class Common {
         ),
         ctx,
       );
+    }
+  }
 }

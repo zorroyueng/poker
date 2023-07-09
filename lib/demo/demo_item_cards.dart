@@ -134,35 +134,44 @@ class DemoItemCards extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           Positioned.fill(
-            child: Hero(
-              tag: tag,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: ColorProvider.itemBg(),
-                  borderRadius: borderRadius,
-                ),
-                child: StreamWidget(
-                  stream: index.stream().distinct(),
-                  initialData: index.value(),
-                  builder: (_, __, ___) {
-                    String url = urls[index.value()];
-                    if (url.endsWith('.mp4')) {
-                      return VideoWidget(
-                        url: url,
-                        ctrl: ctrl,
-                        borderRadius: borderRadius,
-                      );
-                    } else {
-                      return Common.netImage(
-                        url: url,
-                        w: size.width,
-                        h: size.height,
-                        ctrl: ctrl,
-                        borderRadius: borderRadius,
-                      );
-                    }
-                  },
-                ),
+            child: Container(
+              decoration: BoxDecoration(
+                color: ColorProvider.itemBg(),
+                borderRadius: borderRadius,
+              ),
+              child: StreamWidget(
+                stream: index.stream().distinct(),
+                initialData: index.value(),
+                builder: (_, __, ___) {
+                  String url = urls[index.value()];
+                  if (Common.isVideo(url)) {
+                    return VideoWidget(
+                      url: url,
+                      ctrl: ctrl,
+                      tag: tag,
+                      borderRadius: borderRadius,
+                    );
+                  } else {
+                    return Stack(
+                      clipBehavior: Clip.none,
+                      fit: StackFit.expand,
+                      children: [
+                        Positioned.fill(
+                          child: Hero(
+                            tag: tag,
+                            child: Common.netImage(
+                              url: url,
+                              w: size.width,
+                              h: size.height,
+                              borderRadius: borderRadius,
+                            ),
+                          ),
+                        ),
+                        Positioned.fill(child: ctrl),
+                      ],
+                    );
+                  }
+                },
               ),
             ),
           ),
