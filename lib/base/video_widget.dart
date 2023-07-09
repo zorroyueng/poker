@@ -26,32 +26,18 @@ class VideoWidget extends StatefulWidget {
 }
 
 class _VideoWidgetState extends State<VideoWidget> {
-  late VideoPlayerController _videoCtrl;
-  final Broadcast<bool> _playing = Broadcast(false);
-  final Broadcast<bool> _init = Broadcast(false);
+  late VideoDef _videoDef;
 
   @override
   void initState() {
+    _videoDef = _VideoManager.initState(widget.url);
     super.initState();
-    _videoCtrl = VideoPlayerController.networkUrl(Uri.parse(widget.url));
-    _videoCtrl.setLooping(true);
-    _videoCtrl.initialize().then(
-      (_) {
-        _init.add(true);
-        _play(true);
-      },
-    );
   }
 
   @override
   void dispose() {
+    _VideoManager.dispose(widget.url);
     super.dispose();
-    _videoCtrl.dispose();
-  }
-
-  void _play(bool play) {
-    play ? _videoCtrl.play() : _videoCtrl.pause();
-    _playing.add(_videoCtrl.value.isPlaying);
   }
 
   Widget _hero(Widget child) {
@@ -75,27 +61,27 @@ class _VideoWidgetState extends State<VideoWidget> {
                     borderRadius: widget.borderRadius,
                   ),
                   child: StreamWidget(
-                    stream: _init.stream().distinct(),
-                    initialData: _init.value(),
+                    stream: _videoDef.init.stream().distinct(),
+                    initialData: _videoDef.init.value(),
                     builder: (_, __, ___) {
-                      if (_init.value()) {
+                      if (_videoDef.init.value()) {
                         double left = 0;
                         double top = 0;
                         double w = constraints.maxWidth;
                         double h = constraints.maxHeight;
                         double k = w / h;
-                        if (_videoCtrl.value.aspectRatio >= k) {
-                          w = h * _videoCtrl.value.aspectRatio;
+                        if (_videoDef.ctrl.value.aspectRatio >= k) {
+                          w = h * _videoDef.ctrl.value.aspectRatio;
                           left = -(w - constraints.maxWidth) / 2;
                         } else {
-                          h = w / _videoCtrl.value.aspectRatio;
+                          h = w / _videoDef.ctrl.value.aspectRatio;
                           top = -(h - constraints.maxHeight) / 2;
                         }
                         return Stack(
                           children: [
                             Positioned.fromRect(
                               rect: Rect.fromLTWH(left, top, w, h),
-                              child: VideoPlayer(_videoCtrl),
+                              child: VideoPlayer(_videoDef.ctrl),
                             ),
                           ],
                         );
@@ -110,10 +96,10 @@ class _VideoWidgetState extends State<VideoWidget> {
             Positioned.fill(child: widget.ctrl),
             Positioned.fill(
               child: StreamWidget(
-                stream: _init.stream().distinct(),
-                initialData: _init.value(),
+                stream: _videoDef.init.stream().distinct(),
+                initialData: _videoDef.init.value(),
                 builder: (_, __, child) {
-                  if (_init.value()) {
+                  if (_videoDef.init.value()) {
                     return child!;
                   } else {
                     return Visibility(
@@ -124,16 +110,19 @@ class _VideoWidgetState extends State<VideoWidget> {
                 },
                 child: Center(
                   child: StreamWidget<bool>(
-                    initialData: _playing.value(),
-                    stream: _playing.stream().distinct(),
-                    builder: (_, __, ___) => IconButton(
-                      onPressed: () => _play(!_videoCtrl.value.isPlaying),
-                      icon: Icon(
-                        _videoCtrl.value.isPlaying ? Icons.pause_circle_outlined : Icons.play_arrow_outlined,
-                        size: Common.base(context, Config.iconK),
-                        color: ColorProvider.base(.5),
-                      ),
-                    ),
+                    initialData: _videoDef.playing.value(),
+                    stream: _videoDef.playing.stream().distinct(),
+                    builder: (_, __, ___) {
+                      _videoDef.playing.value() ? _videoDef.ctrl.play() : _videoDef.ctrl.pause();
+                      return IconButton(
+                        onPressed: () => _videoDef.playing.add(!_videoDef.ctrl.value.isPlaying),
+                        icon: Icon(
+                          _videoDef.ctrl.value.isPlaying ? Icons.pause_circle_outlined : Icons.play_arrow_outlined,
+                          size: Common.base(context, Config.iconK),
+                          color: ColorProvider.base(.5),
+                        ),
+                      );
+                    },
                   ),
                 ),
               ),
@@ -141,4 +130,47 @@ class _VideoWidgetState extends State<VideoWidget> {
           ],
         ),
       );
+}
+
+class _VideoManager {
+  _VideoManager._();
+
+  static final Map<String, VideoDef> _map = {};
+
+  static VideoDef initState(String url) {
+    VideoDef? video = _map[url];
+    if (video == null) {
+      video = VideoDef(VideoPlayerController.networkUrl(Uri.parse(url)));
+      video.ctrl.setLooping(true);
+      video.ctrl.initialize().then(
+        (_) {
+          video!.init.add(true);
+          video.playing.add(true);
+        },
+      );
+      _map[url] = video;
+    }
+    video._use++;
+    return video;
+  }
+
+  static void dispose(String url) {
+    VideoDef? video = _map[url];
+    if (video == null) {
+      video!._use--;
+      if (video._use <= 0) {
+        video.ctrl.dispose();
+        _map.remove(url);
+      }
+    }
+  }
+}
+
+class VideoDef {
+  final VideoPlayerController ctrl;
+  final Broadcast<bool> playing = Broadcast(false);
+  final Broadcast<bool> init = Broadcast(false);
+  int _use = 0;
+
+  VideoDef(this.ctrl);
 }
