@@ -28,13 +28,13 @@ class _VideoWidgetState extends State<VideoWidget> {
 
   @override
   void initState() {
-    _videoDef = _VideoManager.initState(widget.url);
+    _videoDef = _VideoManager._initState(widget.url);
     super.initState();
   }
 
   @override
   void dispose() {
-    _VideoManager.dispose(widget.url);
+    _VideoManager._dispose(widget.url);
     super.dispose();
   }
 
@@ -76,6 +76,7 @@ class _VideoWidgetState extends State<VideoWidget> {
                           top = -(h - constraints.maxHeight) / 2;
                         }
                         return Stack(
+                          clipBehavior: Clip.none,
                           children: [
                             Positioned.fromRect(
                               rect: Rect.fromLTWH(left, top, w, h),
@@ -135,7 +136,7 @@ class _VideoManager {
 
   static final Map<String, VideoDef> _map = {};
 
-  static VideoDef initState(String url) {
+  static VideoDef _initState(String url) {
     VideoDef? video = _map[url];
     if (video == null) {
       video = VideoDef(VideoPlayerController.networkUrl(Uri.parse(url)));
@@ -152,7 +153,7 @@ class _VideoManager {
     return video;
   }
 
-  static void dispose(String url) {
+  static void _dispose(String url) {
     VideoDef? video = _map[url];
     if (video != null) {
       video!._use--;

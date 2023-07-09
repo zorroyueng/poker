@@ -32,9 +32,8 @@ class DemoItemCards extends StatefulWidget {
   State<DemoItemCards> createState() => _DemoItemCardsState();
 }
 
-class _DemoItemCardsState extends State<DemoItemCards> {
+class _DemoItemCardsState extends State<DemoItemCards> with _PercentSubMixin {
   final Percent rotate = Percent(0, space: 0);
-  late final StreamSubscription? _sub;
 
   double _barHeight(double radius) => radius / 10;
 
@@ -42,26 +41,27 @@ class _DemoItemCardsState extends State<DemoItemCards> {
   void initState() {
     super.initState();
     if (widget.percent != null) {
-      void func(v) {
-        if (v == 1) {
-          int n = widget.index.value() + 1;
-          if (n < widget.urls.length) {
-            Common.precache(
-              url: widget.urls[n],
-              size: widget.imgSize,
-            );
+      initSub(
+        widget.percent!,
+        (v) {
+          if (v == 1) {
+            int n = widget.index.value() + 1;
+            if (n < widget.urls.length) {
+              Common.precache(
+                url: widget.urls[n],
+                size: widget.imgSize,
+              );
+            }
           }
-        }
-      }
-      func(widget.percent!.value());
-      _sub = widget.percent!.stream().distinct().listen(func);
+        },
+      );
     }
   }
 
   @override
   void dispose() {
     super.dispose();
-    _sub?.cancel();
+    disposeSub();
   }
 
   Widget _progressBar(double radius) {
@@ -230,6 +230,17 @@ class _DemoItemCardsState extends State<DemoItemCards> {
       ),
     );
   }
+}
+
+mixin _PercentSubMixin {
+  late final StreamSubscription? _sub;
+
+  void initSub(Percent percent, void Function(double t) func) {
+    func(percent.value());
+    _sub = percent.stream().distinct().listen(func);
+  }
+
+  void disposeSub() => _sub?.cancel();
 }
 
 class _Sin extends Curve {
