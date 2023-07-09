@@ -124,7 +124,7 @@ class DetailPage extends StatelessWidget {
             tag: info.data.id,
             urls: info.data.urls,
             index: info.index,
-            size: info.size,
+            imgSize: info.imgSize,
             hasRadius: false,
           ),
         ),
@@ -280,12 +280,12 @@ class DetailPage extends StatelessWidget {
 
 class DetailInfo {
   final DemoData data;
-  final Size size;
+  final Size imgSize;
   final Broadcast<int> index;
 
   DetailInfo({
     required this.data,
-    required this.size,
+    required this.imgSize,
     required this.index,
   });
 }

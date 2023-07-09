@@ -157,7 +157,7 @@ class _VideoManager {
     if (video != null) {
       video!._use--;
       if (video._use <= 0) {
-        assert(video._use < 0);
+        assert(video._use == 0);
         video.ctrl.dispose();
         _map.remove(url);
       }

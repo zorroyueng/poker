@@ -13,7 +13,7 @@ class DemoAdapter extends PokerAdapter<DemoData> with DemoItemMixin {
   );
 
   @override
-  Widget item(DemoData t, Size size) => build(this, t, size);
+  Widget item(DemoData t, Size imgSize, Percent percent) => build(this, t, imgSize, percent);
 
   @override
   Object id(DemoData t) => t.id;

@@ -472,8 +472,9 @@ class Common {
 
   static bool isVideo(String url) => url.endsWith('.mp4');
 
-  static void precache(BuildContext ctx, String url, Size size) {
-    if (!isVideo(url)) {
+  static void precache({BuildContext? ctx, required String url, required Size size}) {
+    ctx ??= NavigatorObs.ctx();
+    if (!isVideo(url) && ctx != null) {
       precacheImage(
         size: size,
         CachedNetworkImageProvider(

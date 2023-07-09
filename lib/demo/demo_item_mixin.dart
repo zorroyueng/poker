@@ -7,7 +7,7 @@ import 'package:poker/demo/demo_item_cards.dart';
 import 'package:poker/demo/detail_page.dart';
 
 mixin DemoItemMixin {
-  Widget build(DemoAdapter adapter, DemoData t, Size size) {
+  Widget build(DemoAdapter adapter, DemoData t, Size imgSize, Percent percent) {
     Percent alpha = Percent(1);
     Broadcast<int> index = Broadcast(0);
     return ThemeWidget(
@@ -17,7 +17,8 @@ mixin DemoItemMixin {
           tag: t.id,
           urls: t.urls,
           index: index,
-          size: size,
+          imgSize: imgSize,
+          percent: percent,
           bottom: Common.click(
             r: BorderRadius.only(
               bottomLeft: Radius.circular(radius),
@@ -77,7 +78,7 @@ mixin DemoItemMixin {
               DetailPage page = DetailPage(
                 info: DetailInfo(
                   data: t,
-                  size: size,
+                  imgSize: imgSize,
                   index: index,
                 ),
               );
@@ -100,11 +101,8 @@ mixin DemoItemMixin {
     );
   }
 
-  void onPreload(DemoData t, Size size, int index, int total) {
-    BuildContext ctx = NavigatorObs.ctx()!;
-    Common.precache(ctx, t.urls[0], size);
-    if (t.urls.length > 1) {
-      Common.precache(ctx, t.urls[1], size);
-    }
-  }
+  void onPreload(DemoData t, Size imgSize, int index, int total) => Common.precache(
+        url: t.urls[0],
+        size: imgSize,
+      );
 }

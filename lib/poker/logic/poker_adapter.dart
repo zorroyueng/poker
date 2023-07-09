@@ -22,9 +22,9 @@ abstract class PokerAdapter<T> {
   /// interface
   Object id(T t);
 
-  Widget item(T t, Size size);
+  Widget item(T t, Size imgSize, Percent percent);
 
-  void onPreload(T t, Size size, int index, int total); // 预加载t；还剩下几个数据
+  void onPreload(T t, Size imgSize, int index, int total); // 预加载t；还剩下几个数据
 
   bool canSwipe(T t, SwipeType type); // 判断卡片是否可以执行操作
 
@@ -229,10 +229,12 @@ abstract class PokerAdapter<T> {
       Object key = id(t);
       PokerItem? w = _cache[key];
       if (w == null) {
+        Percent percent = Percent(0, space: 0);
         w = PokerItem(
           key: key,
           data: t,
-          item: item(t, _view!.cardSize()),
+          item: item(t, _view!.cardSize(), percent),
+          percent: percent,
         );
         if (_cache.length >= 10) {
           _cache.remove(_cache.keys.first);
@@ -286,11 +288,11 @@ class PokerItem<T> {
   final T data;
   final Widget item;
 
-  final Percent percent = Percent(0, space: 0); // 0 为back状态，1为展示状态
+  final Percent percent; // 0 为back状态，1为展示状态
   Offset? difK;
   PokerCardState? card;
 
-  PokerItem({required this.key, required this.data, required this.item});
+  PokerItem({required this.key, required this.data, required this.item, required this.percent});
 }
 
 enum SwipeType {
