@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:base/base.dart';
 import 'package:flutter/material.dart';
 import 'package:poker/base/color_provider.dart';
@@ -156,9 +154,10 @@ class _VideoManager {
 
   static void dispose(String url) {
     VideoDef? video = _map[url];
-    if (video == null) {
+    if (video != null) {
       video!._use--;
       if (video._use <= 0) {
+        assert(video._use < 0);
         video.ctrl.dispose();
         _map.remove(url);
       }
