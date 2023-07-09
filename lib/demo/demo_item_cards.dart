@@ -41,17 +41,21 @@ class _DemoItemCardsState extends State<DemoItemCards> {
   @override
   void initState() {
     super.initState();
-    _sub = widget.percent?.stream().distinct().listen((v) {
-      if (v == 1) {
-        int n = widget.index.value() + 1;
-        if (n < widget.urls.length) {
-          Common.precache(
-            url: widget.urls[n],
-            size: widget.imgSize,
-          );
+    if (widget.percent != null) {
+      void func(v) {
+        if (v == 1) {
+          int n = widget.index.value() + 1;
+          if (n < widget.urls.length) {
+            Common.precache(
+              url: widget.urls[n],
+              size: widget.imgSize,
+            );
+          }
         }
       }
-    });
+      func(widget.percent!.value());
+      _sub = widget.percent!.stream().distinct().listen(func);
+    }
   }
 
   @override
