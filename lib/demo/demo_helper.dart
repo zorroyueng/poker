@@ -14,11 +14,11 @@ class DemoHelper {
     List<DemoData> data = [];
     for (int i = 0; i < pics.length; i++) {
       List<String> urls = [pics[i]];
-      int max = Random().nextInt(6);
+      int max = Random().nextInt(5);
       for (int j = 0; j < max; j++) {
         urls.add(random(pics));
       }
-      urls.add('https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4');
+      urls.add(random(_videos));
       data.add(DemoData(
         id: i,
         name: random(name),
@@ -27,6 +27,23 @@ class DemoHelper {
     }
     return data;
   }
+
+  static final List<String> _videos = [
+    'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
+    'https://assets.mixkit.co/videos/download/mixkit-abstract-video-of-space-covered-by-a-nebula-and-stars-30076-medium.mp4',
+    'https://assets.mixkit.co/videos/download/mixkit-pink-and-blue-ink-1192-medium.mp4',
+    'https://assets.mixkit.co/videos/download/mixkit-red-frog-on-a-log-1487-medium.mp4',
+    'https://assets.mixkit.co/videos/download/mixkit-two-avenues-with-many-cars-traveling-at-night-34562-medium.mp4',
+    'https://assets.mixkit.co/videos/download/mixkit-serving-tonic-in-a-glass-5136-medium.mp4',
+    'https://assets.mixkit.co/videos/download/mixkit-hands-painting-a-canvas-with-watercolor-5196-medium.mp4',
+    'https://assets.mixkit.co/videos/download/mixkit-texture-of-many-colorful-gummy-pandas-40812-medium.mp4',
+    'https://assets.mixkit.co/videos/download/mixkit-cheerful-woman-drinking-a-cup-of-coffee-43394-medium.mp4',
+    'https://assets.mixkit.co/videos/download/mixkit-aerial-view-of-a-big-city-at-night-49873-medium.mp4',
+    'https://assets.mixkit.co/videos/download/mixkit-big-city-at-night-from-an-aerial-shot-49878-medium.mp4',
+    'https://assets.mixkit.co/videos/download/mixkit-sun-setting-or-rising-over-palm-trees-1170-medium.mp4',
+    'https://assets.mixkit.co/videos/download/mixkit-womans-silhouette-walking-on-the-beach-at-sunset-1214-medium.mp4',
+    'https://assets.mixkit.co/videos/download/mixkit-white-cat-with-blue-eyes-1545-medium.mp4',
+  ];
 
   static final List<String> name = [
     'The Himalayas',
