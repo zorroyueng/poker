@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:base/base.dart';
 import 'package:flutter/material.dart';
 import 'package:poker/poker/config.dart';
-import 'package:poker/poker/logic/anim_mixin.dart';
 import 'package:poker/poker/logic/poker_card.dart';
 
 abstract class PokerAdapter<T> {
@@ -70,7 +69,20 @@ abstract class PokerAdapter<T> {
       item.card!.onPanDown(Offset.zero);
       onPanDown(item);
       _swipingItem = null;
-      item.card!.animTo(type, 0, 0, type == SwipeType.up ? Jump() : Curves.easeIn);
+      double vX = 0;
+      double vY = 0;
+      switch (type) {
+        case SwipeType.right:
+          vX = Config.maxSwipeV;
+          break;
+        case SwipeType.left:
+          vX = -Config.maxSwipeV;
+          break;
+        case SwipeType.up:
+          vY = -Config.maxSwipeV;
+          break;
+      }
+      item.card!.animTo(type, vX, vY, Curves.easeIn);
       can = true;
     }
     return can;
@@ -211,7 +223,7 @@ abstract class PokerAdapter<T> {
       _percentY.add(0);
     }
     int index = _itemIndex(_updatePercentItem!);
-    // next
+    // next3
     int next = index - 1;
     for (int i = next; i >= 0; i--) {
       PokerItem item = _items[i];
