@@ -62,12 +62,10 @@ class _Poker<T> extends StatefulWidget {
 }
 
 class _PokerState extends State<_Poker> with AdapterView {
-  List<PokerItem> _items = [];
-
   @override
   Widget build(BuildContext context) {
-    List<Widget> children = _items.isNotEmpty
-        ? _items.map((item) {
+    List<Widget> children = widget.adapter.items.isNotEmpty
+        ? widget.adapter.items.map((item) {
             if (item.card == null || widget.cardRect != item.card!.widget.rect) {
               return PokerCard(
                 key: ValueKey(item.key),
@@ -88,7 +86,7 @@ class _PokerState extends State<_Poker> with AdapterView {
   }
 
   @override
-  void update(List<PokerItem> items) => setState(() => _items = items);
+  void update() => setState(() {});
 
   void _init() => widget.adapter.setView(this);
 
