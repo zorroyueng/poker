@@ -1,7 +1,7 @@
 import 'package:base/base.dart';
 import 'package:flutter/material.dart';
 import 'package:poker/base/color_provider.dart';
-import 'package:poker/demo/demo_poker_tab.dart';
+import 'package:poker/demo/demo_poker.dart';
 import 'package:poker/demo/tab_view.dart';
 
 void main() {
@@ -32,25 +32,20 @@ class _HomePage extends StatelessWidget {
   final Broadcast<int> ctrl = Broadcast(0);
   final List<TabDef> _lst = [
     TabDef(
-      page: DemoPokerTab(),
-      barItem: const BottomNavigationBarItem(
-        icon: Icon(Icons.image),
-        label: 'title',
-      ),
+      page: DemoPoker(),
+      barItem: const BottomNavigationBarItem(icon: Icon(Icons.camera_alt), label: 'card'),
     ),
     TabDef(
       page: Container(),
-      barItem: const BottomNavigationBarItem(
-        icon: Icon(Icons.mail),
-        label: 'msg',
-      ),
+      barItem: const BottomNavigationBarItem(icon: Icon(Icons.photo), label: 'photo'),
     ),
     TabDef(
       page: Container(),
-      barItem: const BottomNavigationBarItem(
-        icon: Icon(Icons.person),
-        label: 'me',
-      ),
+      barItem: const BottomNavigationBarItem(icon: Icon(Icons.mail), label: 'msg'),
+    ),
+    TabDef(
+      page: Container(),
+      barItem: const BottomNavigationBarItem(icon: Icon(Icons.person), label: 'me'),
     ),
   ];
 

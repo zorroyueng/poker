@@ -486,4 +486,69 @@ class Common {
       );
     }
   }
+
+  static void dlgSetting(BuildContext context) => Common.dlg(
+        w: HpDevice.screenMin(context, .5),
+        ctx: context,
+        name: 'Setting',
+        future: Future.value(
+          ThemeWidget(
+            builder: (_, __) => Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                StreamWidget(
+                  stream: GreyProvider.ctrl().stream,
+                  initialData: GreyProvider.grey(),
+                  builder: (c, s, child) => SwitchListTile.adaptive(
+                    activeColor: ThemeProvider.data().colorScheme.primary,
+                    title: ThemeWidget(
+                        builder: (_, child) => Text(
+                              'Home Grey',
+                              style: Common.textStyle(c),
+                            )),
+                    value: GreyProvider.grey(),
+                    onChanged: (v) => GreyProvider.change(v),
+                  ),
+                ),
+                SwitchListTile.adaptive(
+                  activeColor: ThemeProvider.data().colorScheme.primary,
+                  title: Text(
+                    'Dark',
+                    style: Common.textStyle(context),
+                  ),
+                  value: ThemeProvider.isDark(),
+                  onChanged: (bool value) => ThemeProvider.change(dark: !ThemeProvider.isDark()),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: Common.base(context, .5), right: Common.base(context, .5)),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Common.dropdownMenu(
+                          ctx: context,
+                          value: ThemeProvider.currentColorName(),
+                          lst: ThemeProvider.map.keys.toList(),
+                          content: (s) => Container(color: ThemeProvider.map[s]),
+                          noText: true,
+                          noLine: true,
+                          onChange: (s) => ThemeProvider.change(colorName: s),
+                        ),
+                      ),
+                      Expanded(
+                        child: Slider.adaptive(
+                          max: 20,
+                          min: 10,
+                          divisions: 11,
+                          value: Sp.getBaseRatio().toDouble(),
+                          onChanged: (v) => ThemeProvider.change(ratio: v.floor()),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
 }

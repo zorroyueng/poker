@@ -146,7 +146,7 @@ class _VideoManager {
           video!.init.add(true);
           video.playing.add(true);
         },
-      );
+      ).onError((_, __) => null); // todo
       _map[url] = video;
     }
     video._use++;
