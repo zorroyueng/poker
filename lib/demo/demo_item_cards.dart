@@ -233,7 +233,7 @@ class _DemoItemCardsState extends State<DemoItemCards> with _PercentSubMixin {
 }
 
 mixin _PercentSubMixin {
-  late final StreamSubscription? _sub;
+  StreamSubscription? _sub;
 
   void initSub(Percent percent, void Function(double t) func) {
     func(percent.value());
