@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:base/base.dart';
 import 'package:flutter/material.dart';
 import 'package:poker/base/color_provider.dart';
@@ -16,6 +14,7 @@ class DemoPoker extends StatelessWidget {
   DemoPoker({super.key});
 
   Widget _btn({
+    required BuildContext ctx,
     required Color color,
     required IconData icon,
     required VoidCallback onPressed,
@@ -23,25 +22,18 @@ class DemoPoker extends StatelessWidget {
     bool rotate = false,
   }) =>
       Expanded(
-        child: PercentBuilder(
-          percent: percent,
-          duration: Duration(milliseconds: percent == 0 ? 200 : 0),
-          builder: (ctx, p) => IconButton(
-            onPressed: onPressed,
-            alignment: Alignment.center,
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.resolveWith((_) {
-                HpDevice.log('p=$p');
-                return color.withOpacity(.3 * max(0, p)); // todo
-              }),
-            ),
-            icon: RotatedBox(
-              quarterTurns: rotate ? -2 : 0,
-              child: Icon(
-                icon,
-                color: color.withOpacity(.2 + .8 * p),
-                size: Common.base(ctx, Config.iconK),
-              ),
+        child: IconButton(
+          onPressed: onPressed,
+          alignment: Alignment.center,
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.resolveWith((_) => color.withOpacity(.3 * percent)),
+          ),
+          icon: RotatedBox(
+            quarterTurns: rotate ? -2 : 0,
+            child: Icon(
+              icon,
+              color: color.withOpacity(.2 + .8 * percent),
+              size: Common.base(ctx, Config.iconK),
             ),
           ),
         ),
@@ -71,6 +63,7 @@ class DemoPoker extends StatelessWidget {
                       }
                     }).distinct(),
                     builder: (_, snap) => _btn(
+                      ctx: context,
                       color: Colors.lime,
                       icon: Icons.recommend,
                       onPressed: () => adapter.swipe(SwipeType.left),
@@ -88,6 +81,7 @@ class DemoPoker extends StatelessWidget {
                       }
                     }).distinct(),
                     builder: (_, snap) => _btn(
+                      ctx: context,
                       color: Colors.blue,
                       icon: Icons.stars,
                       onPressed: () => adapter.swipe(SwipeType.up),
@@ -104,6 +98,7 @@ class DemoPoker extends StatelessWidget {
                       }
                     }).distinct(),
                     builder: (_, snap) => _btn(
+                      ctx: context,
                       color: Colors.pinkAccent,
                       icon: Icons.recommend,
                       onPressed: () => adapter.swipe(SwipeType.right),
