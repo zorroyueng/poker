@@ -20,17 +20,20 @@ class _DemoFindTabState extends State<DemoFindTab> {
   @override
   void initState() {
     super.initState();
-    scrollCtrl.addListener(() {
-      if (scrollCtrl.position.pixels > scrollCtrl.position.maxScrollExtent) {
-        future ??= Future.delayed(
-          const Duration(seconds: 2),
-          () {
-            setState(() => adapter.addData(DemoHelper.buildInfoData()));
-            future = null;
-          },
-        );
-      }
-    });
+    scrollCtrl.addListener(
+      () {
+        // android 列表无法伸缩，需要=
+        if (scrollCtrl.position.pixels >= scrollCtrl.position.maxScrollExtent) {
+          future ??= Future.delayed(
+            const Duration(seconds: 2),
+            () {
+              setState(() => adapter.addData(DemoHelper.buildInfoData()));
+              future = null;
+            },
+          );
+        }
+      },
+    );
   }
 
   Widget _head(BuildContext ctx) => SliverAppBar(
