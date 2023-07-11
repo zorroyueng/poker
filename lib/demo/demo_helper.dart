@@ -62,7 +62,7 @@ class DemoHelper {
 
   static String _str() {
     String str = '';
-    int n = Random().nextInt(100);
+    int n = Random().nextInt(100) + 1;
     for (int i = 0; i < n; i++) {
       str += 'x';
     }
