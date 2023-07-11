@@ -36,26 +36,28 @@ class _DemoFindTabState extends State<DemoFindTab> {
     );
   }
 
-  Widget _head(BuildContext ctx) => SliverAppBar(
-        // 标题栏是否固定
-        pinned: true,
-        elevation: 4,
-        shadowColor: ColorProvider.itemBg(),
-        actions: [
-          ThemeWidget(
-            builder: (_, __) => IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.more_horiz,
-                color: ColorProvider.textColor(),
+  Widget _head(BuildContext ctx) => ThemeWidget(
+        builder: (ctx, _) => SliverAppBar(
+          // 标题栏是否固定
+          floating: true,
+          elevation: 4,
+          shadowColor: ColorProvider.itemBg(),
+          actions: [
+            ThemeWidget(
+              builder: (_, __) => IconButton(
+                onPressed: () => Common.dlgSetting(ctx),
+                icon: Icon(
+                  Icons.more_horiz,
+                  color: ColorProvider.textColor(),
+                ),
               ),
             ),
-          ),
-        ],
-        backgroundColor: ColorProvider.bg(),
-        flexibleSpace: FlexibleSpaceBar(
-          background: Container(
-            color: ColorProvider.bg(),
+          ],
+          backgroundColor: ColorProvider.bg(),
+          flexibleSpace: FlexibleSpaceBar(
+            background: Container(
+              color: ColorProvider.bg(),
+            ),
           ),
         ),
       );
@@ -127,7 +129,7 @@ class ItemData {
 
   double _padding(BuildContext c) => Common.base(c, .2);
 
-  double _headSize(BuildContext c) => Common.base(c, 1.5);
+  double _headSize(BuildContext c) => Common.base(c, 1.3);
 
   Widget _head() => ThemeWidget(
         builder: (c, __) {
@@ -159,13 +161,23 @@ class ItemData {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      info.name,
-                      style: Common.textStyle(c, scale: 1.3)..copyWith(fontWeight: FontWeight.bold),
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        info.name,
+                        maxLines: 1,
+                        style: Common.textStyle(
+                          c,
+                          scale: 1.2,
+                        ).copyWith(fontWeight: FontWeight.bold),
+                      ),
                     ),
                     Text(
                       info.content,
-                      style: Common.textStyle(c, alpha: .8),
+                      style: Common.textStyle(
+                        c,
+                        alpha: .8,
+                      ).copyWith(height: 1),
                     ),
                   ],
                 ),
@@ -189,7 +201,10 @@ class ItemData {
         builder: (c, _) {
           double p = _padding(c);
           return Container(
-            padding: EdgeInsets.only(left: p * 2 + _headSize(c)),
+            padding: EdgeInsets.only(
+              left: p * 2 + _headSize(c),
+              top: p,
+            ),
             child: GridView.builder(
               shrinkWrap: true,
               //解决无限高度问题
@@ -215,7 +230,10 @@ class ItemData {
         builder: (c, _) {
           double p = _padding(c);
           return Container(
-            padding: EdgeInsets.only(left: p * 2 + _headSize(c)),
+            padding: EdgeInsets.only(
+              left: p * 2 + _headSize(c),
+              top: p,
+            ),
             child: AspectRatio(
               aspectRatio: 1.6,
               child: VideoWidget(url: info.medias[0]),
@@ -225,21 +243,40 @@ class ItemData {
       );
 
   Widget _comment() => ThemeWidget(
-        builder: (c, _) => Padding(
-          padding: EdgeInsets.only(left: _padding(c) * 2 + _headSize(c)),
-          child: Container(
-            width: double.infinity,
-            color: ColorProvider.itemBg(),
-            child: Text(
-              info.comments[index],
-              style: Common.textStyle(
-                c,
-                scale: .8,
-                alpha: .6,
+        builder: (c, _) {
+          double p = _padding(c);
+          return Padding(
+            padding: EdgeInsets.only(
+              left: p * 2 + _headSize(c),
+              top: index == 0 ? p : 0,
+            ),
+            child: Container(
+              width: double.infinity,
+              color: ColorProvider.itemBg(),
+              child: Text.rich(
+                TextSpan(
+                  style: const TextStyle(height: 1),
+                  children: [
+                    TextSpan(
+                      text: 'Jack: ',
+                      style: Common.textStyle(
+                        c,
+                        alpha: .6,
+                      ).copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    TextSpan(
+                      text: info.comments[index],
+                      style: Common.textStyle(
+                        c,
+                        alpha: .6,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       );
 
   Widget item(BuildContext c) {

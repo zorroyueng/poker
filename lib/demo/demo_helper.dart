@@ -69,7 +69,7 @@ class DemoHelper {
     String str = '';
     int n = Random().nextInt(100) + 1;
     for (int i = 0; i < n; i++) {
-      str += 'x';
+      str += '哈';
     }
     return str;
   }
