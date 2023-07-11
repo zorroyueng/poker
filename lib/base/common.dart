@@ -12,7 +12,7 @@ class Common {
 
   static double textSize(BuildContext c, [double d = 1]) => base(c, d) * .6;
 
-  static BorderRadius baseRadius(BuildContext c) => BorderRadius.circular(radius(c) / 3);
+  static BorderRadius baseRadius(BuildContext c, [double d = 1]) => BorderRadius.circular(radius(c, d) / 3);
 
   // 统一圆角尺寸
   static double radius(BuildContext ctx, [double d = 1]) => base(ctx, d * 0.9);

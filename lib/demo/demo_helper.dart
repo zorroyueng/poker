@@ -2,13 +2,35 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:poker/demo/demo_adapter.dart';
+import 'package:poker/demo/demo_find_tab.dart';
 
 class DemoHelper {
   DemoHelper._();
 
-  static List<DemoData> data() {
+  static List<InfoData> buildInfoData() {
+    List<InfoData> data = [];
+    for (int i = 0; i < 10; i++) {
+      String content = random(relaxed);
+      data.add(InfoData(
+        head: random(_head),
+        name: random(name),
+        content: content.substring(0, Random().nextInt(content.length)),
+        pics: () {
+          List<String> pics = [];
+          int max = Random().nextInt(9);
+          for (int j = 0; j <= max; j++) {
+            pics.add(random(relaxed));
+          }
+          return pics;
+        }(),
+        comments: [random(_scenery)],
+      ));
+    }
+    return data;
+  }
+
+  static List<DemoData> cardData() {
     List<String> pics = DemoHelper._stars + DemoHelper._nights + DemoHelper._scenery + DemoHelper.relaxed;
-    // List<String> pics = DemoHelper._stars;
     pics.shuffle();
     name.shuffle();
     List<DemoData> data = [];
@@ -87,6 +109,18 @@ class DemoHelper {
     Icons.offline_bolt,
     Icons.paid,
     Icons.stars,
+  ];
+
+  static final List<String> _head = [
+    'https://gd-hbimg.huaban.com/5f9fbf1eb4fd6e88dd348de3bb376b3782ba1b51d15ba-rSk8zA_fw658webp',
+    'https://gd-hbimg.huaban.com/d84daecd9a8c747e7561d7d1e836a957ebc66607557e-dAZQYo_fw658webp',
+    'https://gd-hbimg.huaban.com/0860d651efb9ea224964cf369a6aae7c612403ac4866-bWWP7v_fw658webp',
+    'https://gd-hbimg.huaban.com/950dd2d69cbcb4ca0bb98639b83f525c387fb2cb7997-CZxj6a_fw658webp',
+    'https://gd-hbimg.huaban.com/a865f284d961147afee85d1eeb5b4e30202db5133511-qyBhMy_fw658webp',
+    'https://gd-hbimg.huaban.com/2fed69784161fda79a15f9f5a06ed3c90e8377eb4f7a-BkkSdn_fw658webp',
+    'https://gd-hbimg.huaban.com/4459dcbd0257c0c72735057b3000a13303ceeb0648f7-fOu44Y_fw658webp',
+    'https://gd-hbimg.huaban.com/d436863b9adcd633b6bd9bf7d1ac645567c910e525a7e-7gn7OA_fw658webp',
+    'https://gd-hbimg.huaban.com/dc4b46d78ad5d8f1657dc3b3dd28d7bec4a9b6c418bc9-TFXE1F_fw658webp',
   ];
 
   static final List<String> _stars = [

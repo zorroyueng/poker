@@ -8,10 +8,10 @@ import 'package:poker/poker/config.dart';
 import 'package:poker/poker/logic/poker_adapter.dart';
 import 'package:poker/poker/poker_view.dart';
 
-class DemoPoker extends StatelessWidget {
-  final DemoAdapter adapter = DemoAdapter()..setData(DemoHelper.data());
+class DemoPokerTab extends StatelessWidget {
+  final DemoAdapter adapter = DemoAdapter()..setData(DemoHelper.cardData());
 
-  DemoPoker({super.key});
+  DemoPokerTab({super.key});
 
   Widget _btn({
     required BuildContext ctx,

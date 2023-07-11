@@ -6,7 +6,7 @@ import 'package:poker/poker/logic/poker_adapter.dart';
 
 class DemoAdapter extends PokerAdapter<DemoData> with DemoItemMixin {
   late final Widget _loading = GestureDetector(
-    onTap: () => setData(DemoHelper.data()),
+    onTap: () => setData(DemoHelper.cardData()),
     child: ThemeWidget(
       builder: (_,__) => const Center(child: CircularProgressIndicator()),
     ),
