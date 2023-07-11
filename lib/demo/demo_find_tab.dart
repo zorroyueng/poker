@@ -4,6 +4,7 @@ import 'package:poker/base/color_provider.dart';
 import 'package:poker/base/common.dart';
 import 'package:poker/base/video_widget.dart';
 import 'package:poker/demo/demo_helper.dart';
+import 'package:poker/demo/tab_mixin.dart';
 
 class DemoFindTab extends StatefulWidget {
   const DemoFindTab({super.key});
@@ -12,7 +13,7 @@ class DemoFindTab extends StatefulWidget {
   State<DemoFindTab> createState() => _DemoFindTabState();
 }
 
-class _DemoFindTabState extends State<DemoFindTab> {
+class _DemoFindTabState extends State<DemoFindTab> with TabMixin{
   final FindAdapter adapter = FindAdapter()..setData(DemoHelper.buildInfoData());
   final ScrollController scrollCtrl = ScrollController();
   Future? future;
@@ -261,6 +262,7 @@ class ItemData {
                       text: 'Jack: ',
                       style: Common.textStyle(
                         c,
+                        scale: .8,
                         alpha: .6,
                       ).copyWith(fontWeight: FontWeight.bold),
                     ),
@@ -268,6 +270,7 @@ class ItemData {
                       text: info.comments[index],
                       style: Common.textStyle(
                         c,
+                        scale: .8,
                         alpha: .6,
                       ),
                     ),
