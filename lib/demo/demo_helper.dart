@@ -10,11 +10,10 @@ class DemoHelper {
   static List<InfoData> buildInfoData() {
     List<InfoData> data = [];
     for (int i = 0; i < 10; i++) {
-      String content = random(relaxed);
       data.add(InfoData(
         head: random(_head),
         name: random(name),
-        content: content.substring(0, Random().nextInt(content.length)),
+        content: _str(),
         pics: () {
           List<String> pics = [];
           int max = Random().nextInt(9);
@@ -23,7 +22,14 @@ class DemoHelper {
           }
           return pics;
         }(),
-        comments: [random(_scenery)],
+        comments: () {
+          List<String> comments = [];
+          int max = Random().nextInt(9);
+          for (int j = 0; j <= max; j++) {
+            comments.add(_str());
+          }
+          return comments;
+        }(),
       ));
     }
     return data;
@@ -48,6 +54,15 @@ class DemoHelper {
       ));
     }
     return data;
+  }
+
+  static String _str() {
+    String str = '';
+    int n = Random().nextInt(100);
+    for (int i = 0; i < n; i++) {
+      str += 'x';
+    }
+    return str;
   }
 
   static final List<String> _videos = [

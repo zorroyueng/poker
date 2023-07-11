@@ -111,8 +111,9 @@ enum ItemType {
 class ItemData {
   final ItemType type;
   final InfoData info;
+  final int index;
 
-  ItemData(this.type, this.info);
+  ItemData({required this.type, required this.info, this.index = 0});
 
   double _padding(BuildContext c) => Common.base(c, .2);
 
@@ -120,7 +121,7 @@ class ItemData {
 
   Widget _head() => ThemeWidget(
         builder: (c, __) {
-          double picW = _headSize(c) * HpDevice.pixelRatio(c);
+          double w = _headSize(c);
           double p = _padding(c);
           return Row(
             mainAxisSize: MainAxisSize.max,
@@ -129,14 +130,18 @@ class ItemData {
               Padding(
                 padding: EdgeInsets.only(
                   top: p,
-                  right: p,
+                  right: p * 2,
                   bottom: p,
                 ),
-                child: Common.netImage(
-                  url: info.head,
-                  w: picW,
-                  h: picW,
-                  borderRadius: Common.baseRadius(c),
+                child: SizedBox(
+                  width: w,
+                  height: w,
+                  child: Common.netImage(
+                    url: info.head,
+                    w: w,
+                    h: w,
+                    borderRadius: Common.baseRadius(c),
+                  ),
                 ),
               ),
               Expanded(
@@ -146,7 +151,7 @@ class ItemData {
                   children: [
                     Text(
                       info.name,
-                      style: Common.textStyle(c, scale: 1.3)..copyWith(fontWeight: FontWeight.w900),
+                      style: Common.textStyle(c, scale: 1.3)..copyWith(fontWeight: FontWeight.bold),
                     ),
                     Text(
                       info.content,
@@ -182,12 +187,12 @@ class ItemData {
               itemCount: info.pics.length,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: _gvCrossAxisCount(),
-                mainAxisSpacing: p,
-                crossAxisSpacing: p,
+                mainAxisSpacing: p / 2,
+                crossAxisSpacing: p / 2,
               ),
               itemBuilder: (c, i) => LayoutBuilder(
                 builder: (c, constraints) {
-                  double size = constraints.maxWidth * HpDevice.pixelRatio(c);
+                  double size = constraints.maxWidth; //  * HpDevice.pixelRatio(c)
                   return Common.netImage(url: info.pics[i], w: size, h: size);
                 },
               ),
@@ -197,19 +202,19 @@ class ItemData {
       );
 
   Widget _comment() => ThemeWidget(
-        builder: (c, _) => Container(
+        builder: (c, _) => Padding(
           padding: EdgeInsets.only(left: _padding(c) * 2 + _headSize(c)),
-          child: LayoutBuilder(
-            builder: (_, constraints) {
-              return Text(
-                info.comments[0],
-                style: Common.textStyle(
-                  c,
-                  scale: .8,
-                  alpha: .6,
-                ),
-              );
-            },
+          child: Container(
+            width: double.infinity,
+            color: ColorProvider.itemBg(),
+            child: Text(
+              info.comments[index],
+              style: Common.textStyle(
+                c,
+                scale: .8,
+                alpha: .6,
+              ),
+            ),
           ),
         ),
       );
@@ -227,7 +232,7 @@ class ItemData {
         item = _pic();
         break;
       case ItemType.comment:
-        isEnd = true;
+        isEnd = index == info.comments.length - 1;
         item = _comment();
         break;
     }
@@ -259,9 +264,11 @@ class FindAdapter {
     lstFindInfo.addAll(data);
     lstItemData.clear();
     for (InfoData info in lstFindInfo) {
-      lstItemData.add(ItemData(ItemType.head, info));
-      lstItemData.add(ItemData(ItemType.pic, info));
-      lstItemData.add(ItemData(ItemType.comment, info));
+      lstItemData.add(ItemData(type: ItemType.head, info: info));
+      lstItemData.add(ItemData(type: ItemType.pic, info: info));
+      for (int i = 0; i < info.comments.length; i++) {
+        lstItemData.add(ItemData(type: ItemType.comment, info: info, index: i));
+      }
     }
   }
 }

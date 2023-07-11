@@ -446,11 +446,10 @@ class Common {
     required double w,
     required double h,
     BorderRadiusGeometry? borderRadius,
-  }) =>
-      CachedNetworkImage(
+  }) {
+    HpDevice.log('w=$w, h=$h');
+    return CachedNetworkImage(
         imageUrl: url,
-        width: w,
-        height: h,
         maxWidthDiskCache: w.toInt(),
         maxHeightDiskCache: h.toInt(),
         fadeInDuration: const Duration(milliseconds: 300),
@@ -460,7 +459,7 @@ class Common {
             image: DecorationImage(
               image: imageProvider,
               fit: BoxFit.cover,
-              filterQuality: FilterQuality.low,
+              filterQuality: FilterQuality.medium,
               // isAntiAlias: true,
             ),
             borderRadius: borderRadius,
@@ -469,6 +468,7 @@ class Common {
         placeholder: (context, url) => loading,
         errorWidget: (context, url, error) => const Center(child: Icon(Icons.error)),
       );
+  }
 
   static bool isVideo(String url) => url.endsWith('.mp4');
 
