@@ -15,14 +15,20 @@ class DemoFindTab extends StatefulWidget {
 class _DemoFindTabState extends State<DemoFindTab> {
   final ScrollController scrollCtrl = ScrollController();
   final FindAdapter adapter = FindAdapter()..setData(DemoHelper.buildInfoData());
+  Future? future;
 
   @override
   void initState() {
     super.initState();
     scrollCtrl.addListener(() {
       if (scrollCtrl.position.pixels > scrollCtrl.position.maxScrollExtent) {
-        print(
-            'scrollCtrl.position.pixels=${scrollCtrl.position.pixels}, scrollCtrl.position.maxScrollExtent=${scrollCtrl.position.maxScrollExtent}');
+        future ??= Future.delayed(
+          const Duration(seconds: 2),
+          () {
+            setState(() => adapter.addData(DemoHelper.buildInfoData()));
+            future = null;
+          },
+        );
       }
     });
   }
@@ -73,7 +79,7 @@ class _DemoFindTabState extends State<DemoFindTab> {
         controller: scrollCtrl,
         child: RefreshIndicator(
           onRefresh: () async {
-            await Future.delayed(const Duration(milliseconds: 200)); // todo
+            await Future.delayed(const Duration(seconds: 2)); // todo
           },
           child: CustomScrollView(
             controller: scrollCtrl,
@@ -273,16 +279,22 @@ class FindAdapter {
   final List<InfoData> lstFindInfo = [];
   final List<ItemData> lstItemData = [];
 
-  void setData(List<InfoData> data) {
-    lstFindInfo.clear();
+  void addData(List<InfoData> data) {
     lstFindInfo.addAll(data);
-    lstItemData.clear();
-    for (InfoData info in lstFindInfo) {
-      lstItemData.add(ItemData(type: ItemType.head, info: info));
-      lstItemData.add(ItemData(type: ItemType.media, info: info));
+    List<ItemData> lst = [];
+    for (InfoData info in data) {
+      lst.add(ItemData(type: ItemType.head, info: info));
+      lst.add(ItemData(type: ItemType.media, info: info));
       for (int i = 0; i < info.comments.length; i++) {
-        lstItemData.add(ItemData(type: ItemType.comment, info: info, index: i));
+        lst.add(ItemData(type: ItemType.comment, info: info, index: i));
       }
     }
+    lstItemData.addAll(lst);
+  }
+
+  void setData(List<InfoData> data) {
+    lstFindInfo.clear();
+    lstItemData.clear();
+    addData(data);
   }
 }
