@@ -14,11 +14,15 @@ class DemoHelper {
         head: random(_head),
         name: random(name),
         content: _str(),
-        pics: () {
+        medias: () {
           List<String> pics = [];
-          int max = Random().nextInt(9);
-          for (int j = 0; j <= max; j++) {
-            pics.add(random(relaxed));
+          if (Random().nextDouble() > .7) {
+            pics.add(random(_videos));
+          } else {
+            int max = Random().nextInt(9);
+            for (int j = 0; j <= max; j++) {
+              pics.add(random(relaxed));
+            }
           }
           return pics;
         }(),

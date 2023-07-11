@@ -2,6 +2,7 @@ import 'package:base/base.dart';
 import 'package:flutter/material.dart';
 import 'package:poker/base/color_provider.dart';
 import 'package:poker/base/common.dart';
+import 'package:poker/base/video_widget.dart';
 import 'package:poker/demo/demo_helper.dart';
 
 class DemoFindTab extends StatefulWidget {
@@ -90,21 +91,21 @@ class InfoData {
   final String head;
   final String name;
   final String content;
-  final List<String> pics;
+  final List<String> medias;
   final List<String> comments;
 
   InfoData({
     required this.head,
     required this.name,
     required this.content,
-    required this.pics,
+    required this.medias,
     required this.comments,
   });
 }
 
 enum ItemType {
   head,
-  pic,
+  media,
   comment,
 }
 
@@ -166,9 +167,9 @@ class ItemData {
       );
 
   int _gvCrossAxisCount() {
-    if (info.pics.length == 1) {
+    if (info.medias.length == 1) {
       return 1;
-    } else if (info.pics.length == 2 || info.pics.length == 4) {
+    } else if (info.medias.length == 2 || info.medias.length == 4) {
       return 2;
     } else {
       return 3;
@@ -184,7 +185,7 @@ class ItemData {
               shrinkWrap: true,
               //解决无限高度问题
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: info.pics.length,
+              itemCount: info.medias.length,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: _gvCrossAxisCount(),
                 mainAxisSpacing: p / 2,
@@ -193,9 +194,22 @@ class ItemData {
               itemBuilder: (c, i) => LayoutBuilder(
                 builder: (c, constraints) {
                   double size = constraints.maxWidth; //  * HpDevice.pixelRatio(c)
-                  return Common.netImage(url: info.pics[i], w: size, h: size);
+                  return Common.netImage(url: info.medias[i], w: size, h: size);
                 },
               ),
+            ),
+          );
+        },
+      );
+
+  Widget _video() => ThemeWidget(
+        builder: (c, _) {
+          double p = _padding(c);
+          return Container(
+            padding: EdgeInsets.only(left: p * 2 + _headSize(c)),
+            child: AspectRatio(
+              aspectRatio: 1.6,
+              child: VideoWidget(url: info.medias[0]),
             ),
           );
         },
@@ -224,12 +238,12 @@ class ItemData {
     bool isEnd = false;
     switch (type) {
       case ItemType.head:
-        isEnd = info.pics.isEmpty && info.comments.isEmpty;
+        isEnd = info.medias.isEmpty && info.comments.isEmpty;
         item = _head();
         break;
-      case ItemType.pic:
+      case ItemType.media:
         isEnd = info.comments.isEmpty;
-        item = _pic();
+        item = Common.isVideo(info.medias[0]) ? _video() : _pic();
         break;
       case ItemType.comment:
         isEnd = index == info.comments.length - 1;
@@ -265,7 +279,7 @@ class FindAdapter {
     lstItemData.clear();
     for (InfoData info in lstFindInfo) {
       lstItemData.add(ItemData(type: ItemType.head, info: info));
-      lstItemData.add(ItemData(type: ItemType.pic, info: info));
+      lstItemData.add(ItemData(type: ItemType.media, info: info));
       for (int i = 0; i < info.comments.length; i++) {
         lstItemData.add(ItemData(type: ItemType.comment, info: info, index: i));
       }

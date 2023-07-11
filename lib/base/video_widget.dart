@@ -7,7 +7,7 @@ import 'package:video_player/video_player.dart';
 
 class VideoWidget extends StatefulWidget {
   final String url;
-  final Widget ctrl;
+  final Widget? ctrl;
   final BorderRadiusGeometry? borderRadius;
   final Object? tag;
 
@@ -15,7 +15,7 @@ class VideoWidget extends StatefulWidget {
     super.key,
     required this.url,
     this.borderRadius,
-    required this.ctrl,
+    this.ctrl,
     this.tag,
   });
 
@@ -47,10 +47,8 @@ class _VideoWidgetState extends State<VideoWidget> {
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
-        builder: (_, constraints) => Stack(
-          clipBehavior: Clip.none,
-          fit: StackFit.expand,
-          children: [
+        builder: (_, constraints) {
+          List<Widget> children = [
             Positioned.fill(
               child: _hero(
                 Container(
@@ -91,43 +89,50 @@ class _VideoWidgetState extends State<VideoWidget> {
                   ),
                 ),
               ),
-            ),
-            Positioned.fill(child: widget.ctrl),
-            Positioned.fill(
-              child: StreamWidget(
-                stream: _videoDef.init.stream().distinct(),
-                initialData: _videoDef.init.value(),
-                builder: (_, __, child) {
-                  if (_videoDef.init.value()) {
-                    return child!;
-                  } else {
-                    return Visibility(
-                      visible: false,
-                      child: child!,
+            )
+          ];
+          if (widget.ctrl != null) {
+            children.add(Positioned.fill(child: widget.ctrl!));
+          }
+          children.add(Positioned.fill(
+            child: StreamWidget(
+              stream: _videoDef.init.stream().distinct(),
+              initialData: _videoDef.init.value(),
+              builder: (_, __, child) {
+                if (_videoDef.init.value()) {
+                  return child!;
+                } else {
+                  return Visibility(
+                    visible: false,
+                    child: child!,
+                  );
+                }
+              },
+              child: Center(
+                child: StreamWidget<bool>(
+                  initialData: _videoDef.playing.value(),
+                  stream: _videoDef.playing.stream().distinct(),
+                  builder: (_, __, ___) {
+                    _videoDef.playing.value() ? _videoDef.ctrl.play() : _videoDef.ctrl.pause();
+                    return IconButton(
+                      onPressed: () => _videoDef.playing.add(!_videoDef.ctrl.value.isPlaying),
+                      icon: Icon(
+                        _videoDef.ctrl.value.isPlaying ? Icons.pause_circle_outlined : Icons.play_arrow_outlined,
+                        size: Common.base(context, Config.iconK),
+                        color: ColorProvider.base(.5),
+                      ),
                     );
-                  }
-                },
-                child: Center(
-                  child: StreamWidget<bool>(
-                    initialData: _videoDef.playing.value(),
-                    stream: _videoDef.playing.stream().distinct(),
-                    builder: (_, __, ___) {
-                      _videoDef.playing.value() ? _videoDef.ctrl.play() : _videoDef.ctrl.pause();
-                      return IconButton(
-                        onPressed: () => _videoDef.playing.add(!_videoDef.ctrl.value.isPlaying),
-                        icon: Icon(
-                          _videoDef.ctrl.value.isPlaying ? Icons.pause_circle_outlined : Icons.play_arrow_outlined,
-                          size: Common.base(context, Config.iconK),
-                          color: ColorProvider.base(.5),
-                        ),
-                      );
-                    },
-                  ),
+                  },
                 ),
               ),
             ),
-          ],
-        ),
+          ));
+          return Stack(
+            clipBehavior: Clip.none,
+            fit: StackFit.expand,
+            children: children,
+          );
+        },
       );
 }
 
