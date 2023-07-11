@@ -446,9 +446,7 @@ class Common {
     required double w,
     required double h,
     BorderRadiusGeometry? borderRadius,
-  }) {
-    HpDevice.log('w=$w, h=$h');
-    return CachedNetworkImage(
+  }) => CachedNetworkImage(
         imageUrl: url,
         maxWidthDiskCache: w.toInt(),
         maxHeightDiskCache: h.toInt(),
@@ -468,7 +466,6 @@ class Common {
         placeholder: (context, url) => loading,
         errorWidget: (context, url, error) => const Center(child: Icon(Icons.error)),
       );
-  }
 
   static bool isVideo(String url) => url.endsWith('.mp4');
 
