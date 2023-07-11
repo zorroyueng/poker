@@ -13,8 +13,8 @@ class DemoFindTab extends StatefulWidget {
 }
 
 class _DemoFindTabState extends State<DemoFindTab> {
-  final ScrollController scrollCtrl = ScrollController();
   final FindAdapter adapter = FindAdapter()..setData(DemoHelper.buildInfoData());
+  final ScrollController scrollCtrl = ScrollController();
   Future? future;
 
   @override

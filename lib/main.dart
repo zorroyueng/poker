@@ -33,18 +33,22 @@ class _HomePage extends StatelessWidget {
   final Broadcast<int> ctrl = Broadcast(0);
   final List<TabDef> _lst = [
     TabDef(
+      index: 0,
       page: DemoPokerTab(),
       barItem: const BottomNavigationBarItem(icon: Icon(Icons.catching_pokemon_rounded), label: 'card'),
     ),
     TabDef(
-      page: const DemoFindTab(),
+      index: 1,
+      page: DemoFindTab(),
       barItem: const BottomNavigationBarItem(icon: Icon(Icons.photo), label: 'photo'),
     ),
     TabDef(
+      index: 2,
       page: Container(),
       barItem: const BottomNavigationBarItem(icon: Icon(Icons.message), label: 'msg'),
     ),
     TabDef(
+      index: 3,
       page: Container(),
       barItem: const BottomNavigationBarItem(icon: Icon(Icons.person), label: 'me'),
     ),

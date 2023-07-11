@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:base/base.dart';
 import 'package:flutter/material.dart';
 import 'package:poker/demo/demo_adapter.dart';
 import 'package:poker/demo/demo_find_tab.dart';
@@ -16,7 +17,7 @@ class DemoHelper {
         content: _str(),
         medias: () {
           List<String> pics = [];
-          if (Random().nextDouble() > .7) {
+          if (!HpPlatform.isMac() && Random().nextDouble() > .7) {
             pics.add(random(_videos));
           } else {
             int max = Random().nextInt(9);
@@ -50,7 +51,11 @@ class DemoHelper {
       for (int j = 0; j < max; j++) {
         urls.add(random(pics));
       }
-      urls.add(random(_videos));
+      if (!HpPlatform.isMac()) {
+        urls.add(random(_videos));
+      } else {
+        urls.add(random(pics));
+      }
       data.add(DemoData(
         id: i,
         name: random(name),
