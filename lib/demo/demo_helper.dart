@@ -8,7 +8,7 @@ import 'package:poker/demo/poker/adapter.dart';
 class DemoHelper {
   DemoHelper._();
 
-  static List<Info> buildInfoData() {
+  static List<Info> findData() {
     List<Info> data = [];
     for (int i = 0; i < 10; i++) {
       data.add(Info(

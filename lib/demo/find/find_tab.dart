@@ -8,7 +8,7 @@ import 'package:poker/demo/find/find_adapter.dart';
 class FindTab extends StatefulWidget {
   FindTab({super.key});
 
-  final FindAdapter adapter = FindAdapter()..setData(DemoHelper.buildInfoData());
+  final FindAdapter adapter = FindAdapter()..setData(DemoHelper.findData());
   double scrollOffset = 0;
 
   @override
@@ -30,7 +30,7 @@ class _FindTabState extends State<FindTab> {
           future ??= Future.delayed(
             const Duration(seconds: 2),
             () {
-              setState(() => widget.adapter.addData(DemoHelper.buildInfoData()));
+              widget.adapter.addData(DemoHelper.findData());
               future = null;
             },
           );
@@ -71,10 +71,14 @@ class _FindTabState extends State<FindTab> {
         ),
       );
 
-  Widget _content(BuildContext ctx) => SliverList(
-        delegate: SliverChildBuilderDelegate(
-          childCount: widget.adapter.lstItem.length,
-          (c, i) => widget.adapter.lstItem[i].item(c),
+  Widget _content(BuildContext ctx) => StreamWidget(
+        stream: widget.adapter.update.stream(),
+        initialData: widget.adapter.update.value(),
+        builder: (_, __, ___) => SliverList(
+          delegate: SliverChildBuilderDelegate(
+            childCount: widget.adapter.lstItem.length,
+            (c, i) => widget.adapter.lstItem[i].item(c),
+          ),
         ),
       );
 
@@ -93,8 +97,10 @@ class _FindTabState extends State<FindTab> {
         controller: scrollCtrl,
         child: RefreshIndicator(
           onRefresh: () async {
-            await Future.delayed(const Duration(seconds: 2))
-                .then((_) => widget.adapter.setData(DemoHelper.buildInfoData()));
+            await Future.delayed(
+              const Duration(seconds: 2),
+              () => widget.adapter.setData(DemoHelper.findData()),
+            );
           },
           child: CustomScrollView(
             controller: scrollCtrl,
