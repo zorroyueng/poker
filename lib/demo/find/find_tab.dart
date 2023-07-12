@@ -72,12 +72,12 @@ class _FindTabState extends State<FindTab> {
       );
 
   Widget _content(BuildContext ctx) => StreamWidget(
-        stream: widget.adapter.update.stream(),
-        initialData: widget.adapter.update.value(),
+        stream: widget.adapter.items.stream(),
+        initialData: widget.adapter.items.value(),
         builder: (_, __, ___) => SliverList(
           delegate: SliverChildBuilderDelegate(
-            childCount: widget.adapter.lstItem.length,
-            (c, i) => widget.adapter.lstItem[i].item(c),
+            childCount: widget.adapter.items.value().length,
+            (c, i) => widget.adapter.items.value()[i].item(c),
           ),
         ),
       );

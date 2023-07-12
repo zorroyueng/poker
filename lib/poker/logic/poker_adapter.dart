@@ -17,7 +17,7 @@ abstract class PokerAdapter<T> {
   final Percent _percentX = Percent(0);
   final Percent _percentY = Percent(0);
   final Map<Object, Offset> _mapPosition = {};
-  late final Broadcast update = Broadcast(null);
+  final Broadcast update = Broadcast(null);
 
   /// interface
   Object id(T t);

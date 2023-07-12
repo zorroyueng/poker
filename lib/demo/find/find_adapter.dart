@@ -6,11 +6,15 @@ import 'package:poker/base/video_widget.dart';
 
 class FindAdapter {
   final List<Info> lstInfo = [];
-  final List<ItemModel> lstItem = [];
-  late final Broadcast<int> update = Broadcast(lstInfo.hashCode);
+  final Broadcast<List<ItemModel>> items = Broadcast([]);
 
-  void addData(List<Info> data) {
+  void addData(List<Info> data, [bool join = true]) {
+    // lstInfo
+    if (!join) {
+      lstInfo.clear();
+    }
     lstInfo.addAll(data);
+    // items
     List<ItemModel> lst = [];
     for (Info info in data) {
       lst.add(ItemModel(type: Type.head, info: info));
@@ -19,15 +23,10 @@ class FindAdapter {
         lst.add(ItemModel(type: Type.comment, info: info, index: i));
       }
     }
-    lstItem.addAll(lst);
-    update.add(lstInfo.hashCode);
+    items.add(join ? (items.value() + lst) : lst);
   }
 
-  void setData(List<Info> data) {
-    lstInfo.clear();
-    lstItem.clear();
-    addData(data);
-  }
+  void setData(List<Info> data) => addData(data, false);
 }
 
 class Info {
@@ -61,6 +60,8 @@ class ItemModel {
 
   double _padding(BuildContext c) => Common.base(c, .2);
 
+  double _paddingLeft(BuildContext c) => _padding(c) + _headSize(c);
+
   double _headSize(BuildContext c) => Common.base(c, 1.3);
 
   Widget _head() => ThemeWidget(
@@ -74,7 +75,7 @@ class ItemModel {
               Padding(
                 padding: EdgeInsets.only(
                   top: p,
-                  right: p * 2,
+                  right: p,
                   bottom: p,
                 ),
                 child: SizedBox(
@@ -134,7 +135,7 @@ class ItemModel {
           double p = _padding(c);
           return Container(
             padding: EdgeInsets.only(
-              left: p * 2 + _headSize(c),
+              left: _paddingLeft(c),
               top: p,
             ),
             child: GridView.builder(
@@ -163,7 +164,7 @@ class ItemModel {
           double p = _padding(c);
           return Container(
             padding: EdgeInsets.only(
-              left: p * 2 + _headSize(c),
+              left: _paddingLeft(c),
               top: p,
             ),
             child: AspectRatio(
@@ -177,16 +178,36 @@ class ItemModel {
   Widget _comment() => ThemeWidget(
         builder: (c, _) {
           double p = _padding(c);
+          BorderRadius? borderRadius = () {
+            if (info.comments.length == 1) {
+              Radius r = Radius.circular(p);
+              return BorderRadius.all(r);
+            } else if (index == 0) {
+              Radius r = Radius.circular(p);
+              return BorderRadius.only(topLeft: r, topRight: r);
+            } else if (index == info.comments.length - 1) {
+              Radius r = Radius.circular(p);
+              return BorderRadius.only(bottomLeft: r, bottomRight: r);
+            } else {
+              return null;
+            }
+          }();
           return Padding(
             padding: EdgeInsets.only(
-              left: p * 2 + _headSize(c),
+              left: _paddingLeft(c),
               top: index == 0 ? p : 0,
             ),
             child: Container(
               width: double.infinity,
-              color: ColorProvider.itemBg(),
+              decoration: BoxDecoration(
+                color: ColorProvider.itemBg(),
+                borderRadius: borderRadius,
+              ),
               padding: EdgeInsets.only(
-                top: index > 0 ? p / 2 : 0,
+                top: (index > 0 ? p / 2 : 0) + (index == 0 ? p : 0),
+                left: p,
+                right: p,
+                bottom: index == info.comments.length - 1 ? p : 0,
               ),
               child: Text.rich(
                 TextSpan(
@@ -196,7 +217,7 @@ class ItemModel {
                       text: 'Jack: ',
                       style: Common.textStyle(
                         c,
-                        scale: .8,
+                        scale: .9,
                         alpha: .6,
                       ).copyWith(fontWeight: FontWeight.bold),
                     ),
@@ -204,7 +225,7 @@ class ItemModel {
                       text: info.comments[index],
                       style: Common.textStyle(
                         c,
-                        scale: .8,
+                        scale: .9,
                         alpha: .6,
                       ),
                     ),
