@@ -218,39 +218,40 @@ class ItemModel {
               left: _paddingLeft(c),
               top: index == 0 ? p : 0,
             ),
-            child: Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: ColorProvider.itemBg(),
-                borderRadius: borderRadius,
-              ),
-              padding: EdgeInsets.only(
-                top: (index > 0 ? p / 2 : 0) + (index == 0 ? p : 0),
-                left: p,
-                right: p,
-                bottom: index == info.comments.length - 1 ? p : 0,
-              ),
-              child: Text.rich(
-                TextSpan(
-                  style: const TextStyle(height: 1),
-                  children: [
-                    TextSpan(
-                      text: 'Jack: ',
-                      style: Common.textStyle(
-                        c,
-                        scale: .9,
-                        alpha: .6,
-                      ).copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    TextSpan(
-                      text: info.comments[index],
-                      style: Common.textStyle(
-                        c,
-                        scale: .9,
-                        alpha: .6,
+            child: Common.click(
+              onTap: () {},
+              color: ColorProvider.itemBg(),
+              r: borderRadius,
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.only(
+                  top: (index > 0 ? p / 2 : 0) + (index == 0 ? p : 0),
+                  left: p,
+                  right: p,
+                  bottom: index == info.comments.length - 1 ? p : 0,
+                ),
+                child: Text.rich(
+                  TextSpan(
+                    style: const TextStyle(height: 1),
+                    children: [
+                      TextSpan(
+                        text: 'Jack: ',
+                        style: Common.textStyle(
+                          c,
+                          scale: .9,
+                          alpha: .6,
+                        ).copyWith(fontWeight: FontWeight.bold),
                       ),
-                    ),
-                  ],
+                      TextSpan(
+                        text: info.comments[index],
+                        style: Common.textStyle(
+                          c,
+                          scale: .9,
+                          alpha: .6,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

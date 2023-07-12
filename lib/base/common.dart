@@ -152,7 +152,7 @@ class Common {
         child: InkWell(
           onTap: onTap,
           borderRadius: r,
-          child: Center(child: child),
+          child: child,
         ),
       ),
     );
