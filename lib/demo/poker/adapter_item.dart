@@ -161,15 +161,13 @@ class _AdapterItemState extends State<AdapterItem> with _PercentSubMixin {
     BorderRadius? borderRadius = widget.hasRadius ? BorderRadius.circular(radius) : null;
     return PercentWidget(
       percent: rotate,
-      builder: (_, p, child) {
-        return Transform(
+      builder: (_, p, child) => Transform(
           transform: Matrix4.identity()
             ..setEntry(3, 2, .0005)
             ..rotateY(Config.rotateY * p),
           alignment: const Alignment(0, 0),
           child: child,
-        );
-      },
+        ),
       child: Stack(
         clipBehavior: Clip.none,
         fit: StackFit.expand,

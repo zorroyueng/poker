@@ -82,21 +82,15 @@ class ItemModel {
                 child: SizedBox(
                   width: w,
                   height: w,
-                  child: Stack(
-                    fit: StackFit.expand,
-                    clipBehavior: Clip.none,
-                    children: [
-                      Common.netImage(
-                        url: info.head,
-                        w: w,
-                        h: w,
-                        borderRadius: r,
-                      ),
-                      Common.click(
-                        onTap: () {},
-                        r: r,
-                      ),
-                    ],
+                  child: Common.click(
+                    onTap: () {},
+                    r: r,
+                    back: Common.netImage(
+                      url: info.head,
+                      w: w,
+                      h: w,
+                      borderRadius: r,
+                    ),
                   ),
                 ),
               ),
@@ -162,13 +156,13 @@ class ItemModel {
               itemBuilder: (c, i) => LayoutBuilder(
                 builder: (c, constraints) {
                   double size = constraints.maxWidth; //  * HpDevice.pixelRatio(c)
-                  return Stack(
-                    fit: StackFit.expand,
-                    clipBehavior: Clip.none,
-                    children: [
-                      Common.netImage(url: info.medias[i], w: size, h: size),
-                      Common.click(onTap: () {}),
-                    ],
+                  return Common.click(
+                    onTap: () {},
+                    back: Common.netImage(
+                      url: info.medias[i],
+                      w: size,
+                      h: size,
+                    ),
                   );
                 },
               ),

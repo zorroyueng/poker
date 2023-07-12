@@ -128,12 +128,14 @@ class Common {
   // 统一点击水波纹
   static Widget click({
     Widget? child,
+    Widget? back,
     required VoidCallback onTap,
     Color? color,
     Color? cBorder,
     BorderRadius? r,
     String? tip,
   }) {
+    assert(!(child != null && back != null));
     BoxDecoration? dec;
     if (cBorder != null) {
       dec = BoxDecoration(
@@ -156,6 +158,16 @@ class Common {
         ),
       ),
     );
+    if (back != null) {
+      widget = Stack(
+        clipBehavior: Clip.none,
+        fit: StackFit.expand,
+        children: [
+          Positioned.fill(child: back),
+          Positioned.fill(child: widget),
+        ],
+      );
+    }
     return tip == null
         ? widget
         : Tooltip(
