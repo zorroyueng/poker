@@ -10,6 +10,7 @@ class VideoWidget extends StatefulWidget {
   final Widget? ctrl;
   final BorderRadiusGeometry? borderRadius;
   final Object? tag;
+  final bool cover;
 
   const VideoWidget({
     super.key,
@@ -17,6 +18,7 @@ class VideoWidget extends StatefulWidget {
     this.borderRadius,
     this.ctrl,
     this.tag,
+    this.cover = true,
   });
 
   @override
@@ -66,12 +68,22 @@ class _VideoWidgetState extends State<VideoWidget> {
                         double w = constraints.maxWidth;
                         double h = constraints.maxHeight;
                         double k = w / h;
-                        if (_videoDef.ctrl.value.aspectRatio >= k) {
-                          w = h * _videoDef.ctrl.value.aspectRatio;
-                          left = -(w - constraints.maxWidth) / 2;
+                        if (widget.cover) {
+                          if (_videoDef.ctrl.value.aspectRatio >= k) {
+                            w = h * _videoDef.ctrl.value.aspectRatio;
+                            left = -(w - constraints.maxWidth) / 2;
+                          } else {
+                            h = w / _videoDef.ctrl.value.aspectRatio;
+                            top = -(h - constraints.maxHeight) / 2;
+                          }
                         } else {
-                          h = w / _videoDef.ctrl.value.aspectRatio;
-                          top = -(h - constraints.maxHeight) / 2;
+                          if (_videoDef.ctrl.value.aspectRatio >= k) {
+                            h = w / _videoDef.ctrl.value.aspectRatio;
+                            top = -(h - constraints.maxHeight) / 2;
+                          } else {
+                            w = h * _videoDef.ctrl.value.aspectRatio;
+                            left = -(w - constraints.maxWidth) / 2;
+                          }
                         }
                         return Stack(
                           clipBehavior: Clip.none,
@@ -173,7 +185,7 @@ class _VideoManager {
   static void _dispose(String url) {
     VideoDef? video = _map[url];
     if (video != null) {
-      video!._use--;
+      video._use--;
       if (video._use <= 0) {
         assert(video._use == 0);
         video.ctrl.dispose();

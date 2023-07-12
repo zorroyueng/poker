@@ -165,6 +165,7 @@ class ItemModel {
                       MediaPage(
                         url: url,
                         tag: tag,
+                        size: Size(size, size),
                       ),
                     ),
                     back: Hero(
@@ -199,6 +200,7 @@ class ItemModel {
                 tag: tag,
                 child: VideoWidget(
                   url: url,
+                  cover: false,
                   ctrl: Common.click(
                     onTap: () => Navi.pushAlpha(
                       c,
