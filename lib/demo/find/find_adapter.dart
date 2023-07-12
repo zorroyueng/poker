@@ -7,6 +7,7 @@ import 'package:poker/base/video_widget.dart';
 class FindAdapter {
   final List<Info> lstInfo = [];
   final List<ItemModel> lstItem = [];
+  late final Broadcast<int> update = Broadcast(lstInfo.hashCode);
 
   void addData(List<Info> data) {
     lstInfo.addAll(data);
@@ -19,6 +20,7 @@ class FindAdapter {
       }
     }
     lstItem.addAll(lst);
+    update.add(lstInfo.hashCode);
   }
 
   void setData(List<Info> data) {

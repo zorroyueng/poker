@@ -46,12 +46,12 @@ class _HomePage extends StatelessWidget {
     ),
     TabDef(
       index: 2,
-      page: MsgTab(),
+      page: const MsgTab(),
       barItem: const BottomNavigationBarItem(icon: Icon(Icons.message), label: 'msg'),
     ),
     TabDef(
       index: 3,
-      page: MeTab(),
+      page: const MeTab(),
       barItem: const BottomNavigationBarItem(icon: Icon(Icons.person), label: 'me'),
     ),
   ];

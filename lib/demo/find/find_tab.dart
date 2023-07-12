@@ -2,20 +2,21 @@ import 'package:base/base.dart';
 import 'package:flutter/material.dart';
 import 'package:poker/base/color_provider.dart';
 import 'package:poker/base/common.dart';
-import 'package:poker/base/video_widget.dart';
 import 'package:poker/demo/demo_helper.dart';
 import 'package:poker/demo/find/find_adapter.dart';
 
 class FindTab extends StatefulWidget {
-  const FindTab({super.key});
+  FindTab({super.key});
+
+  final FindAdapter adapter = FindAdapter()..setData(DemoHelper.buildInfoData());
+  double scrollOffset = 0;
 
   @override
   State<FindTab> createState() => _FindTabState();
 }
 
 class _FindTabState extends State<FindTab> {
-  final FindAdapter adapter = FindAdapter()..setData(DemoHelper.buildInfoData());
-  final ScrollController scrollCtrl = ScrollController();
+  late final ScrollController scrollCtrl = ScrollController(initialScrollOffset: widget.scrollOffset);
   Future? future;
 
   @override
@@ -23,18 +24,25 @@ class _FindTabState extends State<FindTab> {
     super.initState();
     scrollCtrl.addListener(
       () {
+        widget.scrollOffset = scrollCtrl.offset;
         // android 列表无法伸缩，需要=
         if (scrollCtrl.position.pixels >= scrollCtrl.position.maxScrollExtent) {
           future ??= Future.delayed(
             const Duration(seconds: 2),
             () {
-              setState(() => adapter.addData(DemoHelper.buildInfoData()));
+              setState(() => widget.adapter.addData(DemoHelper.buildInfoData()));
               future = null;
             },
           );
         }
       },
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    scrollCtrl.dispose();
   }
 
   Widget _head(BuildContext ctx) => ThemeWidget(
@@ -65,8 +73,8 @@ class _FindTabState extends State<FindTab> {
 
   Widget _content(BuildContext ctx) => SliverList(
         delegate: SliverChildBuilderDelegate(
-          childCount: adapter.lstItem.length,
-          (c, i) => adapter.lstItem[i].item(c),
+          childCount: widget.adapter.lstItem.length,
+          (c, i) => widget.adapter.lstItem[i].item(c),
         ),
       );
 

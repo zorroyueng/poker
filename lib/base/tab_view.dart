@@ -23,7 +23,7 @@ class TabView extends StatelessWidget {
                 builder: (_, snap, __) => Positioned.fill(
                   child: Visibility(
                     visible: snap.data!,
-                    maintainState: true,
+                    // maintainState: true, 不保存state，性能最优
                     child: t.page,
                   ),
                 ),

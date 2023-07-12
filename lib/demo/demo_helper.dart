@@ -14,7 +14,7 @@ class DemoHelper {
       data.add(Info(
         head: random(_head),
         name: random(name),
-        content: _str('哈', 50),
+        content: _str(50),
         medias: () {
           List<String> pics = [];
           if (!HpPlatform.isMac() && Random().nextDouble() > .7) {
@@ -31,7 +31,7 @@ class DemoHelper {
           List<String> comments = [];
           int max = Random().nextInt(9);
           for (int j = 0; j <= max; j++) {
-            comments.add(_str('6', 30));
+            comments.add(_str(30));
           }
           return comments;
         }(),
@@ -65,11 +65,11 @@ class DemoHelper {
     return data;
   }
 
-  static String _str(String s, int max) {
+  static String _str(int max) {
     String str = '';
     int n = Random().nextInt(50) + 1;
     for (int i = 0; i < n; i++) {
-      str += s;
+      str += '哈';
     }
     return str;
   }
