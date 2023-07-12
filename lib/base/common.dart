@@ -1,5 +1,6 @@
 import 'package:base/base.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -439,7 +440,7 @@ class Common {
     );
   }
 
-  static Widget loading = const Center(child: CircularProgressIndicator.adaptive());
+  static Widget loading = const Center(child: CupertinoActivityIndicator());
 
   static Widget netImage({
     required String url,

@@ -42,7 +42,7 @@ class _HomePage extends StatelessWidget {
     TabDef(
       index: 1,
       page: FindTab(),
-      barItem: const BottomNavigationBarItem(icon: Icon(Icons.photo), label: 'photo'),
+      barItem: const BottomNavigationBarItem(icon: Icon(Icons.photo), label: 'find'),
     ),
     TabDef(
       index: 2,

@@ -93,7 +93,8 @@ class _FindTabState extends State<FindTab> {
         controller: scrollCtrl,
         child: RefreshIndicator(
           onRefresh: () async {
-            await Future.delayed(const Duration(seconds: 2)); // todo
+            await Future.delayed(const Duration(seconds: 2))
+                .then((_) => widget.adapter.setData(DemoHelper.buildInfoData()));
           },
           child: CustomScrollView(
             controller: scrollCtrl,
