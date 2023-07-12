@@ -439,7 +439,7 @@ class Common {
     );
   }
 
-  static Widget loading = const Center(child: CircularProgressIndicator());
+  static Widget loading = const Center(child: CircularProgressIndicator.adaptive());
 
   static Widget netImage({
     required String url,
