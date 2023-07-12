@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:poker/base/color_provider.dart';
 import 'package:poker/base/common.dart';
 import 'package:poker/base/video_widget.dart';
+import 'package:poker/demo/media_page.dart';
 
 class FindAdapter {
   final List<Info> lstInfo = [];
@@ -115,7 +116,7 @@ class ItemModel {
                       style: Common.textStyle(
                         c,
                         alpha: .8,
-                      ).copyWith(height: 1),
+                      ),
                     ),
                   ],
                 ),
@@ -156,12 +157,23 @@ class ItemModel {
               itemBuilder: (c, i) => LayoutBuilder(
                 builder: (c, constraints) {
                   double size = constraints.maxWidth; //  * HpDevice.pixelRatio(c)
+                  String url = info.medias[i];
+                  Object tag = '${info.name}_${i}_$url';
                   return Common.click(
-                    onTap: () {},
-                    back: Common.netImage(
-                      url: info.medias[i],
-                      w: size,
-                      h: size,
+                    onTap: () => NaviObs.pushAlpha(
+                      c,
+                      MediaPage(
+                        url: url,
+                        tag: tag,
+                      ),
+                    ),
+                    back: Hero(
+                      tag: tag,
+                      child: Common.netImage(
+                        url: url,
+                        w: size,
+                        h: size,
+                      ),
                     ),
                   );
                 },
@@ -174,6 +186,8 @@ class ItemModel {
   Widget _video() => ThemeWidget(
         builder: (c, _) {
           double p = _padding(c);
+          String url = info.medias[0];
+          Object tag = '${info.name}_0_$url';
           return Container(
             padding: EdgeInsets.only(
               left: _paddingLeft(c),
@@ -181,9 +195,20 @@ class ItemModel {
             ),
             child: AspectRatio(
               aspectRatio: 1.6,
-              child: VideoWidget(
-                url: info.medias[0],
-                ctrl: Common.click(onTap: () {}),
+              child: Hero(
+                tag: tag,
+                child: VideoWidget(
+                  url: url,
+                  ctrl: Common.click(
+                    onTap: () => NaviObs.pushAlpha(
+                      c,
+                      MediaPage(
+                        url: url,
+                        tag: tag,
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ),
           );
@@ -222,11 +247,10 @@ class ItemModel {
                   top: (index > 0 ? p / 2 : 0) + (index == 0 ? p : 0),
                   left: p,
                   right: p,
-                  bottom: index == info.comments.length - 1 ? p : 0,
+                  bottom: index == info.comments.length - 1 ? p : p / 2,
                 ),
                 child: Text.rich(
                   TextSpan(
-                    style: const TextStyle(height: 1),
                     children: [
                       TextSpan(
                         text: 'Jack: ',

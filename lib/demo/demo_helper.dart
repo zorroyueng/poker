@@ -31,7 +31,7 @@ class DemoHelper {
           List<String> comments = [];
           int max = Random().nextInt(9);
           for (int j = 0; j <= max; j++) {
-            comments.add(_str(30));
+            comments.add(_str(20));
           }
           return comments;
         }(),
@@ -67,7 +67,7 @@ class DemoHelper {
 
   static String _str(int max) {
     String str = '';
-    int n = Random().nextInt(50) + 1;
+    int n = Random().nextInt(max) + 1;
     for (int i = 0; i < n; i++) {
       str += '哈';
     }

@@ -210,8 +210,7 @@ class DetailPage extends StatelessWidget {
                       DemoHelper.name[i],
                       style: Common.textStyle(
                         context,
-                        color: ColorProvider.textColor(),
-                      ),
+                      ).copyWith(fontWeight: FontWeight.bold),
                     ),
                     Text(
                       DemoHelper.relaxed[i],
@@ -228,37 +227,16 @@ class DetailPage extends StatelessWidget {
         ),
       );
 
-  Widget _quit({required BuildContext context, required Widget child}) {
-    Offset? from;
-    double w = HpDevice.screenMin(context) / 10;
-    return GestureDetector(
-      onPanDown: (d) {
-        from = d.localPosition;
-        if (from!.dx > w) {
-          from = null;
-        }
-      },
-      onPanUpdate: (d) {
-        if (from != null) {
-          if (d.localPosition.dx - from!.dx >= w && (d.localPosition.dy - from!.dy).abs() <= w) {
-            Navigator.of(context).pop();
-          }
-        }
-      },
-      onPanEnd: (d) => from = null,
-      onPanCancel: () => from = null,
-      child: child,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     double h = HpDevice.screenMin(context);
     _bind(context, h);
     return Scaffold(
       body: SafeArea(
-        child: _quit(
+        child: QuitContainer(
           context: context,
+          intercept: false,
+          slideOut: true,
           child: Common.scrollbar(
             ctx: context,
             controller: scrollCtrl,
