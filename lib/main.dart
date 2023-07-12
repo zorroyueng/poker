@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           theme: ThemeProvider.data(),
           home: child,
-          navigatorObservers: [NaviObs.obs()],
+          navigatorObservers: [Navi.obs()],
         ),
         child: _HomePage(),
       );

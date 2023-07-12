@@ -83,7 +83,7 @@ mixin AdapterMixin {
                 ),
               );
               bool send = false;
-              NaviObs.pushAlpha(
+              Navi.pushAlpha(
                 ctx,
                 page,
                 onBack: (p) {

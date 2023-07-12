@@ -160,7 +160,7 @@ class ItemModel {
                   String url = info.medias[i];
                   Object tag = '${info.name}_${i}_$url';
                   return Common.click(
-                    onTap: () => NaviObs.pushAlpha(
+                    onTap: () => Navi.pushAlpha(
                       c,
                       MediaPage(
                         url: url,
@@ -200,7 +200,7 @@ class ItemModel {
                 child: VideoWidget(
                   url: url,
                   ctrl: Common.click(
-                    onTap: () => NaviObs.pushAlpha(
+                    onTap: () => Navi.pushAlpha(
                       c,
                       MediaPage(
                         url: url,

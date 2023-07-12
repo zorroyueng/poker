@@ -346,7 +346,7 @@ class Common {
     required Future<Widget> future,
   }) =>
       showDialog<T>(
-        routeSettings: NaviObs.rs(name, dlg: true),
+        routeSettings: Navi.rs(name, dlg: true),
         barrierDismissible: true, //点击空白是否退出
         context: ctx,
         builder: (ctx) => FutureBuilder(
@@ -487,7 +487,7 @@ class Common {
   static bool isVideo(String url) => url.endsWith('.mp4');
 
   static void precache({BuildContext? ctx, required String url, required Size size}) {
-    ctx ??= NaviObs.ctx();
+    ctx ??= Navi.ctx();
     if (!isVideo(url) && ctx != null) {
       precacheImage(
         size: size,

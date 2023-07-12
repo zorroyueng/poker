@@ -23,12 +23,12 @@ class MediaPage extends StatelessWidget {
                   if (Common.isVideo(url)) {
                     return VideoWidget(
                       url: url,
-                      ctrl: Common.click(onTap: () => NaviObs.pop(context)),
+                      ctrl: Common.click(onTap: () => Navi.pop(context)),
                     );
                   } else {
                     double ratio = HpDevice.pixelRatio(context);
                     return Common.click(
-                      onTap: () => NaviObs.pop(context),
+                      onTap: () => Navi.pop(context),
                       back: Common.netImage(
                         url: url,
                         w: constraints.maxWidth * ratio,
