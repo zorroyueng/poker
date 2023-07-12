@@ -1,9 +1,11 @@
 import 'package:base/base.dart';
 import 'package:flutter/material.dart';
 import 'package:poker/base/color_provider.dart';
-import 'package:poker/demo/demo_find_tab.dart';
-import 'package:poker/demo/demo_poker_tab.dart';
-import 'package:poker/demo/tab_view.dart';
+import 'package:poker/demo/find/find_tab.dart';
+import 'package:poker/demo/me/me_tab.dart';
+import 'package:poker/demo/msg/msg_tab.dart';
+import 'package:poker/demo/poker/poker_tab.dart';
+import 'package:poker/base/tab_view.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,22 +36,22 @@ class _HomePage extends StatelessWidget {
   final List<TabDef> _lst = [
     TabDef(
       index: 0,
-      page: DemoPokerTab(),
+      page: PokerTab(),
       barItem: const BottomNavigationBarItem(icon: Icon(Icons.catching_pokemon_rounded), label: 'card'),
     ),
     TabDef(
       index: 1,
-      page: DemoFindTab(),
+      page: FindTab(),
       barItem: const BottomNavigationBarItem(icon: Icon(Icons.photo), label: 'photo'),
     ),
     TabDef(
       index: 2,
-      page: Container(),
+      page: MsgTab(),
       barItem: const BottomNavigationBarItem(icon: Icon(Icons.message), label: 'msg'),
     ),
     TabDef(
       index: 3,
-      page: Container(),
+      page: MeTab(),
       barItem: const BottomNavigationBarItem(icon: Icon(Icons.person), label: 'me'),
     ),
   ];

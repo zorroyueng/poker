@@ -1,10 +1,10 @@
 import 'package:base/base.dart';
 import 'package:flutter/material.dart';
 import 'package:poker/demo/demo_helper.dart';
-import 'package:poker/demo/demo_item_mixin.dart';
+import 'package:poker/demo/poker/adapter_mixin.dart';
 import 'package:poker/poker/logic/poker_adapter.dart';
 
-class DemoAdapter extends PokerAdapter<DemoData> with DemoItemMixin {
+class Adapter extends PokerAdapter<DemoData> with AdapterMixin {
   late final Widget _loading = GestureDetector(
     onTap: () => setData(DemoHelper.cardData()),
     child: ThemeWidget(

@@ -3,110 +3,39 @@ import 'package:flutter/material.dart';
 import 'package:poker/base/color_provider.dart';
 import 'package:poker/base/common.dart';
 import 'package:poker/base/video_widget.dart';
-import 'package:poker/demo/demo_helper.dart';
-import 'package:poker/demo/tab_mixin.dart';
 
-class DemoFindTab extends StatefulWidget {
-  const DemoFindTab({super.key});
+class FindAdapter {
+  final List<Info> lstInfo = [];
+  final List<ItemModel> lstItem = [];
 
-  @override
-  State<DemoFindTab> createState() => _DemoFindTabState();
-}
-
-class _DemoFindTabState extends State<DemoFindTab> with TabMixin{
-  final FindAdapter adapter = FindAdapter()..setData(DemoHelper.buildInfoData());
-  final ScrollController scrollCtrl = ScrollController();
-  Future? future;
-
-  @override
-  void initState() {
-    super.initState();
-    scrollCtrl.addListener(
-      () {
-        // android 列表无法伸缩，需要=
-        if (scrollCtrl.position.pixels >= scrollCtrl.position.maxScrollExtent) {
-          future ??= Future.delayed(
-            const Duration(seconds: 2),
-            () {
-              setState(() => adapter.addData(DemoHelper.buildInfoData()));
-              future = null;
-            },
-          );
-        }
-      },
-    );
+  void addData(List<Info> data) {
+    lstInfo.addAll(data);
+    List<ItemModel> lst = [];
+    for (Info info in data) {
+      lst.add(ItemModel(type: Type.head, info: info));
+      lst.add(ItemModel(type: Type.media, info: info));
+      for (int i = 0; i < info.comments.length; i++) {
+        lst.add(ItemModel(type: Type.comment, info: info, index: i));
+      }
+    }
+    lstItem.addAll(lst);
   }
 
-  Widget _head(BuildContext ctx) => ThemeWidget(
-        builder: (ctx, _) => SliverAppBar(
-          // 标题栏是否固定
-          floating: true,
-          elevation: 4,
-          shadowColor: ColorProvider.itemBg(),
-          actions: [
-            ThemeWidget(
-              builder: (_, __) => IconButton(
-                onPressed: () => Common.dlgSetting(ctx),
-                icon: Icon(
-                  Icons.more_horiz,
-                  color: ColorProvider.textColor(),
-                ),
-              ),
-            ),
-          ],
-          backgroundColor: ColorProvider.bg(),
-          flexibleSpace: FlexibleSpaceBar(
-            background: Container(
-              color: ColorProvider.bg(),
-            ),
-          ),
-        ),
-      );
-
-  Widget _content(BuildContext ctx) => SliverList(
-        delegate: SliverChildBuilderDelegate(
-          childCount: adapter.lstItemData.length,
-          (c, i) => adapter.lstItemData[i].item(c),
-        ),
-      );
-
-  Widget _more(BuildContext ctx) => SliverFillRemaining(
-        hasScrollBody: false,
-        fillOverscroll: true,
-        child: Padding(
-          padding: EdgeInsets.all(Common.base(ctx, .2)),
-          child: Common.loading,
-        ),
-      );
-
-  @override
-  Widget build(BuildContext context) => Common.scrollbar(
-        ctx: context,
-        controller: scrollCtrl,
-        child: RefreshIndicator(
-          onRefresh: () async {
-            await Future.delayed(const Duration(seconds: 2)); // todo
-          },
-          child: CustomScrollView(
-            controller: scrollCtrl,
-            slivers: [
-              _head(context),
-              _content(context),
-              _more(context),
-            ],
-          ),
-        ),
-      );
+  void setData(List<Info> data) {
+    lstInfo.clear();
+    lstItem.clear();
+    addData(data);
+  }
 }
 
-class InfoData {
+class Info {
   final String head;
   final String name;
   final String content;
   final List<String> medias;
   final List<String> comments;
 
-  InfoData({
+  Info({
     required this.head,
     required this.name,
     required this.content,
@@ -115,18 +44,18 @@ class InfoData {
   });
 }
 
-enum ItemType {
+enum Type {
   head,
   media,
   comment,
 }
 
-class ItemData {
-  final ItemType type;
-  final InfoData info;
+class ItemModel {
+  final Type type;
+  final Info info;
   final int index;
 
-  ItemData({required this.type, required this.info, this.index = 0});
+  ItemModel({required this.type, required this.info, this.index = 0});
 
   double _padding(BuildContext c) => Common.base(c, .2);
 
@@ -254,6 +183,9 @@ class ItemData {
             child: Container(
               width: double.infinity,
               color: ColorProvider.itemBg(),
+              padding: EdgeInsets.only(
+                top: index > 0 ? p / 2 : 0,
+              ),
               child: Text.rich(
                 TextSpan(
                   style: const TextStyle(height: 1),
@@ -286,15 +218,15 @@ class ItemData {
     late Widget item;
     bool isEnd = false;
     switch (type) {
-      case ItemType.head:
+      case Type.head:
         isEnd = info.medias.isEmpty && info.comments.isEmpty;
         item = _head();
         break;
-      case ItemType.media:
+      case Type.media:
         isEnd = info.comments.isEmpty;
         item = Common.isVideo(info.medias[0]) ? _video() : _pic();
         break;
-      case ItemType.comment:
+      case Type.comment:
         isEnd = index == info.comments.length - 1;
         item = _comment();
         break;
@@ -315,29 +247,5 @@ class ItemData {
         ],
       ),
     );
-  }
-}
-
-class FindAdapter {
-  final List<InfoData> lstFindInfo = [];
-  final List<ItemData> lstItemData = [];
-
-  void addData(List<InfoData> data) {
-    lstFindInfo.addAll(data);
-    List<ItemData> lst = [];
-    for (InfoData info in data) {
-      lst.add(ItemData(type: ItemType.head, info: info));
-      lst.add(ItemData(type: ItemType.media, info: info));
-      for (int i = 0; i < info.comments.length; i++) {
-        lst.add(ItemData(type: ItemType.comment, info: info, index: i));
-      }
-    }
-    lstItemData.addAll(lst);
-  }
-
-  void setData(List<InfoData> data) {
-    lstFindInfo.clear();
-    lstItemData.clear();
-    addData(data);
   }
 }

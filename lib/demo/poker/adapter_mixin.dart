@@ -2,18 +2,18 @@ import 'package:base/base.dart';
 import 'package:flutter/material.dart';
 import 'package:poker/base/color_provider.dart';
 import 'package:poker/base/common.dart';
-import 'package:poker/demo/demo_adapter.dart';
-import 'package:poker/demo/demo_item_cards.dart';
+import 'package:poker/demo/poker/adapter.dart';
+import 'package:poker/demo/poker/adapter_item.dart';
 import 'package:poker/demo/detail_page.dart';
 
-mixin DemoItemMixin {
-  Widget build(DemoAdapter adapter, DemoData t, Size imgSize, Percent percent) {
+mixin AdapterMixin {
+  Widget build(Adapter adapter, DemoData t, Size imgSize, Percent percent) {
     Percent alpha = Percent(1);
     Broadcast<int> index = Broadcast(0);
     return ThemeWidget(
       builder: (ctx, child) {
         double radius = Common.radius(ctx);
-        return DemoItemCards(
+        return AdapterItem(
           tag: t.id,
           urls: t.urls,
           index: index,

@@ -4,9 +4,9 @@ import 'package:base/base.dart';
 import 'package:flutter/material.dart';
 import 'package:poker/base/color_provider.dart';
 import 'package:poker/base/common.dart';
-import 'package:poker/demo/demo_adapter.dart';
+import 'package:poker/demo/poker/adapter.dart';
 import 'package:poker/demo/demo_helper.dart';
-import 'package:poker/demo/demo_item_cards.dart';
+import 'package:poker/demo/poker/adapter_item.dart';
 
 class DetailPage extends StatelessWidget {
   final DetailInfo info;
@@ -120,7 +120,7 @@ class DetailPage extends StatelessWidget {
               ),
             ),
           ),
-          background: DemoItemCards(
+          background: AdapterItem(
             tag: info.data.id,
             urls: info.data.urls,
             index: info.index,

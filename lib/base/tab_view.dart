@@ -12,24 +12,24 @@ class TabView extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => StreamWidget(
-        initialData: ctrl.value(),
-        stream: ctrl.stream().distinct(),
-        builder: (_, __, ___) => Stack(
-          clipBehavior: Clip.none,
-          fit: StackFit.expand,
-          children: children
-              .map(
-                (t) => Positioned.fill(
+  Widget build(BuildContext context) => Stack(
+        clipBehavior: Clip.none,
+        fit: StackFit.expand,
+        children: children
+            .map(
+              (t) => StreamWidget(
+                initialData: ctrl.value() == t.index,
+                stream: ctrl.stream().map((v) => v == t.index).distinct(),
+                builder: (_, snap, __) => Positioned.fill(
                   child: Visibility(
-                    visible: t.index == ctrl.value(),
+                    visible: snap.data!,
                     maintainState: true,
                     child: t.page,
                   ),
                 ),
-              )
-              .toList(),
-        ),
+              ),
+            )
+            .toList(),
       );
 }
 

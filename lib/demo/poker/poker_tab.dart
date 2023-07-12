@@ -2,17 +2,16 @@ import 'package:base/base.dart';
 import 'package:flutter/material.dart';
 import 'package:poker/base/color_provider.dart';
 import 'package:poker/base/common.dart';
-import 'package:poker/demo/demo_adapter.dart';
+import 'package:poker/demo/poker/adapter.dart';
 import 'package:poker/demo/demo_helper.dart';
-import 'package:poker/demo/tab_mixin.dart';
 import 'package:poker/poker/config.dart';
 import 'package:poker/poker/logic/poker_adapter.dart';
 import 'package:poker/poker/poker_view.dart';
 
-class DemoPokerTab extends StatelessWidget with TabMixin {
-  final DemoAdapter adapter = DemoAdapter()..setData(DemoHelper.cardData());
+class PokerTab extends StatelessWidget {
+  final Adapter adapter = Adapter()..setData(DemoHelper.cardData());
 
-  DemoPokerTab({super.key});
+  PokerTab({super.key});
 
   Widget _btn({
     required BuildContext ctx,

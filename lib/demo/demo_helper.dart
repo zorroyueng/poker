@@ -2,19 +2,19 @@ import 'dart:math';
 
 import 'package:base/base.dart';
 import 'package:flutter/material.dart';
-import 'package:poker/demo/demo_adapter.dart';
-import 'package:poker/demo/demo_find_tab.dart';
+import 'package:poker/demo/find/find_adapter.dart';
+import 'package:poker/demo/poker/adapter.dart';
 
 class DemoHelper {
   DemoHelper._();
 
-  static List<InfoData> buildInfoData() {
-    List<InfoData> data = [];
+  static List<Info> buildInfoData() {
+    List<Info> data = [];
     for (int i = 0; i < 10; i++) {
-      data.add(InfoData(
+      data.add(Info(
         head: random(_head),
         name: random(name),
-        content: _str(),
+        content: _str('哈', 50),
         medias: () {
           List<String> pics = [];
           if (!HpPlatform.isMac() && Random().nextDouble() > .7) {
@@ -31,7 +31,7 @@ class DemoHelper {
           List<String> comments = [];
           int max = Random().nextInt(9);
           for (int j = 0; j <= max; j++) {
-            comments.add(_str());
+            comments.add(_str('6', 30));
           }
           return comments;
         }(),
@@ -65,11 +65,11 @@ class DemoHelper {
     return data;
   }
 
-  static String _str() {
+  static String _str(String s, int max) {
     String str = '';
-    int n = Random().nextInt(100) + 1;
+    int n = Random().nextInt(50) + 1;
     for (int i = 0; i < n; i++) {
-      str += '哈';
+      str += s;
     }
     return str;
   }

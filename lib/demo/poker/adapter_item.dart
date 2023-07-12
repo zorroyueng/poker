@@ -8,7 +8,7 @@ import 'package:poker/base/common.dart';
 import 'package:poker/base/video_widget.dart';
 import 'package:poker/poker/config.dart';
 
-class DemoItemCards extends StatefulWidget {
+class AdapterItem extends StatefulWidget {
   final List<String> urls;
   final Broadcast<int> index;
   final Size imgSize;
@@ -17,7 +17,7 @@ class DemoItemCards extends StatefulWidget {
   final bool hasRadius;
   final Percent? percent;
 
-  const DemoItemCards({
+  const AdapterItem({
     super.key,
     required this.tag,
     required this.urls,
@@ -29,10 +29,10 @@ class DemoItemCards extends StatefulWidget {
   });
 
   @override
-  State<DemoItemCards> createState() => _DemoItemCardsState();
+  State<AdapterItem> createState() => _AdapterItemState();
 }
 
-class _DemoItemCardsState extends State<DemoItemCards> with _PercentSubMixin {
+class _AdapterItemState extends State<AdapterItem> with _PercentSubMixin {
   final Percent rotate = Percent(0, space: 0);
 
   double _barHeight(double radius) => radius / 10;
