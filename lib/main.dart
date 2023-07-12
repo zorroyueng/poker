@@ -1,5 +1,6 @@
 import 'package:base/base.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:poker/base/color_provider.dart';
 import 'package:poker/demo/find/find_tab.dart';
 import 'package:poker/demo/me/me_tab.dart';
@@ -60,16 +61,19 @@ class _HomePage extends StatelessWidget {
   Widget build(BuildContext context) => GreyWidget(
         child: ThemeWidget(
           key: _homeKey,
-          builder: (_, __) => Scaffold(
-            body: SafeArea(child: TabView(ctrl: ctrl, children: _lst)),
-            bottomNavigationBar: StreamWidget(
-              stream: ctrl.stream().distinct(),
-              initialData: ctrl.value(),
-              builder: (_, __, ___) => BottomNavigationBar(
-                backgroundColor: ColorProvider.itemBg(),
-                currentIndex: ctrl.value(),
-                onTap: (i) => ctrl.add(i),
-                items: _lst.map((p) => p.barItem).toList(),
+          builder: (_, __) => AnnotatedRegion(
+            value: ThemeProvider.isDark() ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+            child: Scaffold(
+              body: SafeArea(child: TabView(ctrl: ctrl, children: _lst)),
+              bottomNavigationBar: StreamWidget(
+                stream: ctrl.stream().distinct(),
+                initialData: ctrl.value(),
+                builder: (_, __, ___) => BottomNavigationBar(
+                  backgroundColor: ColorProvider.itemBg(),
+                  currentIndex: ctrl.value(),
+                  onTap: (i) => ctrl.add(i),
+                  items: _lst.map((p) => p.barItem).toList(),
+                ),
               ),
             ),
           ),
