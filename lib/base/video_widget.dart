@@ -94,6 +94,7 @@ class _VideoWidgetState extends State<VideoWidget> {
           if (widget.ctrl != null) {
             children.add(Positioned.fill(child: widget.ctrl!));
           }
+          double w = Common.base(context, Config.iconK);
           children.add(Positioned.fill(
             child: StreamWidget(
               stream: _videoDef.init.stream().distinct(),
@@ -109,20 +110,29 @@ class _VideoWidgetState extends State<VideoWidget> {
                 }
               },
               child: Center(
-                child: StreamWidget<bool>(
-                  initialData: _videoDef.playing.value(),
-                  stream: _videoDef.playing.stream().distinct(),
-                  builder: (_, __, ___) {
-                    _videoDef.playing.value() ? _videoDef.ctrl.play() : _videoDef.ctrl.pause();
-                    return IconButton(
-                      onPressed: () => _videoDef.playing.add(!_videoDef.ctrl.value.isPlaying),
-                      icon: Icon(
-                        _videoDef.ctrl.value.isPlaying ? Icons.pause_circle_outlined : Icons.play_arrow_outlined,
-                        size: Common.base(context, Config.iconK),
-                        color: ColorProvider.base(.5),
-                      ),
-                    );
-                  },
+                child: SizedBox(
+                  width: w * 2,
+                  height: w * 2,
+                  child: StreamWidget<bool>(
+                    initialData: _videoDef.playing.value(),
+                    stream: _videoDef.playing.stream().distinct(),
+                    builder: (_, __, ___) {
+                      _videoDef.playing.value() ? _videoDef.ctrl.play() : _videoDef.ctrl.pause();
+                      return TweenAnimationBuilder<double>(
+                        key: ValueKey(HpDevice.time()),
+                        duration: const Duration(seconds: 2),
+                        tween: Tween(begin: 1, end: .2),
+                        builder: (context, v, _) => IconButton(
+                          onPressed: () => _videoDef.playing.add(!_videoDef.ctrl.value.isPlaying),
+                          icon: Icon(
+                            _videoDef.ctrl.value.isPlaying ? Icons.pause_circle_outlined : Icons.play_arrow_outlined,
+                            size: w,
+                            color: ColorProvider.base(v),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
@@ -151,7 +161,9 @@ class _VideoManager {
           video!.init.add(true);
           video.playing.add(true);
         },
-      ).onError((_, __) => null); // todo
+      ).onError(
+        (_, __) => null,
+      ); // todo
       _map[url] = video;
     }
     video._use++;

@@ -68,6 +68,7 @@ class ItemModel {
         builder: (c, __) {
           double w = _headSize(c);
           double p = _padding(c);
+          BorderRadius r = Common.baseRadius(c);
           return Row(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,11 +82,21 @@ class ItemModel {
                 child: SizedBox(
                   width: w,
                   height: w,
-                  child: Common.netImage(
-                    url: info.head,
-                    w: w,
-                    h: w,
-                    borderRadius: Common.baseRadius(c),
+                  child: Stack(
+                    fit: StackFit.expand,
+                    clipBehavior: Clip.none,
+                    children: [
+                      Common.netImage(
+                        url: info.head,
+                        w: w,
+                        h: w,
+                        borderRadius: r,
+                      ),
+                      Common.click(
+                        onTap: () {},
+                        r: r,
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -151,7 +162,14 @@ class ItemModel {
               itemBuilder: (c, i) => LayoutBuilder(
                 builder: (c, constraints) {
                   double size = constraints.maxWidth; //  * HpDevice.pixelRatio(c)
-                  return Common.netImage(url: info.medias[i], w: size, h: size);
+                  return Stack(
+                    fit: StackFit.expand,
+                    clipBehavior: Clip.none,
+                    children: [
+                      Common.netImage(url: info.medias[i], w: size, h: size),
+                      Common.click(onTap: () {}),
+                    ],
+                  );
                 },
               ),
             ),
@@ -169,7 +187,10 @@ class ItemModel {
             ),
             child: AspectRatio(
               aspectRatio: 1.6,
-              child: VideoWidget(url: info.medias[0]),
+              child: VideoWidget(
+                url: info.medias[0],
+                ctrl: Common.click(onTap: () {}),
+              ),
             ),
           );
         },

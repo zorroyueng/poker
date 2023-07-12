@@ -138,7 +138,10 @@ class Common {
     if (cBorder != null) {
       dec = BoxDecoration(
         borderRadius: r,
-        border: Border.all(width: 1, color: cBorder),
+        border: Border.all(
+          width: 1,
+          color: cBorder,
+        ),
       );
     }
     Widget widget = Container(
@@ -447,7 +450,8 @@ class Common {
     required double w,
     required double h,
     BorderRadiusGeometry? borderRadius,
-  }) => CachedNetworkImage(
+  }) =>
+      CachedNetworkImage(
         imageUrl: url,
         maxWidthDiskCache: w.toInt(),
         maxHeightDiskCache: h.toInt(),
