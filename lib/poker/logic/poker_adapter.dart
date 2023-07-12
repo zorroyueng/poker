@@ -17,6 +17,7 @@ abstract class PokerAdapter<T> {
   final Percent _percentX = Percent(0);
   final Percent _percentY = Percent(0);
   final Map<Object, Offset> _mapPosition = {};
+  late final Broadcast update = Broadcast(null);
 
   /// interface
   Object id(T t);
@@ -99,7 +100,7 @@ abstract class PokerAdapter<T> {
           PokerItem item = items[items.length - 1];
           item.difK = _mapPosition[id(item.data)];
           _updatePercentItem = item;
-          _view?.update();
+          update.add(null);
           //需要设置back卡片初始percent，因为top卡片后画，会先绘制出percent为0的情况
           int nextIndex = items.length - 2;
           if (nextIndex >= 0) {
@@ -121,7 +122,7 @@ abstract class PokerAdapter<T> {
         setData(_lstTemp);
         _lstTemp.clear();
       } else {
-        _view!.update();
+        update.add(null);
       }
     }
   }
@@ -144,7 +145,7 @@ abstract class PokerAdapter<T> {
         );
         item.difK = difK;
       }
-      _view?.update();
+      update.add(null);
       _updatePercentItem = items.isEmpty ? null : items[0];
       _swipingItem = null;
       _updatePercentItem = null;
@@ -152,9 +153,9 @@ abstract class PokerAdapter<T> {
     }
   }
 
-  void update(T t) {}
+  void updateData(T t) {}
 
-  void insert(T t) {}
+  void insertData(T t) {}
 
   // 需要在静止状态执行此函数，保证current正确赋值percent
   void _buildItems({required int from, required int to}) {
@@ -192,7 +193,7 @@ abstract class PokerAdapter<T> {
     int prepareIndex = indexData + Config.idleCardNum;
     _buildItems(from: _firstIndex, to: prepareIndex);
     item.percent.add(1); // 被滑动的card强制percent为1，解决在back状态下被操作
-    _view?.update();
+    update.add(null);
   }
 
   void onPanEnd() => _swipingItem = null;
@@ -278,19 +279,17 @@ abstract class PokerAdapter<T> {
     if (current < _lstData.length) {
       _firstIndex = current;
       items.remove(item);
-      _view!.update();
+      update.add(null);
       return true;
     } else {
       items.remove(item);
-      _view!.update();
+      update.add(null);
       return false;
     }
   }
 }
 
 mixin AdapterView {
-  void update();
-
   Size pokerSize();
 
   Size cardSize();

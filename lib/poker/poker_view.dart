@@ -63,30 +63,31 @@ class _Poker<T> extends StatefulWidget {
 
 class _PokerState extends State<_Poker> with AdapterView {
   @override
-  Widget build(BuildContext context) {
-    List<Widget> children = widget.adapter.items.isNotEmpty
-        ? widget.adapter.items.map((item) {
-            if (item.card == null || widget.cardRect != item.card!.widget.rect) {
-              return PokerCard(
-                key: ValueKey(item.key),
-                rect: widget.cardRect,
-                adapter: widget.adapter,
-                item: item,
-              );
-            } else {
-              return item.card!.widget;
-            }
-          }).toList()
-        : [widget.adapter.onLoading()];
-    return Stack(
-      clipBehavior: Clip.none,
-      fit: StackFit.expand,
-      children: children,
-    );
-  }
-
-  @override
-  void update() => setState(() {});
+  Widget build(BuildContext context) => StreamWidget(
+        stream: widget.adapter.update.stream(),
+        initialData: widget.adapter.update.value(),
+        builder: (_, __, ___) {
+          List<Widget> children = widget.adapter.items.isNotEmpty
+              ? widget.adapter.items.map((item) {
+                  if (item.card == null || widget.cardRect != item.card!.widget.rect) {
+                    return PokerCard(
+                      key: ValueKey(item.key),
+                      rect: widget.cardRect,
+                      adapter: widget.adapter,
+                      item: item,
+                    );
+                  } else {
+                    return item.card!.widget;
+                  }
+                }).toList()
+              : [widget.adapter.onLoading()];
+          return Stack(
+            clipBehavior: Clip.none,
+            fit: StackFit.expand,
+            children: children,
+          );
+        },
+      );
 
   void _init() => widget.adapter.setView(this);
 
