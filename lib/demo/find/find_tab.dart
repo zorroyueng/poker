@@ -25,19 +25,10 @@ class _FindTabState extends State<FindTab> {
     scrollCtrl.addListener(
       () {
         widget.scrollOffset = scrollCtrl.offset;
-        HpDevice.log(
-            'scrollCtrl.offset=${scrollCtrl.offset}, scrollCtrl.position.maxScrollExtent=${scrollCtrl.position.maxScrollExtent}');
         // android 列表无法伸缩，需要=
         if (scrollCtrl.offset >= scrollCtrl.position.maxScrollExtent) {
           if (!loading.value()) {
             loading.add(true);
-            Future.delayed(
-              const Duration(seconds: 2),
-              () {
-                widget.adapter.addData(DemoHelper.findData());
-                loading.add(false);
-              },
-            );
           }
         }
       },
@@ -93,19 +84,33 @@ class _FindTabState extends State<FindTab> {
         child: SizedBox(
           width: double.infinity,
           height: Common.base(ctx, 2),
-          child: Padding(
-            padding: EdgeInsets.all(Common.base(ctx, .2)),
-            child: StreamWidget(
-              initialData: loading.value(),
-              stream: loading.stream().distinct(),
-              builder: (ctx, _, __) => loading.value()
-                  ? Common.loading
-                  : Center(
-                      child: Text(
-                        'the end',
-                        style: Common.textStyle(ctx, alpha: .5),
-                      ),
-                    ),
+          child: Common.click(
+            onTap: () => loading.add(true),
+            child: Padding(
+              padding: EdgeInsets.all(Common.base(ctx, .2)),
+              child: StreamWidget(
+                initialData: loading.value(),
+                stream: loading.stream().distinct(),
+                builder: (ctx, _, __) {
+                  if (loading.value()) {
+                    Future.delayed(
+                      const Duration(seconds: 2),
+                      () {
+                        widget.adapter.addData(DemoHelper.findData());
+                        loading.add(false);
+                      },
+                    );
+                  }
+                  return loading.value()
+                      ? Common.loading
+                      : Center(
+                          child: Text(
+                            'the end',
+                            style: Common.textStyle(ctx, alpha: .5),
+                          ),
+                        );
+                },
+              ),
             ),
           ),
         ),
