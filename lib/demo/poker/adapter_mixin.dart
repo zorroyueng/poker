@@ -32,12 +32,14 @@ mixin AdapterMixin {
                     bottomLeft: Radius.circular(radius),
                     bottomRight: Radius.circular(radius),
                   ),
-                  gradient: LinearGradient(
-                    begin: const Alignment(0, 1),
-                    end: const Alignment(0, -1),
-                    colors: [Colors.black.withOpacity(.5 * p), Colors.transparent],
-                    stops: const [.5, 1],
-                  ),
+                  gradient: HpPlatform.isWeb()
+                      ? null
+                      : LinearGradient(
+                          begin: const Alignment(0, 1),
+                          end: const Alignment(0, -1),
+                          colors: [Colors.black.withOpacity(.5 * p), Colors.transparent],
+                          stops: const [.5, 1],
+                        ),
                 ),
                 child: Padding(
                   padding: EdgeInsets.only(
@@ -51,7 +53,7 @@ mixin AdapterMixin {
                     children: [
                       FittedBox(
                         fit: BoxFit.scaleDown,
-                        child: Text(
+                        child: Common.borderText(
                           '${t.name} ${t.id}',
                           maxLines: 1,
                           style: Common.textStyle(
@@ -59,15 +61,19 @@ mixin AdapterMixin {
                             color: ColorProvider.base(p),
                             scale: 2,
                           ).copyWith(fontWeight: FontWeight.w700),
+                          border: HpPlatform.isWeb(),
+                          borderColor: ColorProvider.textBorderColor().withOpacity(p),
                         ),
                       ),
-                      Text(
+                      Common.borderText(
                         t.urls[0],
                         maxLines: 3,
                         style: Common.textStyle(
                           ctx,
                           color: ColorProvider.base(.7 * p),
                         ),
+                        border: HpPlatform.isWeb(),
+                        borderColor: ColorProvider.textBorderColor().withOpacity(p),
                       ),
                     ],
                   ),
@@ -87,8 +93,9 @@ mixin AdapterMixin {
                 ctx,
                 page,
                 onBack: (p) {
-                  if (p == 0 && !send) {
+                  if (p == 1) {
                     alpha.add(0);
+                  } else if (p == 0 && !send) {
                     alpha.anim(1, ms: 200);
                     send = true;
                   }

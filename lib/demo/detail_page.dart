@@ -85,18 +85,21 @@ class DetailPage extends StatelessWidget {
                 width: double.infinity,
                 height: kToolbarHeight,
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: const Alignment(0, 1),
-                    end: const Alignment(0, -1),
-                    colors: [
-                      ColorProvider.bg().withOpacity(min(1, v)),
-                      Colors.transparent,
-                    ],
-                    stops: [
-                      min(1, v),
-                      1,
-                    ],
-                  ),
+                  color: HpPlatform.isWeb() ? ColorProvider.bg().withOpacity(min(1, v)) : null,
+                  gradient: HpPlatform.isWeb()
+                      ? null
+                      : LinearGradient(
+                          begin: const Alignment(0, 1),
+                          end: const Alignment(0, -1),
+                          colors: [
+                            ColorProvider.bg().withOpacity(min(1, v)),
+                            Colors.transparent,
+                          ],
+                          stops: [
+                            min(1, v),
+                            1,
+                          ],
+                        ),
                 ),
                 child: Center(
                   child: Transform.translate(

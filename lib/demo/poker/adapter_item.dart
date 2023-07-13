@@ -162,12 +162,12 @@ class _AdapterItemState extends State<AdapterItem> with _PercentSubMixin {
     return PercentWidget(
       percent: rotate,
       builder: (_, p, child) => Transform(
-          transform: Matrix4.identity()
-            ..setEntry(3, 2, .0005)
-            ..rotateY(Config.rotateY * p),
-          alignment: const Alignment(0, 0),
-          child: child,
-        ),
+        transform: Matrix4.identity()
+          ..setEntry(3, 2, .0005)
+          ..rotateY(Config.rotateY * p),
+        alignment: const Alignment(0, 0),
+        child: child,
+      ),
       child: Stack(
         clipBehavior: Clip.none,
         fit: StackFit.expand,
@@ -175,7 +175,6 @@ class _AdapterItemState extends State<AdapterItem> with _PercentSubMixin {
           Positioned.fill(
             child: Container(
               decoration: BoxDecoration(
-                color: ColorProvider.itemBg(),
                 borderRadius: borderRadius,
               ),
               child: StreamWidget(
@@ -199,11 +198,17 @@ class _AdapterItemState extends State<AdapterItem> with _PercentSubMixin {
                           child: Hero(
                             tag: widget.tag,
                             child: Common.netImage(
-                              url: url,
-                              w: widget.imgSize.width,
-                              h: widget.imgSize.height,
-                              borderRadius: borderRadius,
-                            ),
+                                url: url,
+                                w: widget.imgSize.width,
+                                h: widget.imgSize.height,
+                                borderRadius: borderRadius,
+                                placeholder: Container(
+                                  decoration: BoxDecoration(
+                                    color: ColorProvider.itemBg(),
+                                    borderRadius: borderRadius,
+                                  ),
+                                  child: Common.loading,
+                                )),
                           ),
                         ),
                         Positioned.fill(child: ctrl),

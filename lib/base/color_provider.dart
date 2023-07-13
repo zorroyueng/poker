@@ -13,7 +13,7 @@ class ColorProvider {
 
   static Color textColor() => ThemeProvider.isDark() ? Colors.white : Colors.black;
 
-  static Color textBorderColor() => ThemeProvider.isDark() ? Colors.black26 : Colors.white24;
+  static Color textBorderColor() => Colors.grey[900]!;
 
   static Color btnBg() => ThemeProvider.isDark() ? Colors.grey[700]! : Colors.grey[400]!;
 

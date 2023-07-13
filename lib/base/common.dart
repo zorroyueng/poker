@@ -412,49 +412,6 @@ class Common {
     ..isAntiAlias = true
     ..filterQuality = quality;
 
-  // 统一文字介绍
-  static Widget itemName({
-    required BuildContext ctx,
-    required String name,
-    required double scale,
-    double radius = 0,
-    int maxLines = 1,
-  }) {
-    TextStyle style = Common.textStyle(ctx, scale: scale);
-    return Container(
-      padding: EdgeInsets.only(
-        left: radius / 2,
-        right: radius / 2,
-      ),
-      height: Common.base(ctx, scale),
-      child: FittedBox(
-        fit: BoxFit.scaleDown,
-        child: Center(
-          child: Stack(
-            children: [
-              Text(
-                name,
-                maxLines: maxLines,
-                style: style.copyWith(
-                    foreground: Paint()
-                      ..style = PaintingStyle.stroke
-                      ..strokeCap = StrokeCap.round
-                      ..strokeJoin = StrokeJoin.round
-                      ..strokeWidth = textSize(ctx, scale) / 5
-                      ..color = ColorProvider.textBorderColor()),
-              ),
-              Text(
-                name,
-                maxLines: maxLines,
-                style: style,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   static Widget loading = const Center(child: CupertinoActivityIndicator());
 
   static Widget netImage({
@@ -570,4 +527,39 @@ class Common {
           ),
         ),
       );
+
+  static Widget borderText(
+    String text, {
+    required int maxLines,
+    required TextStyle style,
+    Color? borderColor,
+    bool border = true,
+  }) =>
+      border
+          ? Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Text(
+                  text,
+                  maxLines: maxLines,
+                  style: style.copyWith(
+                      foreground: Paint()
+                        ..style = PaintingStyle.stroke
+                        ..strokeCap = StrokeCap.round
+                        ..strokeJoin = StrokeJoin.round
+                        ..strokeWidth = style.fontSize! / 5
+                        ..color = borderColor ?? ColorProvider.textBorderColor()),
+                ),
+                Text(
+                  text,
+                  maxLines: maxLines,
+                  style: style,
+                ),
+              ],
+            )
+          : Text(
+              text,
+              maxLines: maxLines,
+              style: style,
+            );
 }
