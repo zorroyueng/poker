@@ -20,6 +20,10 @@ class MediaPage extends StatelessWidget {
     required this.id,
   });
 
+  static double width(BuildContext c) => HpDevice.pixelRatio(c) * HpDevice.screenWidth(c);
+
+  static double height(BuildContext c) => HpDevice.pixelRatio(c) * HpDevice.screenHeight(c);
+
   @override
   Widget build(BuildContext context) {
     Widget child = () {
@@ -50,8 +54,14 @@ class MediaPage extends StatelessWidget {
                 onTap: () => Navi.pop(context),
                 back: Common.netImage(
                   url: urls[index],
-                  w: size!.width,
-                  h: size!.height,
+                  w: width(context),
+                  h: height(context),
+                  fadeInMs: 0,
+                  placeholder: Common.netImage(
+                    url: urls[index],
+                    w: size!.width,
+                    h: size!.height,
+                  ),
                 ),
               ),
             ),

@@ -462,13 +462,16 @@ class Common {
     required double w,
     required double h,
     BorderRadiusGeometry? borderRadius,
+    Widget? placeholder,
+    int fadeInMs = 300,
+    int fadeOutMs = 200,
   }) =>
       CachedNetworkImage(
         imageUrl: url,
         maxWidthDiskCache: w.toInt(),
         maxHeightDiskCache: h.toInt(),
-        fadeInDuration: const Duration(milliseconds: 300),
-        fadeOutDuration: const Duration(milliseconds: 200),
+        fadeInDuration: Duration(milliseconds: fadeInMs),
+        fadeOutDuration: Duration(milliseconds: fadeOutMs),
         imageBuilder: (_, imageProvider) => Container(
           decoration: BoxDecoration(
             image: DecorationImage(
@@ -480,16 +483,16 @@ class Common {
             borderRadius: borderRadius,
           ),
         ),
-        placeholder: (context, url) => loading,
+        placeholder: (context, url) => placeholder ?? loading,
         errorWidget: (context, url, error) => const Center(child: Icon(Icons.error)),
       );
 
   static bool isVideo(String url) => url.endsWith('.mp4');
 
-  static void precache({BuildContext? ctx, required String url, required Size size}) {
+  static Future<void> precache({BuildContext? ctx, required String url, required Size size}) {
     ctx ??= Navi.ctx();
     if (!isVideo(url) && ctx != null) {
-      precacheImage(
+      return precacheImage(
         size: size,
         CachedNetworkImageProvider(
           url,
@@ -498,6 +501,8 @@ class Common {
         ),
         ctx,
       );
+    } else {
+      return Future.value();
     }
   }
 
