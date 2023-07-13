@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:base/base.dart';
 import 'package:flutter/material.dart';
 import 'package:poker/base/common.dart';
@@ -31,17 +33,26 @@ class MediaPage extends StatelessWidget {
           ),
         );
       } else {
-        return PageView.builder(
-          controller: PageController(initialPage: index),
-          itemCount: urls.length,
-          itemBuilder: (context, index) => Hero(
-            tag: DemoHelper.mediaTag(id, index, urls[index]),
-            child: Common.click(
-              onTap: () => Navi.pop(context),
-              back: Common.netImage(
-                url: urls[index],
-                w: size!.width,
-                h: size!.height,
+        return ScrollConfiguration(
+          // 支持鼠标操作
+          behavior: ScrollConfiguration.of(context).copyWith(
+            dragDevices: {
+              PointerDeviceKind.touch,
+              PointerDeviceKind.mouse,
+            },
+          ),
+          child: PageView.builder(
+            controller: PageController(initialPage: index),
+            itemCount: urls.length,
+            itemBuilder: (context, index) => Hero(
+              tag: DemoHelper.mediaTag(id, index, urls[index]),
+              child: Common.click(
+                onTap: () => Navi.pop(context),
+                back: Common.netImage(
+                  url: urls[index],
+                  w: size!.width,
+                  h: size!.height,
+                ),
               ),
             ),
           ),
