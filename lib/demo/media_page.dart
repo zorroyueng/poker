@@ -10,10 +10,12 @@ class MediaPage extends StatelessWidget {
   final List<String> urls;
   final int index;
   final String id;
+  final Size? size;
 
   const MediaPage({
     super.key,
     required this.urls,
+    this.size,
     required this.index,
     required this.id,
   });
@@ -39,24 +41,20 @@ class MediaPage extends StatelessWidget {
               PointerDeviceKind.mouse,
             },
           ),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return PageView.builder(
-                controller: PageController(initialPage: index),
-                itemCount: urls.length,
-                itemBuilder: (context, index) => Hero(
-                  tag: DemoHelper.mediaTag(id, index, urls[index]),
-                  child: Common.click(
-                    onTap: () => Navi.pop(context),
-                    back: Common.netImage(
-                      url: urls[index],
-                      w: constraints.maxWidth,
-                      h: constraints.maxHeight,
-                    ),
-                  ),
+          child: PageView.builder(
+            controller: PageController(initialPage: index),
+            itemCount: urls.length,
+            itemBuilder: (context, index) => Hero(
+              tag: DemoHelper.mediaTag(id, index, urls[index]),
+              child: Common.click(
+                onTap: () => Navi.pop(context),
+                back: Common.netImage(
+                  url: urls[index],
+                  w: size!.width,
+                  h: size!.height,
                 ),
-              );
-            },
+              ),
+            ),
           ),
         );
       }
