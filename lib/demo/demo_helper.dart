@@ -138,15 +138,15 @@ class DemoHelper {
   ];
 
   static final List<String> _head = [
-    'https://gd-hbimg.huaban.com/5f9fbf1eb4fd6e88dd348de3bb376b3782ba1b51d15ba-rSk8zA_fw658webp',
-    'https://gd-hbimg.huaban.com/d84daecd9a8c747e7561d7d1e836a957ebc66607557e-dAZQYo_fw658webp',
-    'https://gd-hbimg.huaban.com/0860d651efb9ea224964cf369a6aae7c612403ac4866-bWWP7v_fw658webp',
-    'https://gd-hbimg.huaban.com/950dd2d69cbcb4ca0bb98639b83f525c387fb2cb7997-CZxj6a_fw658webp',
-    'https://gd-hbimg.huaban.com/a865f284d961147afee85d1eeb5b4e30202db5133511-qyBhMy_fw658webp',
-    'https://gd-hbimg.huaban.com/2fed69784161fda79a15f9f5a06ed3c90e8377eb4f7a-BkkSdn_fw658webp',
-    'https://gd-hbimg.huaban.com/4459dcbd0257c0c72735057b3000a13303ceeb0648f7-fOu44Y_fw658webp',
-    'https://gd-hbimg.huaban.com/d436863b9adcd633b6bd9bf7d1ac645567c910e525a7e-7gn7OA_fw658webp',
-    'https://gd-hbimg.huaban.com/dc4b46d78ad5d8f1657dc3b3dd28d7bec4a9b6c418bc9-TFXE1F_fw658webp',
+    'https://gd-hbimg.huaban.com/5f9fbf1eb4fd6e88dd348de3bb376b3782ba1b51d15ba-rSk8zA_fw658',
+    'https://gd-hbimg.huaban.com/d84daecd9a8c747e7561d7d1e836a957ebc66607557e-dAZQYo_fw658',
+    'https://gd-hbimg.huaban.com/0860d651efb9ea224964cf369a6aae7c612403ac4866-bWWP7v_fw658',
+    'https://gd-hbimg.huaban.com/950dd2d69cbcb4ca0bb98639b83f525c387fb2cb7997-CZxj6a_fw658',
+    'https://gd-hbimg.huaban.com/a865f284d961147afee85d1eeb5b4e30202db5133511-qyBhMy_fw658',
+    'https://gd-hbimg.huaban.com/2fed69784161fda79a15f9f5a06ed3c90e8377eb4f7a-BkkSdn_fw658',
+    'https://gd-hbimg.huaban.com/4459dcbd0257c0c72735057b3000a13303ceeb0648f7-fOu44Y_fw658',
+    'https://gd-hbimg.huaban.com/d436863b9adcd633b6bd9bf7d1ac645567c910e525a7e-7gn7OA_fw658',
+    'https://gd-hbimg.huaban.com/dc4b46d78ad5d8f1657dc3b3dd28d7bec4a9b6c418bc9-TFXE1F_fw658',
   ];
 
   static final List<String> _stars = [
@@ -230,26 +230,26 @@ class DemoHelper {
   ];
 
   static final List<String> relaxed = [
-    'https://gd-hbimg.huaban.com/4264b59610af5988b88750aeab3776f6fbe7d3fc4af19-HvmZgX_fw1200webp',
-    'https://gd-hbimg.huaban.com/ce887ae3bdfac2f1d7e5151dd31204b51c02b64d6e0fd-Zr6jUA_fw1200webp',
-    'https://gd-hbimg.huaban.com/f17458109003e6d105f738d0a487e648a7d01c12a891f-KE3SdK_fw1200webp',
-    'https://gd-hbimg.huaban.com/ce235cb6c86c6462941c0626463888c70b56c3c634f12-k5iS6p_fw1200webp',
-    'https://gd-hbimg.huaban.com/2a6dbf9ce61f1978cc5b944e90dd2223630693b6ff61-3DZoTA_fw1200webp',
-    'https://gd-hbimg.huaban.com/3ed1fd44f51798fee8c18a4cfb32df5407a54796811b7-8RvMtI_fw1200webp',
-    'https://gd-hbimg.huaban.com/da3ed3f8da0168eb1f8c1b1d16666c79f914358b31250-8wLiy7_fw1200webp',
-    'https://gd-hbimg.huaban.com/037bb65ec96730f5ef53628898060f042b0fa75c71ab7-9I10Ge_fw1200webp',
-    'https://gd-hbimg.huaban.com/f62540ae14aee15fa5a34646f3901b4cad7cb8deca909-cq824B_fw1200webp',
-    'https://gd-hbimg.huaban.com/ff83984e6660ed5eb264fa3eb62768631bc11ae83899ff-ctaIQY_fw1200webp',
-    'https://gd-hbimg.huaban.com/de3f4a0263b11760836392d1dcd4d930eb9eec9b5ba206-2EN7OG_fw1200webp',
-    'https://gd-hbimg.huaban.com/c81dcd09f2f0f7f4a322a2726703bb2bc6503712d16d9-mQeiBR_fw1200webp',
-    'https://gd-hbimg.huaban.com/e6b75f0c3518442c4f960fbf8f9fe4f44971027b4d68f-rlNQRP_fw1200webp',
-    'https://gd-hbimg.huaban.com/774fca6321bf1d2206b7010e89cd2f2dc4d36814192551-ewpX6r_fw1200webp',
-    'https://gd-hbimg.huaban.com/ab25cb7be28695581e1cc4061239418feea7e7eba24b3-KYTHhe_fw1200webp',
-    'https://gd-hbimg.huaban.com/5bc62c7f8d6347805a9299204b2c76d98074196334b94-i8i0gD_fw1200webp',
-    'https://gd-hbimg.huaban.com/99b283b698c025735636ffbe8c7314622fee911324d42a-90niDk_fw1200webp',
-    'https://gd-hbimg.huaban.com/16e022d010b242e583b811993cc80b9979036803274fe7-iC04Mt_fw1200webp',
-    'https://gd-hbimg.huaban.com/fb95cb5b653671063c46059eef75ec6851dfd65b5ef43-9dFusw_fw1200webp',
-    'https://gd-hbimg.huaban.com/6940a9fa8dd4e9ef0075e22b83d5c61ee91b0f1b250f6-zs0Kvo_fw1200webp',
+    'https://gd-hbimg.huaban.com/4264b59610af5988b88750aeab3776f6fbe7d3fc4af19-HvmZgX_fw1200',
+    'https://gd-hbimg.huaban.com/ce887ae3bdfac2f1d7e5151dd31204b51c02b64d6e0fd-Zr6jUA_fw1200',
+    'https://gd-hbimg.huaban.com/f17458109003e6d105f738d0a487e648a7d01c12a891f-KE3SdK_fw1200',
+    'https://gd-hbimg.huaban.com/ce235cb6c86c6462941c0626463888c70b56c3c634f12-k5iS6p_fw1200',
+    'https://gd-hbimg.huaban.com/2a6dbf9ce61f1978cc5b944e90dd2223630693b6ff61-3DZoTA_fw1200',
+    'https://gd-hbimg.huaban.com/3ed1fd44f51798fee8c18a4cfb32df5407a54796811b7-8RvMtI_fw1200',
+    'https://gd-hbimg.huaban.com/da3ed3f8da0168eb1f8c1b1d16666c79f914358b31250-8wLiy7_fw1200',
+    'https://gd-hbimg.huaban.com/037bb65ec96730f5ef53628898060f042b0fa75c71ab7-9I10Ge_fw1200',
+    'https://gd-hbimg.huaban.com/f62540ae14aee15fa5a34646f3901b4cad7cb8deca909-cq824B_fw1200',
+    'https://gd-hbimg.huaban.com/ff83984e6660ed5eb264fa3eb62768631bc11ae83899ff-ctaIQY_fw1200',
+    'https://gd-hbimg.huaban.com/de3f4a0263b11760836392d1dcd4d930eb9eec9b5ba206-2EN7OG_fw1200',
+    'https://gd-hbimg.huaban.com/c81dcd09f2f0f7f4a322a2726703bb2bc6503712d16d9-mQeiBR_fw1200',
+    'https://gd-hbimg.huaban.com/e6b75f0c3518442c4f960fbf8f9fe4f44971027b4d68f-rlNQRP_fw1200',
+    'https://gd-hbimg.huaban.com/774fca6321bf1d2206b7010e89cd2f2dc4d36814192551-ewpX6r_fw1200',
+    'https://gd-hbimg.huaban.com/ab25cb7be28695581e1cc4061239418feea7e7eba24b3-KYTHhe_fw1200',
+    'https://gd-hbimg.huaban.com/5bc62c7f8d6347805a9299204b2c76d98074196334b94-i8i0gD_fw1200',
+    'https://gd-hbimg.huaban.com/99b283b698c025735636ffbe8c7314622fee911324d42a-90niDk_fw1200',
+    'https://gd-hbimg.huaban.com/16e022d010b242e583b811993cc80b9979036803274fe7-iC04Mt_fw1200',
+    'https://gd-hbimg.huaban.com/fb95cb5b653671063c46059eef75ec6851dfd65b5ef43-9dFusw_fw1200',
+    'https://gd-hbimg.huaban.com/6940a9fa8dd4e9ef0075e22b83d5c61ee91b0f1b250f6-zs0Kvo_fw1200',
   ];
 
   static T random<T>(List<T> lst) => lst[Random().nextInt(lst.length)];

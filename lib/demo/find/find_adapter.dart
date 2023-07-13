@@ -157,7 +157,7 @@ class ItemModel {
               ),
               itemBuilder: (c, i) => LayoutBuilder(
                 builder: (c, constraints) {
-                  double size = constraints.maxWidth; //  * HpDevice.pixelRatio(c)
+                  double size = constraints.maxWidth * HpDevice.pixelRatio(c);
                   String url = info.medias[i];
                   return Common.click(
                     onTap: () => Navi.pushAlpha(
