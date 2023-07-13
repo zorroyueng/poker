@@ -10,14 +10,16 @@ class MediaPage extends StatelessWidget {
   final List<String> urls;
   final int index;
   final String id;
-  final Size? size;
+  final double? w;
+  final double? h;
 
   const MediaPage({
     super.key,
     required this.urls,
-    this.size,
     required this.index,
     required this.id,
+    this.w,
+    this.h,
   });
 
   static double width(BuildContext c) => HpDevice.pixelRatio(c) * HpDevice.screenWidth(c);
@@ -59,8 +61,8 @@ class MediaPage extends StatelessWidget {
                   fadeInMs: 0,
                   placeholder: Common.netImage(
                     url: urls[index],
-                    w: size!.width,
-                    h: size!.height,
+                    w: w,
+                    h: h,
                   ),
                 ),
               ),
