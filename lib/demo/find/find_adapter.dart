@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:poker/base/color_provider.dart';
 import 'package:poker/base/common.dart';
 import 'package:poker/base/video_widget.dart';
+import 'package:poker/demo/demo_helper.dart';
 import 'package:poker/demo/media_page.dart';
 
 class FindAdapter {
@@ -158,18 +159,18 @@ class ItemModel {
                 builder: (c, constraints) {
                   double size = constraints.maxWidth; //  * HpDevice.pixelRatio(c)
                   String url = info.medias[i];
-                  Object tag = '${info.name}_${i}_$url';
                   return Common.click(
                     onTap: () => Navi.pushAlpha(
                       c,
                       MediaPage(
-                        url: url,
-                        tag: tag,
+                        urls: info.medias,
+                        id: info.name,
+                        index: i,
                         size: Size(size, size),
                       ),
                     ),
                     back: Hero(
-                      tag: tag,
+                      tag: DemoHelper.mediaTag(info.name, i, url),
                       child: Common.netImage(
                         url: url,
                         w: size,
@@ -205,8 +206,9 @@ class ItemModel {
                     onTap: () => Navi.pushAlpha(
                       c,
                       MediaPage(
-                        url: url,
-                        tag: tag,
+                        urls: info.medias,
+                        id: info.name,
+                        index: 0,
                       ),
                     ),
                   ),

@@ -8,6 +8,8 @@ import 'package:poker/demo/poker/adapter.dart';
 class DemoHelper {
   DemoHelper._();
 
+  static String mediaTag(String id, int index, String url) => '${id}_${index}_$url';
+
   static List<Info> findData() {
     List<Info> data = [];
     for (int i = 0; i < 10; i++) {
