@@ -472,7 +472,10 @@ class Common {
         imageBuilder: (_, imageProvider) => Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: imageProvider,
+              image: ResizeImage(
+                imageProvider,
+                width: w.toInt(),
+              ),
               fit: BoxFit.cover,
               filterQuality: FilterQuality.medium,
               // isAntiAlias: true,
@@ -490,11 +493,13 @@ class Common {
     ctx ??= Navi.ctx();
     if (!isVideo(url) && ctx != null) {
       precacheImage(
-        size: size,
-        CachedNetworkImageProvider(
-          url,
-          maxWidth: size.width.toInt(),
-          maxHeight: size.height.toInt(),
+        ResizeImage(
+          CachedNetworkImageProvider(
+            url,
+            maxWidth: size.width.toInt(),
+            maxHeight: size.height.toInt(),
+          ),
+          width: size.width.toInt(),
         ),
         ctx,
       );
