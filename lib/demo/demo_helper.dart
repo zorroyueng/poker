@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:base/base.dart';
 import 'package:flutter/material.dart';
 import 'package:poker/demo/find/find_adapter.dart';
+import 'package:poker/demo/msg/contact_adapter.dart';
 import 'package:poker/demo/poker/adapter.dart';
 
 class DemoHelper {
@@ -37,6 +38,20 @@ class DemoHelper {
           }
           return comments;
         }(),
+      ));
+    }
+    return data;
+  }
+
+  static List<ContactData> contactData() {
+    List<ContactData> data = [];
+    int max = 20 + Random().nextInt(30);
+    for (int i = 0; i < max; i++) {
+      data.add(ContactData(
+        id: '$i',
+        url: random(_head),
+        name: random(name),
+        lastMsg: _str(30),
       ));
     }
     return data;

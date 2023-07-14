@@ -55,13 +55,16 @@ class Common {
     Color? bgColor,
     double scale = 1,
     Color? borderColor,
+    bool border = true,
   }) {
     return BoxDecoration(
       color: bgColor,
-      border: Border.all(
-        width: 1,
-        color: borderColor ?? ColorProvider.textColor().withOpacity(.2),
-      ),
+      border: border
+          ? Border.all(
+              width: 1,
+              color: borderColor ?? ColorProvider.textColor().withOpacity(.2),
+            )
+          : null,
       borderRadius: BorderRadius.all(Radius.circular(radius(c, scale))),
     );
   }

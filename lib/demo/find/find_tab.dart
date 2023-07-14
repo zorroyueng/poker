@@ -43,8 +43,7 @@ class _FindTabState extends State<FindTab> {
 
   Widget _head(BuildContext ctx) => ThemeWidget(
         builder: (ctx, _) => SliverAppBar(
-          // 标题栏是否固定
-          floating: true,
+          pinned: true,
           elevation: 4,
           shadowColor: ColorProvider.itemBg(),
           actions: [
