@@ -173,50 +173,45 @@ class _AdapterItemState extends State<AdapterItem> with _PercentSubMixin {
         fit: StackFit.expand,
         children: [
           Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: borderRadius,
-              ),
-              child: StreamWidget(
-                stream: widget.index.stream().distinct(),
-                initialData: widget.index.value(),
-                builder: (_, __, ___) {
-                  String url = widget.urls[widget.index.value()];
-                  if (Common.isVideo(url)) {
-                    return VideoWidget(
-                      url: url,
-                      ctrl: ctrl,
-                      tag: widget.tag,
-                      borderRadius: borderRadius,
-                    );
-                  } else {
-                    return Stack(
-                      clipBehavior: Clip.none,
-                      fit: StackFit.expand,
-                      children: [
-                        Positioned.fill(
-                          child: Hero(
-                            tag: widget.tag,
-                            child: Common.netImage(
-                                url: url,
-                                w: widget.imgSize.width,
-                                h: widget.imgSize.height,
-                                borderRadius: borderRadius,
-                                placeholder: Container(
-                                  decoration: BoxDecoration(
-                                    color: ColorProvider.itemBg(),
-                                    borderRadius: borderRadius,
-                                  ),
-                                  child: Common.loading,
-                                )),
-                          ),
+            child: StreamWidget(
+              stream: widget.index.stream().distinct(),
+              initialData: widget.index.value(),
+              builder: (_, __, ___) {
+                String url = widget.urls[widget.index.value()];
+                if (Common.isVideo(url)) {
+                  return VideoWidget(
+                    url: url,
+                    ctrl: ctrl,
+                    tag: widget.tag,
+                    borderRadius: borderRadius,
+                  );
+                } else {
+                  return Stack(
+                    clipBehavior: Clip.none,
+                    fit: StackFit.expand,
+                    children: [
+                      Positioned.fill(
+                        child: Hero(
+                          tag: widget.tag,
+                          child: Common.netImage(
+                              url: url,
+                              w: widget.imgSize.width,
+                              h: widget.imgSize.height,
+                              borderRadius: borderRadius,
+                              placeholder: Container(
+                                decoration: BoxDecoration(
+                                  color: ColorProvider.itemBg(),
+                                  borderRadius: borderRadius,
+                                ),
+                                child: Common.loading,
+                              )),
                         ),
-                        Positioned.fill(child: ctrl),
-                      ],
-                    );
-                  }
-                },
-              ),
+                      ),
+                      Positioned.fill(child: ctrl),
+                    ],
+                  );
+                }
+              },
             ),
           ),
           Positioned(

@@ -2,9 +2,9 @@ import 'package:base/base.dart';
 import 'package:flutter/material.dart';
 import 'package:poker/base/color_provider.dart';
 import 'package:poker/base/common.dart';
+import 'package:poker/demo/detail_page.dart';
 import 'package:poker/demo/poker/adapter.dart';
 import 'package:poker/demo/poker/adapter_item.dart';
-import 'package:poker/demo/detail_page.dart';
 
 mixin AdapterMixin {
   Widget build(Adapter adapter, DemoData t, Size imgSize, Percent percent) {
@@ -27,56 +27,37 @@ mixin AdapterMixin {
             child: PercentWidget(
               percent: alpha,
               builder: (_, p, __) => Container(
+                margin: EdgeInsets.all(radius / 3),
+                padding: EdgeInsets.all(radius / 3),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(radius),
-                    bottomRight: Radius.circular(radius),
-                  ),
-                  gradient: HpPlatform.isWeb()
-                      ? null
-                      : LinearGradient(
-                          begin: const Alignment(0, 1),
-                          end: const Alignment(0, -1),
-                          colors: [Colors.black.withOpacity(.5 * p), Colors.transparent],
-                          stops: const [.5, 1],
-                        ),
+                  color: ColorProvider.base(.3 * p, true),
+                  borderRadius: BorderRadius.all(Radius.circular(radius * 2 / 3)),
                 ),
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    left: radius / 2,
-                    right: radius / 2,
-                    bottom: radius / 2,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Common.borderText(
-                          '${t.name} ${t.id}',
-                          maxLines: 1,
-                          style: Common.textStyle(
-                            ctx,
-                            color: ColorProvider.base(p),
-                            scale: 2,
-                          ).copyWith(fontWeight: FontWeight.w700),
-                          border: HpPlatform.isWeb(),
-                          borderColor: ColorProvider.textBorderColor().withOpacity(p),
-                        ),
-                      ),
-                      Common.borderText(
-                        t.urls[0],
-                        maxLines: 3,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        '${t.name} ${t.id}',
+                        maxLines: 1,
                         style: Common.textStyle(
                           ctx,
-                          color: ColorProvider.base(.7 * p),
-                        ),
-                        border: HpPlatform.isWeb(),
-                        borderColor: ColorProvider.textBorderColor().withOpacity(p),
+                          color: ColorProvider.base(p),
+                          scale: 2,
+                        ).copyWith(fontWeight: FontWeight.w700),
                       ),
-                    ],
-                  ),
+                    ),
+                    Text(
+                      t.urls[0],
+                      maxLines: 3,
+                      style: Common.textStyle(
+                        ctx,
+                        color: ColorProvider.base(.7 * p),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

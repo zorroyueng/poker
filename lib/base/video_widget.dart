@@ -149,10 +149,16 @@ class _VideoWidgetState extends State<VideoWidget> {
               ),
             ),
           ));
-          return Stack(
-            clipBehavior: Clip.none,
-            fit: StackFit.expand,
-            children: children,
+          return Container(
+            decoration: BoxDecoration(
+              borderRadius: widget.borderRadius,
+              color: ColorProvider.itemBg(),
+            ),
+            child: Stack(
+              clipBehavior: Clip.none,
+              fit: StackFit.expand,
+              children: children,
+            ),
           );
         },
       );
