@@ -56,6 +56,7 @@ class _VideoWidgetState extends State<VideoWidget> {
                 Container(
                   clipBehavior: Clip.hardEdge,
                   decoration: BoxDecoration(
+                    color: ColorProvider.itemBg(),
                     borderRadius: widget.borderRadius,
                   ),
                   child: StreamWidget(
@@ -90,10 +91,7 @@ class _VideoWidgetState extends State<VideoWidget> {
                           children: [
                             Positioned.fromRect(
                               rect: Rect.fromLTWH(left, top, w, h),
-                              child: Container(
-                                color: ColorProvider.itemBg(),
-                                child: VideoPlayer(_videoDef.ctrl),
-                              ),
+                              child: VideoPlayer(_videoDef.ctrl),
                             ),
                           ],
                         );
