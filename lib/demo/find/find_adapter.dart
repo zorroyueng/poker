@@ -201,7 +201,6 @@ class ItemModel {
               child: Hero(
                 tag: tag,
                 child: VideoWidget(
-                  cover:false,
                   url: url,
                   ctrl: Common.click(
                     onTap: () => Navi.pushAlpha(
