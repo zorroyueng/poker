@@ -90,7 +90,10 @@ class _VideoWidgetState extends State<VideoWidget> {
                           children: [
                             Positioned.fromRect(
                               rect: Rect.fromLTWH(left, top, w, h),
-                              child: VideoPlayer(_videoDef.ctrl),
+                              child: Container(
+                                color: ColorProvider.itemBg(),
+                                child: VideoPlayer(_videoDef.ctrl),
+                              ),
                             ),
                           ],
                         );
@@ -152,7 +155,6 @@ class _VideoWidgetState extends State<VideoWidget> {
           return Container(
             decoration: BoxDecoration(
               borderRadius: widget.borderRadius,
-              color: ColorProvider.itemBg(),
             ),
             child: Stack(
               clipBehavior: Clip.none,

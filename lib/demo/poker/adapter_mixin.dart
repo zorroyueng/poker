@@ -28,10 +28,14 @@ mixin AdapterMixin {
               percent: alpha,
               builder: (_, p, __) => Container(
                 margin: EdgeInsets.all(radius / 5),
-                padding: EdgeInsets.all(radius / 5),
+                padding: EdgeInsets.only(
+                  left: radius / 4,
+                  right: radius / 4,
+                  bottom: radius / 4,
+                ),
                 decoration: BoxDecoration(
                   color: ColorProvider.base(.3 * p, true),
-                  borderRadius: BorderRadius.all(Radius.circular(radius * 4 / 5)),
+                  borderRadius: BorderRadius.all(Radius.circular(radius * 3 / 4)),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
