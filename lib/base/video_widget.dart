@@ -85,15 +85,20 @@ class _VideoWidgetState extends State<VideoWidget> {
                             left = -(w - constraints.maxWidth) / 2;
                           }
                         }
+                        Rect rc = Rect.fromLTWH(left, top, w, h);
                         return Stack(
                           clipBehavior: Clip.none,
                           children: [
                             Positioned.fromRect(
-                              rect: Rect.fromLTWH(left, top, w, h),
+                              rect: rc,
                               child: Container(
                                 color: ColorProvider.itemBg(),
                                 child: VideoPlayer(_videoDef.ctrl),
                               ),
+                            ),
+                            Positioned.fromRect(
+                              rect: rc,
+                              child: Container(child: widget.ctrl),
                             ),
                           ],
                         );
@@ -106,24 +111,15 @@ class _VideoWidgetState extends State<VideoWidget> {
               ),
             )
           ];
-          if (widget.ctrl != null) {
-            children.add(Positioned.fill(child: widget.ctrl!));
-          }
           double w = Common.base(context, Config.iconK);
           children.add(Positioned.fill(
             child: StreamWidget(
               stream: _videoDef.init.stream().distinct(),
               initialData: _videoDef.init.value(),
-              builder: (_, __, child) {
-                if (_videoDef.init.value()) {
-                  return child!;
-                } else {
-                  return Visibility(
-                    visible: false,
-                    child: child!,
-                  );
-                }
-              },
+              builder: (_, __, child) => Visibility(
+                visible: _videoDef.init.value(),
+                child: child!,
+              ),
               child: Center(
                 child: SizedBox(
                   width: w * 2,
@@ -158,7 +154,7 @@ class _VideoWidgetState extends State<VideoWidget> {
             ),
             child: Stack(
               clipBehavior: Clip.none,
-              fit: StackFit.expand,
+              fit: widget.cover ? StackFit.expand : StackFit.loose,
               children: children,
             ),
           );
