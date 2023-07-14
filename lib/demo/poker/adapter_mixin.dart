@@ -27,11 +27,11 @@ mixin AdapterMixin {
             child: PercentWidget(
               percent: alpha,
               builder: (_, p, __) => Container(
-                margin: EdgeInsets.all(radius / 3),
-                padding: EdgeInsets.all(radius / 3),
+                margin: EdgeInsets.all(radius / 5),
+                padding: EdgeInsets.all(radius / 5),
                 decoration: BoxDecoration(
                   color: ColorProvider.base(.3 * p, true),
-                  borderRadius: BorderRadius.all(Radius.circular(radius * 2 / 3)),
+                  borderRadius: BorderRadius.all(Radius.circular(radius * 4 / 5)),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,

@@ -46,106 +46,112 @@ class PokerTab extends StatelessWidget {
       );
 
   @override
-  Widget build(BuildContext context) => Stack(
-        fit: StackFit.expand,
-        children: [
-          PokerView(adapter: adapter),
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                StreamBuilder(
-                  initialData: adapter.percentX().value(),
-                  stream: adapter.percentX().stream().map<double>((v) {
-                    if (v < 0) {
-                      return -v;
-                    } else {
-                      return 0;
-                    }
-                  }).distinct(),
-                  builder: (_, snap) => _btn(
-                    ctx: context,
-                    color: Colors.lime,
-                    icon: Icons.recommend,
-                    onPressed: () => adapter.swipe(SwipeType.left),
-                    percent: snap.data!,
-                    rotate: true,
-                  ),
+  Widget build(BuildContext context) {
+    double padding = Common.base(context, 1.5);
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Container(
+          margin: EdgeInsets.only(top: padding, bottom: padding),
+          child: PokerView(adapter: adapter),
+        ),
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: 0,
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              StreamBuilder(
+                initialData: adapter.percentX().value(),
+                stream: adapter.percentX().stream().map<double>((v) {
+                  if (v < 0) {
+                    return -v;
+                  } else {
+                    return 0;
+                  }
+                }).distinct(),
+                builder: (_, snap) => _btn(
+                  ctx: context,
+                  color: Colors.lime,
+                  icon: Icons.recommend,
+                  onPressed: () => adapter.swipe(SwipeType.left),
+                  percent: snap.data!,
+                  rotate: true,
                 ),
-                StreamBuilder(
-                  initialData: adapter.percentY().value(),
-                  stream: adapter.percentY().stream().map<double>((v) {
-                    if (v < 0) {
-                      return -v;
-                    } else {
-                      return 0;
-                    }
-                  }).distinct(),
-                  builder: (_, snap) => _btn(
-                    ctx: context,
-                    color: Colors.blue,
-                    icon: Icons.stars,
-                    onPressed: () => adapter.swipe(SwipeType.up),
-                    percent: snap.data!,
-                  ),
+              ),
+              StreamBuilder(
+                initialData: adapter.percentY().value(),
+                stream: adapter.percentY().stream().map<double>((v) {
+                  if (v < 0) {
+                    return -v;
+                  } else {
+                    return 0;
+                  }
+                }).distinct(),
+                builder: (_, snap) => _btn(
+                  ctx: context,
+                  color: Colors.blue,
+                  icon: Icons.stars,
+                  onPressed: () => adapter.swipe(SwipeType.up),
+                  percent: snap.data!,
                 ),
-                StreamBuilder(
-                  initialData: adapter.percentX().value(),
-                  stream: adapter.percentX().stream().map<double>((v) {
-                    if (v < 0) {
-                      return 0;
-                    } else {
-                      return v;
-                    }
-                  }).distinct(),
-                  builder: (_, snap) => _btn(
-                    ctx: context,
-                    color: Colors.pinkAccent,
-                    icon: Icons.recommend,
-                    onPressed: () => adapter.swipe(SwipeType.right),
-                    percent: snap.data!,
-                  ),
+              ),
+              StreamBuilder(
+                initialData: adapter.percentX().value(),
+                stream: adapter.percentX().stream().map<double>((v) {
+                  if (v < 0) {
+                    return 0;
+                  } else {
+                    return v;
+                  }
+                }).distinct(),
+                builder: (_, snap) => _btn(
+                  ctx: context,
+                  color: Colors.pinkAccent,
+                  icon: Icons.recommend,
+                  onPressed: () => adapter.swipe(SwipeType.right),
+                  percent: snap.data!,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-          Positioned(
-            right: 0,
-            top: 0,
-            child: ThemeWidget(
-              builder: (_, __) => Padding(
-                padding: const EdgeInsets.all(20),
-                child: IconButton(
-                  icon: Icon(
-                    Icons.settings,
-                    size: Common.base(context),
-                    color: ColorProvider.textColor().withOpacity(.5),
-                  ),
-                  onPressed: () => Common.dlgSetting(context),
+        ),
+        Positioned(
+          right: 0,
+          top: 0,
+          child: ThemeWidget(
+            builder: (_, __) => Padding(
+              padding: const EdgeInsets.all(20),
+              child: IconButton(
+                icon: Icon(
+                  Icons.settings,
+                  size: Common.base(context),
+                  color: ColorProvider.textColor().withOpacity(.5),
                 ),
+                onPressed: () => Common.dlgSetting(context),
               ),
             ),
           ),
-          Positioned(
-            left: 0,
-            top: 0,
-            child: ThemeWidget(
-              builder: (_, __) => Padding(
-                padding: const EdgeInsets.all(20),
-                child: IconButton(
-                  icon: Icon(
-                    Icons.redo,
-                    size: Common.base(context),
-                    color: ColorProvider.textColor().withOpacity(.5),
-                  ),
-                  onPressed: () => adapter.undo(),
+        ),
+        Positioned(
+          left: 0,
+          top: 0,
+          child: ThemeWidget(
+            builder: (_, __) => Padding(
+              padding: const EdgeInsets.all(20),
+              child: IconButton(
+                icon: Icon(
+                  Icons.redo,
+                  size: Common.base(context),
+                  color: ColorProvider.textColor().withOpacity(.5),
                 ),
+                onPressed: () => adapter.undo(),
               ),
             ),
           ),
-        ],
-      );
+        ),
+      ],
+    );
+  }
 }
