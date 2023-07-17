@@ -13,6 +13,7 @@ mixin AdapterMixin {
     return ThemeWidget(
       builder: (ctx, child) {
         double radius = Common.radius(ctx);
+        double padding = radius / 4;
         return AdapterItem(
           tag: t.id,
           urls: t.urls,
@@ -27,15 +28,15 @@ mixin AdapterMixin {
             child: PercentWidget(
               percent: alpha,
               builder: (_, p, __) => Container(
-                margin: EdgeInsets.all(radius / 5),
+                margin: EdgeInsets.all(padding),
                 padding: EdgeInsets.only(
-                  left: radius / 4,
-                  right: radius / 4,
-                  bottom: radius / 4,
+                  left: padding,
+                  right: padding,
+                  bottom: padding,
                 ),
                 decoration: BoxDecoration(
                   color: ColorProvider.base(.3 * p, true),
-                  borderRadius: BorderRadius.all(Radius.circular(radius * 3 / 4)),
+                  borderRadius: BorderRadius.all(Radius.circular(radius - padding)),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
