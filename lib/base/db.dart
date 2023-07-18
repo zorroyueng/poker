@@ -30,9 +30,7 @@ class Db {
         version: v.code(),
         onCreate: (db, version) async {
           HpDevice.log('onCreate: $version');
-          for (Version v in versions) {
-            await v.onCreate(db);
-          }
+          await v.onCreate(db);
         },
         onUpgrade: (db, oldVersion, newVersion) async {
           for (Version v in versions) {
@@ -86,39 +84,38 @@ abstract class Version {
   }
 }
 
-abstract class DbTable {
+abstract class Table {
+  final Map<String, Object?> map = {};
+
   String tName();
 
-  final List<Col> _columns = [];
+  List<Col> tColumns();
 
-  void init(List<Col> columns);
+  Map<String, Object?> toMap() => map;
 
-  Map<String, Object?> toMap() {
-    Map<String, Object?> map = {};
-    for (Col c in _columns) {
-      map[c.name] = c.value;
-    }
-    return map;
-  }
-
-  DbTable(Map<String, Object?>? map) {
-    init(_columns);
+  Table(Map<String, Object?>? map) {
     if (map != null && map.isNotEmpty) {
-      for (Col c in _columns) {
-        c.value = map[c.name];
-      }
+      this.map.clear();
+      this.map.addAll(map);
     }
   }
 
   Future<void> insert(Transaction txn) {
     String params = '';
     String values = '';
-    for (Col c in _columns) {
-      params += c.name;
-      values += c.value;
-      if (c != _columns.last) {
-        params += ',';
-        values += ',';
+    for (String key in map.keys) {
+      Object? value = map[key];
+      if (value != null) {
+        params += key;
+        if (value is String) {
+          values += '"$value"';
+        } else {
+          values += value.toString();
+        }
+        if (key != map.keys.last) {
+          params += ',';
+          values += ',';
+        }
       }
     }
     String sql = 'INSERT INTO ${tName()} ($params) VALUES($values)';
@@ -126,9 +123,16 @@ abstract class DbTable {
     return txn.rawInsert(sql);
   }
 
+  Future<int> update(Transaction txn) {
+    return txn.update(
+      tName(),
+      toMap(),
+    );
+  }
+
   Future<void> createTable(Database db) {
     List<String> lst = [];
-    for (Col c in _columns) {
+    for (Col c in tColumns()) {
       lst.add('${c.name} ${c.type}');
     }
     return Db.createTable(db, tName(), lst);
@@ -138,7 +142,6 @@ abstract class DbTable {
 abstract class Col<T> {
   final String name;
   final String type;
-  T? value;
 
   Col({required this.name, required this.type});
 }
