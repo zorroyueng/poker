@@ -2,16 +2,19 @@ import 'package:base/base.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:poker/base/color_provider.dart';
+import 'package:poker/base/db.dart';
+import 'package:poker/base/tab_view.dart';
+import 'package:poker/db/v_1.dart';
 import 'package:poker/demo/find/find_tab.dart';
 import 'package:poker/demo/me/me_tab.dart';
 import 'package:poker/demo/msg/msg_tab.dart';
 import 'package:poker/demo/poker/poker_tab.dart';
-import 'package:poker/base/tab_view.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   Future.wait([
     Sp.init(), // sp初始化
+    Db.init(V1()),
   ]).then((_) => runApp(const MyApp()));
 }
 
