@@ -133,47 +133,7 @@ class PokerTab extends StatelessWidget {
                   size: Common.base(context),
                   color: ColorProvider.textColor().withOpacity(.5),
                 ),
-                onPressed: () {
-                  Db.db.transaction(
-                    (txn) {
-                      return Future.wait([
-                        V1.user.upsert(
-                          txn,
-                          {
-                            V1.user.id: Random().nextInt(10),
-                            V1.user.age: 1,
-                            V1.user.intro: 'intro',
-                            V1.user.name: DemoHelper.random(DemoHelper.name),
-                            V1.user.picUrl: DemoHelper.random(DemoHelper.head),
-                            V1.user.sex: 1,
-                          },
-                          V1.user.id,
-                        ),
-                        V1.find.upsert(
-                          txn,
-                          {
-                            V1.find.id: Random().nextInt(10),
-                            V1.find.userId: Random().nextInt(10),
-                            V1.find.createTime: HpDevice.time(),
-                            V1.find.content: 'content',
-                          },
-                          V1.find.id,
-                        ),
-                        V1.user
-                            .innerJoin(
-                              txn,
-                              other: V1.find,
-                              key: V1.user.id,
-                              otherKey: V1.find.userId,
-                            )
-                            .then(
-                              (map) => HpDevice.log('innerJoin: ${map.toString()}'),
-                            ),
-                      ]);
-                    },
-                  );
-                  Common.dlgSetting(context);
-                },
+                onPressed: () => Common.dlgSetting(context),
               ),
             ),
           ),

@@ -62,7 +62,10 @@ class Db {
 
   static Future<void> dropTable(Database db, String name) => db.execute('DROP TABLE  $name');
 
-  static Database get db => _db;
+  static Future<T> transaction<T>(Future<T> Function(Transaction txn) action, {bool? exclusive}) => _db.transaction(
+        (txn) => action.call(txn),
+        exclusive: exclusive,
+      );
 }
 
 abstract class Version {

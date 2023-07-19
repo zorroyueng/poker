@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:base/base.dart';
 import 'package:flutter/material.dart';
+import 'package:poker/base/db.dart';
+import 'package:poker/db/v_1.dart';
 import 'package:poker/demo/find/find_adapter.dart';
 import 'package:poker/demo/msg/contact_adapter.dart';
 import 'package:poker/demo/poker/adapter.dart';
@@ -268,4 +270,41 @@ class DemoHelper {
   ];
 
   static T random<T>(List<T> lst) => lst[Random().nextInt(lst.length)];
+
+  static void dbData() => Db.transaction(
+        (txn) => Future.wait([
+          V1.user.upsert(
+            txn,
+            {
+              V1.user.id: Random().nextInt(10),
+              V1.user.age: 1,
+              V1.user.intro: 'intro',
+              V1.user.name: DemoHelper.random(DemoHelper.name),
+              V1.user.picUrl: DemoHelper.random(DemoHelper.head),
+              V1.user.sex: 1,
+            },
+            V1.user.id,
+          ),
+          V1.find.upsert(
+            txn,
+            {
+              V1.find.id: Random().nextInt(10),
+              V1.find.userId: Random().nextInt(10),
+              V1.find.createTime: HpDevice.time(),
+              V1.find.content: 'content',
+            },
+            V1.find.id,
+          ),
+          V1.user
+              .innerJoin(
+                txn,
+                other: V1.find,
+                key: V1.user.id,
+                otherKey: V1.find.userId,
+              )
+              .then(
+                (map) => HpDevice.log('innerJoin: ${map.toString()}'),
+              ),
+        ]),
+      );
 }
