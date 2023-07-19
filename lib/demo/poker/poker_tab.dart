@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:poker/base/color_provider.dart';
 import 'package:poker/base/common.dart';
 import 'package:poker/base/db.dart';
+import 'package:poker/db/db_adapter.dart';
 import 'package:poker/db/v_1.dart';
 import 'package:poker/demo/demo_helper.dart';
 import 'package:poker/demo/poker/adapter.dart';
@@ -133,7 +134,11 @@ class PokerTab extends StatelessWidget {
                   size: Common.base(context),
                   color: ColorProvider.textColor().withOpacity(.5),
                 ),
-                onPressed: () => Common.dlgSetting(context),
+                onPressed: () {
+                  DemoHelper.dbData();
+                  DbAdapter.infoData();
+                  Common.dlgSetting(context);
+                },
               ),
             ),
           ),

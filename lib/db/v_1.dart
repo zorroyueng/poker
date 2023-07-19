@@ -30,41 +30,43 @@ class V1 extends Version {
 class User extends Table {
   User._();
 
-  late final String id = key('id');
-  late final String name = key('name');
-  late final String age = key('age');
-  late final String sex = key('sex');
-  late final String intro = key('intro');
-  late final String picUrl = key('picUrl');
+  late final ColInt id = ColInt(name: key('id'), key: true);
+  late final ColStr name = ColStr(name: key('name'));
+  late final ColInt age = ColInt(name: key('age'));
+  late final ColInt sex = ColInt(name: key('sex'));
+  late final ColStr intro = ColStr(name: key('intro'));
+  late final ColStr picUrl = ColStr(name: key('picUrl'));
 
   @override
   String tName() => 'User';
 
   @override
   List<Col> tColumns() => [
-        ColInt(name: id, key: true),
-        ColStr(name: name),
-        ColInt(name: age),
-        ColInt(name: sex),
-        ColStr(name: intro),
-        ColStr(name: picUrl),
+        id,
+        name,
+        age,
+        sex,
+        intro,
+        picUrl,
       ];
 }
 
 class Find extends Table {
   Find._();
 
-  late final String id = key('id');
-  late final String userId = key('userId');
-  late final String content = key('content');
-  late final String createTime = key('createTime');
+  late final ColInt id = ColInt(name: key('id'), key: true);
+  late final ColInt userId = ColInt(name: key('userId'));
+  late final ColStr content = ColStr(name: key('content'));
+  late final ColInt createTime = ColInt(name: key('createTime'));
+  late final ColList<String> medias = ColList(name: key('medias'));
 
   @override
   List<Col> tColumns() => [
-        ColInt(name: id, key: true),
-        ColInt(name: userId),
-        ColStr(name: content),
-        ColInt(name: createTime),
+        id,
+        userId,
+        content,
+        createTime,
+        medias,
       ];
 
   @override

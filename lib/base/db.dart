@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:base/base.dart';
@@ -95,7 +96,7 @@ abstract class Table {
 
   String key(String name) => '${tName()}_$name';
 
-  Future<int> _insert(Transaction txn, Map<String, Object?> map, String key) {
+  Future<int> _insert(Transaction txn, Map<String, Object?> map, Col col) {
     String params = '';
     String values = '';
     for (String key in map.keys) {
@@ -118,12 +119,12 @@ abstract class Table {
     return txn.rawInsert(sql);
   }
 
-  Future<int> upsert(Transaction txn, Map<String, Object?> map, String key) =>
-      count(txn, map, key).then((n) => n == 0 ? _insert(txn, map, key) : update(txn, map, key));
+  Future<int> upsert(Transaction txn, Map<String, Object?> map, Col col) =>
+      count(txn, map, col).then((n) => n == 0 ? _insert(txn, map, col) : update(txn, map, col));
 
-  Future<int> count(Transaction txn, Map<String, Object?> map, String key) async {
+  Future<int> count(Transaction txn, Map<String, Object?> map, Col col) async {
     String sql = 'SELECT COUNT(*) FROM ${tName()} '
-        'WHERE ${_join(map, key)}';
+        'WHERE ${_join(map, col.name)}';
     return Sqflite.firstIntValue(await txn.rawQuery(sql)) ?? 0;
   }
 
@@ -136,11 +137,11 @@ abstract class Table {
     }
   }
 
-  Future<List<Map<String, Object?>>> query(Transaction txn, Map<String, Object?>? map) {
-    select(Table table, Map<String, Object?>? map) {
+  Future<List<Map<String, Object?>>> query({List<String>? columns}) {
+    select(Table table, List<String>? columns) {
       String select = '';
-      if (map != null && map.keys.isNotEmpty) {
-        for (String s in map.keys) {
+      if (columns != null && columns.isNotEmpty) {
+        for (String s in columns) {
           if (select.isNotEmpty) {
             select += ',';
           }
@@ -152,18 +153,17 @@ abstract class Table {
       return select;
     }
 
-    String sql = 'SELECT ${select(this, map)} FROM ${tName()}';
+    String sql = 'SELECT ${select(this, columns)} FROM ${tName()}';
     HpDevice.log(sql);
-    return txn.rawQuery(sql);
+    return Db._db.rawQuery(sql);
   }
 
-  Future<List<Map<String, Object?>>> innerJoin(
-    Transaction txn, {
+  Future<List<Map<String, Object?>>> innerJoin({
     List<String>? cols,
     required Table other,
     List<String>? otherCols,
-    required String key,
-    required String otherKey,
+    required Col col,
+    required Col otherCol,
   }) {
     select(Table table, List<String>? columns) {
       String select = '';
@@ -179,16 +179,16 @@ abstract class Table {
 
     String sql = 'SELECT ${select(this, cols)},${select(other, otherCols)} FROM ${tName()} '
         'INNER JOIN ${other.tName()} '
-        'ON ${tName()}.$key=${other.tName()}.$otherKey';
+        'ON ${tName()}.${col.name}=${other.tName()}.${otherCol.name}';
     HpDevice.log(sql);
-    return txn.rawQuery(sql);
+    return Db._db.rawQuery(sql);
   }
 
-  Future<int> update(Transaction txn, Map<String, Object?> map, String key) {
+  Future<int> update(Transaction txn, Map<String, Object?> map, Col col) {
     String set = '';
     String where = '';
     for (String k in map.keys) {
-      if (k == key) {
+      if (k == col.name) {
         where = _join(map, k);
       } else {
         if (set.isNotEmpty) {
@@ -211,37 +211,89 @@ abstract class Table {
   }
 }
 
-abstract class Col<T> {
+abstract class Col<D, T> {
   final String name;
   final String type;
 
   Col({required this.name, required this.type}) {
     assert(name.split('_').length == 2);
   }
+
+  T? _encode(D? d);
+
+  D? _decode(T? t);
+
+  void save(Map<String, Object?> map, D? d) => map[name] = _encode(d);
+
+  D? load(Map<String, Object?> map) => _decode(map[name] as T?);
 }
 
-class ColInt extends Col<int> {
+class ColInt extends Col<int, int> {
   ColInt({
     required super.name,
     bool key = false,
   }) : super(
           type: 'INTEGER${key ? ' PRIMARY KEY' : ''}',
         );
+
+  @override
+  int? _decode(int? t) => t;
+
+  @override
+  int? _encode(int? d) => d;
 }
 
-class ColStr extends Col<String> {
+class ColStr extends Col<String, String> {
   ColStr({
     required super.name,
     bool key = false,
   }) : super(
           type: 'TEXT${key ? ' PRIMARY KEY' : ''}',
         );
+
+  @override
+  String? _decode(String? t) => t;
+
+  @override
+  String? _encode(String? d) => d;
 }
 
-class ColNum extends Col<num> {
+class ColBool extends Col<bool, int> {
+  ColBool({required super.name}) : super(type: 'INTEGER');
+
+  @override
+  bool? _decode(int? t) => t == null || t == 0 ? false : true;
+
+  @override
+  int? _encode(bool? d) => d == null || d == false ? 0 : 1;
+}
+
+class ColList<T> extends Col<List<T>, String> {
+  ColList({required super.name}) : super(type: 'TEXT');
+
+  @override
+  List<T>? _decode(String? t) => t == null ? null : jsonDecode(t);
+
+  @override
+  String? _encode(List<T>? d) => d == null ? null : json.encode(d);
+}
+
+class ColNum extends Col<num, num> {
   ColNum({required super.name}) : super(type: 'REAL');
+
+  @override
+  num? _decode(num? t) => t;
+
+  @override
+  num? _encode(num? d) => d;
 }
 
-class ColByte extends Col<Uint8List> {
+class ColByte extends Col<Uint8List, Uint8List> {
   ColByte({required super.name}) : super(type: 'BLOB');
+
+  @override
+  Uint8List? _decode(Uint8List? t) => t;
+
+  @override
+  Uint8List? _encode(Uint8List? d) => d;
 }

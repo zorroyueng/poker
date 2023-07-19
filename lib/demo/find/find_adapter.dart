@@ -45,6 +45,9 @@ class Info {
     required this.medias,
     required this.comments,
   });
+
+  @override
+  String toString() => '$name $head $content';
 }
 
 enum Type {

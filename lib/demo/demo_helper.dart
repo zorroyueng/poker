@@ -13,6 +13,28 @@ class DemoHelper {
 
   static String mediaTag(String id, int index, String url) => '${id}_${index}_$url';
 
+  static List<String> medias() {
+    List<String> pics = [];
+    if (!HpPlatform.isMac() && Random().nextDouble() > .7) {
+      pics.add(random(_videos));
+    } else {
+      int max = Random().nextInt(9);
+      for (int j = 0; j <= max; j++) {
+        pics.add(random(relaxed));
+      }
+    }
+    return pics;
+  }
+
+  static List<String> comments() {
+    List<String> comments = [];
+    int max = Random().nextInt(9);
+    for (int j = 0; j <= max; j++) {
+      comments.add(_str(20));
+    }
+    return comments;
+  }
+
   static List<Info> findData() {
     List<Info> data = [];
     for (int i = 0; i < 10; i++) {
@@ -20,26 +42,8 @@ class DemoHelper {
         head: random(head),
         name: random(name),
         content: _str(50),
-        medias: () {
-          List<String> pics = [];
-          if (!HpPlatform.isMac() && Random().nextDouble() > .7) {
-            pics.add(random(_videos));
-          } else {
-            int max = Random().nextInt(9);
-            for (int j = 0; j <= max; j++) {
-              pics.add(random(relaxed));
-            }
-          }
-          return pics;
-        }(),
-        comments: () {
-          List<String> comments = [];
-          int max = Random().nextInt(9);
-          for (int j = 0; j <= max; j++) {
-            comments.add(_str(20));
-          }
-          return comments;
-        }(),
+        medias: medias(),
+        comments: comments(),
       ));
     }
     return data;
@@ -271,40 +275,47 @@ class DemoHelper {
 
   static T random<T>(List<T> lst) => lst[Random().nextInt(lst.length)];
 
-  static void dbData() => Db.transaction(
-        (txn) => Future.wait([
-          V1.user.upsert(
-            txn,
-            {
-              V1.user.id: Random().nextInt(10),
-              V1.user.age: 1,
-              V1.user.intro: 'intro',
-              V1.user.name: DemoHelper.random(DemoHelper.name),
-              V1.user.picUrl: DemoHelper.random(DemoHelper.head),
-              V1.user.sex: 1,
-            },
-            V1.user.id,
-          ),
-          V1.find.upsert(
-            txn,
-            {
-              V1.find.id: Random().nextInt(10),
-              V1.find.userId: Random().nextInt(10),
-              V1.find.createTime: HpDevice.time(),
-              V1.find.content: 'content',
-            },
-            V1.find.id,
-          ),
-          V1.user
-              .innerJoin(
-                txn,
-                other: V1.find,
-                key: V1.user.id,
-                otherKey: V1.find.userId,
-              )
-              .then(
-                (map) => HpDevice.log('innerJoin: ${map.toString()}'),
-              ),
-        ]),
-      );
+  static void dbData() {
+    Db.transaction(
+      (txn) => Future.wait([
+        V1.user.upsert(
+          txn,
+          () {
+            Map<String, Object?> map = {};
+            V1.user.id.save(map, Random().nextInt(10));
+            V1.user.age.save(map, 1);
+            V1.user.intro.save(map, 'intro');
+            V1.user.name.save(map, DemoHelper.random(DemoHelper.name));
+            V1.user.picUrl.save(map, DemoHelper.random(DemoHelper.head));
+            V1.user.sex.save(map, 1);
+            return map;
+          }(),
+          V1.user.id,
+        ),
+        V1.find.upsert(
+          txn,
+          () {
+            Map<String, Object?> map = {};
+            V1.find.id.save(map, Random().nextInt(10));
+            V1.find.userId.save(map, Random().nextInt(10));
+            V1.find.createTime.save(map, HpDevice.time());
+            V1.find.content.save(map, 'content');
+            V1.find.medias.save(map, medias());
+            return map;
+          }(),
+          V1.find.id,
+        ),
+      ]),
+    );
+
+    V1.user
+        .innerJoin(
+          other: V1.find,
+          col: V1.user.id,
+          otherCol: V1.find.userId,
+        )
+        .then(
+          (map) => HpDevice.log('innerJoin: ${map.toString()}'),
+        );
+  }
 }
