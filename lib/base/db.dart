@@ -272,7 +272,7 @@ class ColList<T> extends Col<List<T>, String> {
   ColList({required super.name}) : super(type: 'TEXT');
 
   @override
-  List<T>? _decode(String? t) => t == null ? null : jsonDecode(t);
+  List<T>? _decode(String? t) => t == null ? null : (jsonDecode(t) as List).map((e) => e as T).toList();
 
   @override
   String? _encode(List<T>? d) => d == null ? null : json.encode(d);
