@@ -15,7 +15,7 @@ class DemoHelper {
     List<Info> data = [];
     for (int i = 0; i < 10; i++) {
       data.add(Info(
-        head: random(_head),
+        head: random(head),
         name: random(name),
         content: _str(50),
         medias: () {
@@ -49,7 +49,7 @@ class DemoHelper {
     for (int i = 0; i < max; i++) {
       data.add(ContactData(
         id: '$i',
-        url: random(_head),
+        url: random(head),
         name: random(name),
         lastMsg: _str(30),
       ));
@@ -152,7 +152,7 @@ class DemoHelper {
     Icons.stars,
   ];
 
-  static final List<String> _head = [
+  static final List<String> head = [
     'https://gd-hbimg.huaban.com/5f9fbf1eb4fd6e88dd348de3bb376b3782ba1b51d15ba-rSk8zA_fw658',
     'https://gd-hbimg.huaban.com/d84daecd9a8c747e7561d7d1e836a957ebc66607557e-dAZQYo_fw658',
     'https://gd-hbimg.huaban.com/0860d651efb9ea224964cf369a6aae7c612403ac4866-bWWP7v_fw658',

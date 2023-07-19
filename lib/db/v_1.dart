@@ -2,6 +2,9 @@ import 'package:poker/base/db.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class V1 extends Version {
+  static final User user = User._();
+  static final Find find = Find._();
+
   @override
   int code() => 1;
 
@@ -9,7 +12,8 @@ class V1 extends Version {
   Future<void> onCreate(Database db) {
     // HpDevice.log('$runtimeType.onCreate');
     return Future.wait([
-      User(null).createTable(db),
+      user.createTable(db),
+      find.createTable(db),
     ]);
   }
 
@@ -24,18 +28,33 @@ class V1 extends Version {
 }
 
 class User extends Table {
-  static final ColInt cId = ColInt(name: 'id', key: true);
-  static final ColStr cName = ColStr(name: 'name');
-  static final ColInt cAge = ColInt(name: 'age');
-  static final ColInt cSex = ColInt(name: 'sex');
-  static final ColStr cIntro = ColStr(name: 'intro');
-  static final ColStr cPicUrl = ColStr(name: 'picUrl');
+  User._();
 
-  User(super.map);
+  late final ColInt id = ColInt(this, name: 'id', key: true);
+  late final ColStr name = ColStr(this, name: 'name');
+  late final ColInt age = ColInt(this, name: 'age');
+  late final ColInt sex = ColInt(this, name: 'sex');
+  late final ColStr intro = ColStr(this, name: 'intro');
+  late final ColStr picUrl = ColStr(this, name: 'picUrl');
 
   @override
   String tName() => 'User';
 
   @override
-  List<Col> tColumns() => [cId, cName, cAge, cSex, cIntro, cPicUrl];
+  List<Col> tColumns() => [id, name, age, sex, intro, picUrl];
+}
+
+class Find extends Table {
+  Find._();
+
+  late final ColInt id = ColInt(this, name: 'id', key: true);
+  late final ColInt userId = ColInt(this, name: 'userId');
+  late final ColStr content = ColStr(this, name: 'content');
+  late final ColInt createTime = ColInt(this, name: 'createTime');
+
+  @override
+  List<Col> tColumns() => [id, userId, content, createTime];
+
+  @override
+  String tName() => 'Find';
 }

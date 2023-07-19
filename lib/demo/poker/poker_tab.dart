@@ -135,14 +135,40 @@ class PokerTab extends StatelessWidget {
                 ),
                 onPressed: () {
                   Db.db.transaction(
-                    (txn) => User({
-                      User.cId.name: Random().nextInt(10),
-                      User.cAge.name: 1,
-                      User.cIntro.name: 'Hi',
-                      User.cName.name: DemoHelper.random(DemoHelper.name),
-                      User.cPicUrl.name: 'url',
-                      User.cSex.name: 1,
-                    }).upsert(txn, User.cId.name),
+                    (txn) {
+                      V1.user.upsert(
+                        txn,
+                        {
+                          V1.user.id.name: Random().nextInt(10),
+                          V1.user.age.name: 1,
+                          V1.user.intro.name: 'intro',
+                          V1.user.name.name: DemoHelper.random(DemoHelper.name),
+                          V1.user.picUrl.name: DemoHelper.random(DemoHelper.head),
+                          V1.user.sex.name: 1,
+                        },
+                        V1.user.id,
+                      );
+                      V1.find.upsert(
+                        txn,
+                        {
+                          V1.find.id.name: Random().nextInt(10),
+                          V1.find.userId.name: Random().nextInt(10),
+                          V1.find.createTime.name: HpDevice.time(),
+                          V1.find.content.name: 'content',
+                        },
+                        V1.find.id,
+                      );
+                      V1.user
+                          .innerJoin(
+                            txn,
+                            other: V1.find,
+                            col: V1.user.id,
+                            otherCol: V1.find.userId,
+                          )
+                          .then(
+                            (map) => HpDevice.log(map.toString()),
+                          );
+                    },
                   );
                   Common.dlgSetting(context);
                 },

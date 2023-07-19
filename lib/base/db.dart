@@ -86,22 +86,15 @@ abstract class Version {
 }
 
 abstract class Table {
-  final Map<String, Object?> map = {};
-
   String tName();
 
   List<Col> tColumns();
 
-  Map<String, Object?> toMap() => map;
+  String _key(String name) => '${tName()}_$name';
 
-  Table(Map<String, Object?>? map) {
-    if (map != null && map.isNotEmpty) {
-      this.map.clear();
-      this.map.addAll(map);
-    }
-  }
+  Object? get(Map<String, Object?> map, Col c) => map[_key(c.name)];
 
-  Future<int> _insert(Transaction txn, String key) {
+  Future<int> _insert(Transaction txn, Map<String, Object?> map, Col col) {
     String params = '';
     String values = '';
     for (String key in map.keys) {
@@ -124,33 +117,83 @@ abstract class Table {
     return txn.rawInsert(sql);
   }
 
-  Future<int> upsert(Transaction txn, String key) =>
-      count(txn, key).then((n) => n == 0 ? _insert(txn, key) : update(txn, key));
+  Future<int> upsert(Transaction txn, Map<String, Object?> map, Col col) =>
+      count(txn, map, col).then((n) => n == 0 ? _insert(txn, map, col) : update(txn, map, col));
 
-  Future<int> count(Transaction txn, String key) async {
-    String sql = 'SELECT COUNT(*) FROM ${tName()} WHERE ${_join(key, map[key])}';
+  Future<int> count(Transaction txn, Map<String, Object?> map, Col col) async {
+    String sql = 'SELECT COUNT(*) FROM ${tName()} '
+        'WHERE ${_join(map, col.name)}';
     return Sqflite.firstIntValue(await txn.rawQuery(sql)) ?? 0;
   }
 
-  String _join(String key, Object? value) {
+  String _join(Map<String, Object?> map, String key) {
+    Object? value = map[key];
     if (value is String) {
-      return '$key=\'${map[key]}\'';
+      return '$key=\'$value\'';
     } else {
-      return '$key=${map[key]}';
+      return '$key=$value';
     }
   }
 
-  Future<int> update(Transaction txn, String key) {
+  Future<List<Map<String, Object?>>> query(Transaction txn, Map<String, Object?>? map) {
+    select(Table table, Map<String, Object?>? map) {
+      String select = '';
+      if (map != null && map.keys.isNotEmpty) {
+        for (String s in map.keys) {
+          if (select.isNotEmpty) {
+            select += ',';
+          }
+          select += '${table.tName()}.$s';
+        }
+      } else {
+        select = '${table.tName()}.*';
+      }
+      return select;
+    }
+
+    String sql = 'SELECT ${select(this, map)} FROM ${tName()}';
+    HpDevice.log(sql);
+    return txn.rawQuery(sql);
+  }
+
+  Future<List<Map<String, Object?>>> innerJoin(
+    Transaction txn, {
+    Map<String, Object?>? map,
+    required Table other,
+    Map<String, Object?>? otherMap,
+    required Col col,
+    required Col otherCol,
+  }) {
+    select(Table table, Map<String, Object?>? map) {
+      String select = '';
+      Iterable<String> lst = (map != null && map.keys.isNotEmpty) ? map.keys : table.tColumns().map((c) => c.name);
+      for (String s in lst) {
+        if (select.isNotEmpty) {
+          select += ',';
+        }
+        select += '${table.tName()}.$s';
+      }
+      return select;
+    }
+
+    String sql = 'SELECT ${select(this, map)},${select(other, otherMap)} FROM ${tName()} '
+        'INNER JOIN ${other.tName()} '
+        'ON ${tName()}.${col.name}=${other.tName()}.${otherCol.name}';
+    HpDevice.log(sql);
+    return txn.rawQuery(sql);
+  }
+
+  Future<int> update(Transaction txn, Map<String, Object?> map, Col col) {
     String set = '';
     String where = '';
     for (String k in map.keys) {
-      if (k == key) {
-        where = _join(k, map[k]);
+      if (k == col.name) {
+        where = _join(map, k);
       } else {
         if (set.isNotEmpty) {
           set += ',';
         }
-        set += _join(k, map[k]);
+        set += _join(map, k);
       }
     }
     String sql = 'UPDATE ${tName()} SET $set WHERE $where';
@@ -171,21 +214,49 @@ abstract class Col<T> {
   final String name;
   final String type;
 
-  Col({required this.name, required this.type});
+  Col({required this.name, required this.type}) {
+    assert(name.split('_').length == 2);
+  }
 }
 
 class ColInt extends Col<int> {
-  ColInt({required super.name, bool key = false}) : super(type: 'INTEGER${key ? ' PRIMARY KEY' : ''}');
-}
-
-class ColNum extends Col<num> {
-  ColNum({required super.name}) : super(type: 'REAL');
+  ColInt(
+    Table table, {
+    required String name,
+    bool key = false,
+  }) : super(
+          name: table._key(name),
+          type: 'INTEGER${key ? ' PRIMARY KEY' : ''}',
+        );
 }
 
 class ColStr extends Col<String> {
-  ColStr({required super.name, bool key = false}) : super(type: 'TEXT${key ? ' PRIMARY KEY' : ''}');
+  ColStr(
+    Table table, {
+    required String name,
+    bool key = false,
+  }) : super(
+          name: table._key(name),
+          type: 'TEXT${key ? ' PRIMARY KEY' : ''}',
+        );
+}
+
+class ColNum extends Col<num> {
+  ColNum(
+    Table table, {
+    required String name,
+  }) : super(
+          name: table._key(name),
+          type: 'REAL',
+        );
 }
 
 class ColByte extends Col<Uint8List> {
-  ColByte({required super.name}) : super(type: 'BLOB');
+  ColByte(
+    Table table, {
+    required String name,
+  }) : super(
+          name: table._key(name),
+          type: 'BLOB',
+        );
 }
