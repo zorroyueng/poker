@@ -62,7 +62,7 @@ class Db {
 
   static Future<void> dropTable(Database db, String name) => db.execute('DROP TABLE  $name');
 
-  static get db => _db;
+  static Database get db => _db;
 }
 
 abstract class Version {
@@ -90,11 +90,9 @@ abstract class Table {
 
   List<Col> tColumns();
 
-  String _key(String name) => '${tName()}_$name';
+  String key(String name) => '${tName()}_$name';
 
-  Object? get(Map<String, Object?> map, Col c) => map[_key(c.name)];
-
-  Future<int> _insert(Transaction txn, Map<String, Object?> map, Col col) {
+  Future<int> _insert(Transaction txn, Map<String, Object?> map, String key) {
     String params = '';
     String values = '';
     for (String key in map.keys) {
@@ -117,12 +115,12 @@ abstract class Table {
     return txn.rawInsert(sql);
   }
 
-  Future<int> upsert(Transaction txn, Map<String, Object?> map, Col col) =>
-      count(txn, map, col).then((n) => n == 0 ? _insert(txn, map, col) : update(txn, map, col));
+  Future<int> upsert(Transaction txn, Map<String, Object?> map, String key) =>
+      count(txn, map, key).then((n) => n == 0 ? _insert(txn, map, key) : update(txn, map, key));
 
-  Future<int> count(Transaction txn, Map<String, Object?> map, Col col) async {
+  Future<int> count(Transaction txn, Map<String, Object?> map, String key) async {
     String sql = 'SELECT COUNT(*) FROM ${tName()} '
-        'WHERE ${_join(map, col.name)}';
+        'WHERE ${_join(map, key)}';
     return Sqflite.firstIntValue(await txn.rawQuery(sql)) ?? 0;
   }
 
@@ -158,15 +156,15 @@ abstract class Table {
 
   Future<List<Map<String, Object?>>> innerJoin(
     Transaction txn, {
-    Map<String, Object?>? map,
+    List<String>? cols,
     required Table other,
-    Map<String, Object?>? otherMap,
-    required Col col,
-    required Col otherCol,
+    List<String>? otherCols,
+    required String key,
+    required String otherKey,
   }) {
-    select(Table table, Map<String, Object?>? map) {
+    select(Table table, List<String>? columns) {
       String select = '';
-      Iterable<String> lst = (map != null && map.keys.isNotEmpty) ? map.keys : table.tColumns().map((c) => c.name);
+      Iterable<String> lst = (columns != null && columns.isNotEmpty) ? columns : table.tColumns().map((c) => c.name);
       for (String s in lst) {
         if (select.isNotEmpty) {
           select += ',';
@@ -176,18 +174,18 @@ abstract class Table {
       return select;
     }
 
-    String sql = 'SELECT ${select(this, map)},${select(other, otherMap)} FROM ${tName()} '
+    String sql = 'SELECT ${select(this, cols)},${select(other, otherCols)} FROM ${tName()} '
         'INNER JOIN ${other.tName()} '
-        'ON ${tName()}.${col.name}=${other.tName()}.${otherCol.name}';
+        'ON ${tName()}.$key=${other.tName()}.$otherKey';
     HpDevice.log(sql);
     return txn.rawQuery(sql);
   }
 
-  Future<int> update(Transaction txn, Map<String, Object?> map, Col col) {
+  Future<int> update(Transaction txn, Map<String, Object?> map, String key) {
     String set = '';
     String where = '';
     for (String k in map.keys) {
-      if (k == col.name) {
+      if (k == key) {
         where = _join(map, k);
       } else {
         if (set.isNotEmpty) {
@@ -220,43 +218,27 @@ abstract class Col<T> {
 }
 
 class ColInt extends Col<int> {
-  ColInt(
-    Table table, {
-    required String name,
+  ColInt({
+    required super.name,
     bool key = false,
   }) : super(
-          name: table._key(name),
           type: 'INTEGER${key ? ' PRIMARY KEY' : ''}',
         );
 }
 
 class ColStr extends Col<String> {
-  ColStr(
-    Table table, {
-    required String name,
+  ColStr({
+    required super.name,
     bool key = false,
   }) : super(
-          name: table._key(name),
           type: 'TEXT${key ? ' PRIMARY KEY' : ''}',
         );
 }
 
 class ColNum extends Col<num> {
-  ColNum(
-    Table table, {
-    required String name,
-  }) : super(
-          name: table._key(name),
-          type: 'REAL',
-        );
+  ColNum({required super.name}) : super(type: 'REAL');
 }
 
 class ColByte extends Col<Uint8List> {
-  ColByte(
-    Table table, {
-    required String name,
-  }) : super(
-          name: table._key(name),
-          type: 'BLOB',
-        );
+  ColByte({required super.name}) : super(type: 'BLOB');
 }

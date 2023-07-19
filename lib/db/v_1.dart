@@ -30,30 +30,42 @@ class V1 extends Version {
 class User extends Table {
   User._();
 
-  late final ColInt id = ColInt(this, name: 'id', key: true);
-  late final ColStr name = ColStr(this, name: 'name');
-  late final ColInt age = ColInt(this, name: 'age');
-  late final ColInt sex = ColInt(this, name: 'sex');
-  late final ColStr intro = ColStr(this, name: 'intro');
-  late final ColStr picUrl = ColStr(this, name: 'picUrl');
+  late final String id = key('id');
+  late final String name = key('name');
+  late final String age = key('age');
+  late final String sex = key('sex');
+  late final String intro = key('intro');
+  late final String picUrl = key('picUrl');
 
   @override
   String tName() => 'User';
 
   @override
-  List<Col> tColumns() => [id, name, age, sex, intro, picUrl];
+  List<Col> tColumns() => [
+        ColInt(name: id, key: true),
+        ColStr(name: name),
+        ColInt(name: age),
+        ColInt(name: sex),
+        ColStr(name: intro),
+        ColStr(name: picUrl),
+      ];
 }
 
 class Find extends Table {
   Find._();
 
-  late final ColInt id = ColInt(this, name: 'id', key: true);
-  late final ColInt userId = ColInt(this, name: 'userId');
-  late final ColStr content = ColStr(this, name: 'content');
-  late final ColInt createTime = ColInt(this, name: 'createTime');
+  late final String id = key('id');
+  late final String userId = key('userId');
+  late final String content = key('content');
+  late final String createTime = key('createTime');
 
   @override
-  List<Col> tColumns() => [id, userId, content, createTime];
+  List<Col> tColumns() => [
+        ColInt(name: id, key: true),
+        ColInt(name: userId),
+        ColStr(name: content),
+        ColInt(name: createTime),
+      ];
 
   @override
   String tName() => 'Find';
