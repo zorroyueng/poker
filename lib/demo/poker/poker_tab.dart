@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:base/base.dart';
 import 'package:flutter/material.dart';
 import 'package:poker/base/color_provider.dart';
@@ -132,14 +134,16 @@ class PokerTab extends StatelessWidget {
                   color: ColorProvider.textColor().withOpacity(.5),
                 ),
                 onPressed: () {
-                  Db.db.transaction((txn) => User({
-                        User.cId.name: 1,
-                        User.cAge.name: 1,
-                        User.cIntro.name: 'Hi',
-                        User.cName.name: 'Jack',
-                        User.cPicUrl.name: 'url',
-                        User.cSex.name: 1,
-                      }).insert(txn));
+                  Db.db.transaction(
+                    (txn) => User({
+                      User.cId.name: Random().nextInt(10),
+                      User.cAge.name: 1,
+                      User.cIntro.name: 'Hi',
+                      User.cName.name: DemoHelper.random(DemoHelper.name),
+                      User.cPicUrl.name: 'url',
+                      User.cSex.name: 1,
+                    }).upsert(txn, User.cId.name),
+                  );
                   Common.dlgSetting(context);
                 },
               ),

@@ -16,9 +16,7 @@ class V1 extends Version {
   @override
   Future<void> onUpdate(Database db) {
     // HpDevice.log('$runtimeType.onUpdate');
-    return Future.wait([
-      User(null).createTable(db),
-    ]);
+    return Future.wait([]);
   }
 
   @override

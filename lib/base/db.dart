@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:base/base.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 
@@ -100,7 +101,7 @@ abstract class Table {
     }
   }
 
-  Future<void> insert(Transaction txn) {
+  Future<int> _insert(Transaction txn, String key) {
     String params = '';
     String values = '';
     for (String key in map.keys) {
@@ -108,7 +109,7 @@ abstract class Table {
       if (value != null) {
         params += key;
         if (value is String) {
-          values += '"$value"';
+          values += '\'$value\'';
         } else {
           values += value.toString();
         }
@@ -123,11 +124,38 @@ abstract class Table {
     return txn.rawInsert(sql);
   }
 
-  Future<int> update(Transaction txn) {
-    return txn.update(
-      tName(),
-      toMap(),
-    );
+  Future<int> upsert(Transaction txn, String key) =>
+      count(txn, key).then((n) => n == 0 ? _insert(txn, key) : update(txn, key));
+
+  Future<int> count(Transaction txn, String key) async {
+    String sql = 'SELECT COUNT(*) FROM ${tName()} WHERE ${_join(key, map[key])}';
+    return Sqflite.firstIntValue(await txn.rawQuery(sql)) ?? 0;
+  }
+
+  String _join(String key, Object? value) {
+    if (value is String) {
+      return '$key=\'${map[key]}\'';
+    } else {
+      return '$key=${map[key]}';
+    }
+  }
+
+  Future<int> update(Transaction txn, String key) {
+    String set = '';
+    String where = '';
+    for (String k in map.keys) {
+      if (k == key) {
+        where = _join(k, map[k]);
+      } else {
+        if (set.isNotEmpty) {
+          set += ',';
+        }
+        set += _join(k, map[k]);
+      }
+    }
+    String sql = 'UPDATE ${tName()} SET $set WHERE $where';
+    HpDevice.log(sql);
+    return txn.rawUpdate(sql);
   }
 
   Future<void> createTable(Database db) {
