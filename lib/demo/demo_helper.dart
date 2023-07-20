@@ -282,12 +282,12 @@ class DemoHelper {
           txn,
           () {
             Map<String, Object?> map = {};
-            V1.user.id.save(map, Random().nextInt(10));
-            V1.user.age.save(map, 1);
-            V1.user.intro.save(map, 'intro');
-            V1.user.name.save(map, DemoHelper.random(DemoHelper.name));
-            V1.user.picUrl.save(map, DemoHelper.random(DemoHelper.head));
-            V1.user.sex.save(map, 1);
+            V1.user.id.put(map, Random().nextInt(10));
+            V1.user.age.put(map, 1);
+            V1.user.intro.put(map, 'intro');
+            V1.user.name.put(map, DemoHelper.random(DemoHelper.name));
+            V1.user.picUrl.put(map, DemoHelper.random(DemoHelper.head));
+            V1.user.sex.put(map, 1);
             return map;
           }(),
           V1.user.id,
@@ -296,11 +296,11 @@ class DemoHelper {
           txn,
           () {
             Map<String, Object?> map = {};
-            V1.find.id.save(map, Random().nextInt(10));
-            V1.find.userId.save(map, Random().nextInt(10));
-            V1.find.createTime.save(map, HpDevice.time());
-            V1.find.content.save(map, 'content');
-            V1.find.medias.save(map, medias());
+            V1.find.id.put(map, Random().nextInt(10));
+            V1.find.userId.put(map, Random().nextInt(10));
+            V1.find.createTime.put(map, HpDevice.time());
+            V1.find.content.put(map, 'content');
+            V1.find.medias.put(map, medias());
             return map;
           }(),
           V1.find.id,

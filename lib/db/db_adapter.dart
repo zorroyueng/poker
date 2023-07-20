@@ -15,10 +15,10 @@ class DbAdapter {
         (lst) => lst
             .map(
               (m) => Info(
-                head: V1.user.picUrl.load(m)!,
-                name: V1.user.name.load(m)!,
-                content: V1.find.content.load(m)!,
-                medias: V1.find.medias.load(m)!,
+                head: V1.user.picUrl.get(m)!,
+                name: V1.user.name.get(m)!,
+                content: V1.find.content.get(m)!,
+                medias: V1.find.medias.get(m)!,
                 comments: DemoHelper.comments(),
               ),
             )

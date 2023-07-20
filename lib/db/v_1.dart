@@ -1,4 +1,6 @@
 import 'package:poker/base/db.dart';
+import 'package:poker/base/db_table.dart';
+import 'package:poker/base/db_table_mixin.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class V1 extends Version {
@@ -30,12 +32,12 @@ class V1 extends Version {
 class User extends Table {
   User._();
 
-  late final ColInt id = ColInt(name: key('id'), key: true);
-  late final ColStr name = ColStr(name: key('name'));
-  late final ColInt age = ColInt(name: key('age'));
-  late final ColInt sex = ColInt(name: key('sex'));
-  late final ColStr intro = ColStr(name: key('intro'));
-  late final ColStr picUrl = ColStr(name: key('picUrl'));
+  late final ColInt id = colInt('id', true);
+  late final ColStr name = colStr('name');
+  late final ColInt age = colInt('age');
+  late final ColInt sex = colInt('sex');
+  late final ColStr intro = colStr('intro');
+  late final ColStr picUrl = colStr('picUrl');
 
   @override
   String tName() => 'User';
@@ -54,11 +56,11 @@ class User extends Table {
 class Find extends Table {
   Find._();
 
-  late final ColInt id = ColInt(name: key('id'), key: true);
-  late final ColInt userId = ColInt(name: key('userId'));
-  late final ColStr content = ColStr(name: key('content'));
-  late final ColInt createTime = ColInt(name: key('createTime'));
-  late final ColList<String> medias = ColList(name: key('medias'));
+  late final ColInt id = colInt('id', true);
+  late final ColInt userId = colInt('userId');
+  late final ColStr content = colStr('content');
+  late final ColInt createTime = colInt('createTime');
+  late final ColList<String> medias = colList<String>('medias');
 
   @override
   List<Col> tColumns() => [
