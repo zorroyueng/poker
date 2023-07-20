@@ -12,7 +12,7 @@ class ChatAdapter<ChatData> extends Adapter {
       DemoHelper.upsertChat(),
       DemoHelper.upsertFind(),
     ]).then(
-      (lst) => DbAdapter.chatData().then(
+      (lst) => DbAdapter.chatData(1).then(
         (lst) => setData(lst),
       ),
     );

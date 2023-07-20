@@ -55,39 +55,47 @@ class ChatPage extends StatelessWidget {
                             builder: (c, _, __) {
                               // todo
                               return SliverList(
-                              delegate: SliverChildBuilderDelegate(
-                                (c, i) => adapter.data(i).widget(c),
-                                childCount: adapter.length,
-                              ),
-                            );
+                                delegate: SliverChildBuilderDelegate(
+                                  (c, i) => adapter.data(i).widget(c),
+                                  childCount: adapter.length,
+                                ),
+                              );
                             },
                           ),
                         ],
                       ),
                     ),
                   ),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: editCtrl,
-                          style: Common.textStyle(context),
+                  Container(
+                    color: ColorProvider.itemBg(),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Expanded(
+                          child: Container(
+                            color: ColorProvider.bg(),
+                            margin: EdgeInsets.all(Common.margin(context, 2)),
+                            child: TextField(
+                              maxLines: null,
+                              controller: editCtrl,
+                              style: Common.textStyle(context),
+                            ),
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        width: Common.base(context, 2),
-                        child: Common.btn(
-                          ctx: context,
-                          content: 'Send',
-                          onTap: () {
-                            HpDevice.log(editCtrl.text);
-                            editCtrl.clear();
-                          },
+                        SizedBox(
+                          width: Common.base(context, 2),
+                          child: Common.btn(
+                            ctx: context,
+                            content: 'Send',
+                            onTap: () {
+                              HpDevice.log(editCtrl.text);
+                              editCtrl.clear();
+                            },
+                          ),
                         ),
-                      ),
-                    ],
-                  )
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),

@@ -8,6 +8,8 @@ abstract class Table with TableMixin {
   Future<List<Map<String, Object?>>> query({
     Transaction? txn,
     List<String>? columns,
+    String? where,
+    String? orderBy,
   }) {
     select(TableMixin table, List<String>? columns) {
       String select = '';
@@ -24,7 +26,11 @@ abstract class Table with TableMixin {
       return select;
     }
 
-    String sql = 'SELECT ${select(this, columns)} FROM ${tName()}';
+    String sql = _joinSql(
+      sql: 'SELECT ${select(this, columns)} FROM ${tName()}',
+      where: where,
+      orderBy: orderBy,
+    );
     HpDevice.log(sql);
     return txn != null ? txn.rawQuery(sql) : Db.rawQuery(sql);
   }
@@ -36,6 +42,8 @@ abstract class Table with TableMixin {
     List<String>? joinCols,
     required Col key,
     required Col joinKey,
+    String? where,
+    String? orderBy,
   }) {
     select(TableMixin table, List<String>? columns) {
       String select = '';
@@ -49,9 +57,13 @@ abstract class Table with TableMixin {
       return select;
     }
 
-    String sql = 'SELECT ${select(this, cols)},${select(join, joinCols)} FROM ${tName()} '
-        'INNER JOIN ${join.tName()} '
-        'ON ${tName()}.${key.name}=${join.tName()}.${joinKey.name}';
+    String sql = _joinSql(
+      sql: 'SELECT ${select(this, cols)},${select(join, joinCols)} FROM ${tName()} '
+          'INNER JOIN ${join.tName()} '
+          'ON ${tName()}.${key.name}=${join.tName()}.${joinKey.name}',
+      where: where,
+      orderBy: orderBy,
+    );
     HpDevice.log(sql);
     return txn != null ? txn.rawQuery(sql) : Db.rawQuery(sql);
   }
@@ -182,5 +194,19 @@ abstract class Table with TableMixin {
     } else {
       return '$key=$value';
     }
+  }
+
+  String _joinSql({
+    required String sql,
+    String? where,
+    String? orderBy,
+  }) {
+    if (where != null) {
+      sql += ' WHERE $where';
+    }
+    if (orderBy != null) {
+      sql += ' ORDER BY $orderBy';
+    }
+    return sql;
   }
 }

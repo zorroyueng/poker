@@ -26,11 +26,13 @@ class DbAdapter {
             .toList(),
       );
 
-  static Future<List<ChatData>> chatData() => V1.msg
+  static Future<List<ChatData>> chatData(int userId) => V1.msg
       .innerJoin(
         join: V1.user,
         key: V1.msg.ownerId,
         joinKey: V1.user.id,
+        where: '${V1.msg.otherId.name}=$userId OR ${V1.msg.ownerId.name}=$userId',
+        orderBy: '${V1.msg.createTime.name} ASC',
       )
       .then(
         (lst) => lst
