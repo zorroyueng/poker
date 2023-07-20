@@ -4,7 +4,7 @@ import 'package:poker/base/db_table_mixin.dart';
 import 'package:sqflite/sqflite.dart';
 
 abstract class Table with TableMixin {
-  // read
+  /// read
   Future<List<Map<String, Object?>>> query({List<String>? columns}) {
     select(TableMixin table, List<String>? columns) {
       String select = '';
@@ -23,7 +23,7 @@ abstract class Table with TableMixin {
 
     String sql = 'SELECT ${select(this, columns)} FROM ${tName()}';
     HpDevice.log(sql);
-    return Db.db.rawQuery(sql);
+    return Db.rawQuery(sql);
   }
 
   Future<List<Map<String, Object?>>> innerJoin({
@@ -49,7 +49,7 @@ abstract class Table with TableMixin {
         'INNER JOIN ${other.tName()} '
         'ON ${tName()}.${col.name}=${other.tName()}.${otherCol.name}';
     HpDevice.log(sql);
-    return Db.db.rawQuery(sql);
+    return Db.rawQuery(sql);
   }
 
   Future<int> count(Transaction txn, Map<String, Object?> map, Col col) async {
@@ -58,7 +58,7 @@ abstract class Table with TableMixin {
     return Sqflite.firstIntValue(await txn.rawQuery(sql)) ?? 0;
   }
 
-  // write
+  /// write
   Future<int> _insert(Transaction txn, Map<String, Object?> map, Col col) {
     String params = '';
     String values = '';
@@ -103,7 +103,7 @@ abstract class Table with TableMixin {
     return txn.rawUpdate(sql);
   }
 
-  // structure
+  /// structure
   Future<void> createTable(Database db) {
     List<String> lst = () {
       List<String> lst = [];

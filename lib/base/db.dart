@@ -9,9 +9,6 @@ class Db {
   static late Database _db;
 
   static Future init(Version v) async {
-    // 确保升序
-    List<Version> versions = v._versions();
-    versions.sort((a, b) => a.code().compareTo(b.code()));
     // 初始化db
     late DatabaseFactory databaseFactory;
     late String path;
@@ -31,6 +28,7 @@ class Db {
           await v.onCreate(db);
         },
         onUpgrade: (db, oldVersion, newVersion) async {
+          List<Version> versions = v._versions();
           for (Version v in versions) {
             if (v.code() > oldVersion) {
               await v.onUpdate(db);
@@ -41,12 +39,12 @@ class Db {
     );
   }
 
-  static Database get db => _db;
-
   static Future<T> transaction<T>(Future<T> Function(Transaction txn) action, {bool? exclusive}) => _db.transaction(
         (txn) => action.call(txn),
         exclusive: exclusive,
       );
+
+  static Future<List<Map<String, Object?>>> rawQuery(String sql, [List<Object?>? args]) => _db.rawQuery(sql, args);
 }
 
 abstract class Version {
