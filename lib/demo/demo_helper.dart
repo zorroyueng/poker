@@ -279,8 +279,8 @@ class DemoHelper {
     Db.transaction(
       (txn) => Future.wait([
         V1.user.upsert(
-          txn,
-          () {
+          txn: txn,
+          map: () {
             Map<String, Object?> map = {};
             V1.user.id.put(map, Random().nextInt(10));
             V1.user.age.put(map, 1);
@@ -290,11 +290,11 @@ class DemoHelper {
             V1.user.sex.put(map, 1);
             return map;
           }(),
-          V1.user.id,
+          col: V1.user.id,
         ),
         V1.find.upsert(
-          txn,
-          () {
+          txn: txn,
+          map: () {
             Map<String, Object?> map = {};
             V1.find.id.put(map, Random().nextInt(10));
             V1.find.userId.put(map, Random().nextInt(10));
@@ -303,16 +303,16 @@ class DemoHelper {
             V1.find.medias.put(map, medias());
             return map;
           }(),
-          V1.find.id,
+          col: V1.find.id,
         ),
       ]),
     );
 
     V1.user
         .innerJoin(
-          other: V1.find,
-          col: V1.user.id,
-          otherCol: V1.find.userId,
+          join: V1.find,
+          key: V1.user.id,
+          joinKey: V1.find.userId,
         )
         .then(
           (map) => HpDevice.log('innerJoin: ${map.toString()}'),

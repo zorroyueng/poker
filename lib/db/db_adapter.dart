@@ -7,9 +7,9 @@ class DbAdapter {
 
   static Future<List<Info>> infoData() => V1.find
       .innerJoin(
-        other: V1.user,
-        col: V1.find.userId,
-        otherCol: V1.user.id,
+        join: V1.user,
+        key: V1.find.userId,
+        joinKey: V1.user.id,
       )
       .then(
         (lst) => lst
