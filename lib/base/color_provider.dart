@@ -21,4 +21,6 @@ class ColorProvider {
   static Color textBg() => ThemeProvider.isDark() ? Colors.grey.withOpacity(.3) : Colors.grey.withOpacity(.3);
 
   static Color menuBg() => ThemeProvider.isDark() ? Colors.grey[800]! : Colors.grey[200]!;
+
+  static Color chatBg(bool my) => ThemeProvider.currentColor().withOpacity(my ? .3 : .1);
 }

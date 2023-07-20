@@ -101,10 +101,12 @@ class Common {
         ),
       );
     } else if (content is String) {
-      child = Text(
-        content,
-        maxLines: 1,
-        style: textStyle(ctx),
+      child = Center(
+        child: Text(
+          content,
+          maxLines: 1,
+          style: textStyle(ctx),
+        ),
       );
     }
     BorderRadius r = BorderRadius.circular(b / 3);

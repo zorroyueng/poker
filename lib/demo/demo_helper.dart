@@ -275,47 +275,79 @@ class DemoHelper {
 
   static T random<T>(List<T> lst) => lst[Random().nextInt(lst.length)];
 
-  static void dbData() {
-    Db.transaction(
-      (txn) => Future.wait([
-        V1.user.upsert(
-          txn: txn,
-          map: () {
-            Map<String, Object?> map = {};
-            V1.user.id.put(map, Random().nextInt(10));
-            V1.user.age.put(map, 1);
-            V1.user.intro.put(map, 'intro');
-            V1.user.name.put(map, DemoHelper.random(DemoHelper.name));
-            V1.user.picUrl.put(map, DemoHelper.random(DemoHelper.head));
-            V1.user.sex.put(map, 1);
-            return map;
-          }(),
-          col: V1.user.id,
-        ),
-        V1.find.upsert(
-          txn: txn,
-          map: () {
-            Map<String, Object?> map = {};
-            V1.find.id.put(map, Random().nextInt(10));
-            V1.find.userId.put(map, Random().nextInt(10));
-            V1.find.createTime.put(map, HpDevice.time());
-            V1.find.content.put(map, 'content');
-            V1.find.medias.put(map, medias());
-            return map;
-          }(),
-          col: V1.find.id,
-        ),
-      ]),
-    );
+  static Future<void> upsertUser() => Db.transaction(
+        (txn) {
+          List<Future<int>> lst = [];
+          for (int i = 0; i < 10; i++) {
+            lst.add(
+              V1.user.upsert(
+                txn: txn,
+                map: () {
+                  Map<String, Object?> map = {};
+                  V1.user.id.put(map, i);
+                  V1.user.age.put(map, 1);
+                  V1.user.intro.put(map, 'intro');
+                  V1.user.name.put(map, DemoHelper.random(DemoHelper.name));
+                  V1.user.picUrl.put(map, DemoHelper.random(DemoHelper.head));
+                  V1.user.sex.put(map, 1);
+                  return map;
+                }(),
+                col: V1.user.id,
+              ),
+            );
+          }
+          return Future.wait(lst);
+        },
+      );
 
-    V1.user
-        .innerJoin(
-          join: V1.find,
-          key: V1.user.id,
-          joinKey: V1.find.userId,
-        )
-        .then(
-          (map) => HpDevice.log('innerJoin: ${map.toString()}'),
-        );
-  }
+  static Future<void> upsertChat() => Db.transaction(
+        (txn) {
+          List<Future<int>> lst = [];
+          for (int i = 0; i < 100; i++) {
+            bool my = Random().nextBool();
+            lst.add(
+              V1.msg.upsert(
+                txn: txn,
+                map: () {
+                  Map<String, Object?> map = {};
+                  V1.msg.id.put(map, i);
+                  V1.msg.createTime.put(map, DateTime.now());
+                  V1.msg.ownerId.put(map, my ? 0 : Random().nextInt(9) + 1);
+                  V1.msg.otherId.put(map, my ? Random().nextInt(9) + 1 : 0);
+                  V1.msg.msgType.put(map, 0);
+                  V1.msg.relationship.put(map, 1);
+                  V1.msg.content.put(map, _str(30));
+                  return map;
+                }(),
+                col: V1.msg.id,
+              ),
+            );
+          }
+          return Future.wait(lst);
+        },
+      );
+
+  static Future<void> upsertFind() => Db.transaction(
+        (txn) {
+          List<Future<int>> lst = [];
+          for (int i = 0; i < 100; i++) {
+            lst.add(
+              V1.find.upsert(
+                txn: txn,
+                map: () {
+                  Map<String, Object?> map = {};
+                  V1.find.id.put(map, i);
+                  V1.find.userId.put(map, Random().nextInt(10));
+                  V1.find.createTime.put(map, HpDevice.time());
+                  V1.find.content.put(map, 'content');
+                  V1.find.medias.put(map, medias());
+                  return map;
+                }(),
+                col: V1.find.id,
+              ),
+            );
+          }
+          return Future.wait(lst);
+        },
+      );
 }

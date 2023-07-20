@@ -134,11 +134,7 @@ class PokerTab extends StatelessWidget {
                   size: Common.base(context),
                   color: ColorProvider.textColor().withOpacity(.5),
                 ),
-                onPressed: () {
-                  DemoHelper.dbData();
-                  DbAdapter.infoData();
-                  Common.dlgSetting(context);
-                },
+                onPressed: () => Common.dlgSetting(context),
               ),
             ),
           ),

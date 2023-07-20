@@ -1,4 +1,5 @@
 import 'package:poker/db/v_1.dart';
+import 'package:poker/demo/chat/chat_adapter.dart';
 import 'package:poker/demo/demo_helper.dart';
 import 'package:poker/demo/find/find_adapter.dart';
 
@@ -20,6 +21,25 @@ class DbAdapter {
                 content: V1.find.content.get(m)!,
                 medias: V1.find.medias.get(m)!,
                 comments: DemoHelper.comments(),
+              ),
+            )
+            .toList(),
+      );
+
+  static Future<List<ChatData>> chatData() => V1.msg
+      .innerJoin(
+        join: V1.user,
+        key: V1.msg.ownerId,
+        joinKey: V1.user.id,
+      )
+      .then(
+        (lst) => lst
+            .map(
+              (m) => ChatData(
+                id: V1.msg.id.get(m)!,
+                my: 0 == V1.msg.ownerId.get(m)!,
+                picUrl: V1.user.picUrl.get(m)!,
+                content: V1.msg.content.get(m)!,
               ),
             )
             .toList(),

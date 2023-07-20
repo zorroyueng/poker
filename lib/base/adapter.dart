@@ -15,7 +15,7 @@ abstract class Adapter<T extends Data> {
     _update.add(null);
   }
 
-  get length => _data.length;
+  int get length => _data.length;
 
   T data(int i) => _data[i];
   

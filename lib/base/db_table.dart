@@ -70,10 +70,9 @@ abstract class Table with TableMixin {
   }
 
   /// write
-  Future<int> _insert({
+  Future<int> insert({
     required Transaction txn,
     required Map<String, Object?> map,
-    required Col col,
   }) {
     String params = '';
     String values = '';
@@ -107,10 +106,9 @@ abstract class Table with TableMixin {
         map: map,
         col: col,
       ).then((n) => n == 0
-          ? _insert(
+          ? insert(
               txn: txn,
               map: map,
-              col: col,
             )
           : update(
               txn: txn,
