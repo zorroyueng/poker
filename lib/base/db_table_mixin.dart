@@ -38,6 +38,9 @@ abstract class Col<D, T> {
   void put(Map<String, Object?> map, D? d) => map[name] = _encode(d);
 
   D? get(Map<String, Object?> map) => _decode(map[name] as T?);
+
+  @override
+  String toString() => name;
 }
 
 class ColInt extends Col<int, int> {

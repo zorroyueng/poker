@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:poker/base/db.dart';
 import 'package:poker/db/v_1.dart';
 import 'package:poker/demo/find/find_adapter.dart';
-import 'package:poker/demo/msg/contact_adapter.dart';
 import 'package:poker/demo/poker/adapter.dart';
 
 class DemoHelper {
@@ -44,20 +43,6 @@ class DemoHelper {
         content: _str(50),
         medias: medias(),
         comments: comments(),
-      ));
-    }
-    return data;
-  }
-
-  static List<ContactData> contactData() {
-    List<ContactData> data = [];
-    int max = 20 + Random().nextInt(30);
-    for (int i = 0; i < max; i++) {
-      data.add(ContactData(
-        id: '$i',
-        url: random(head),
-        name: random(name),
-        lastMsg: _str(30),
       ));
     }
     return data;
@@ -303,17 +288,20 @@ class DemoHelper {
   static Future<void> upsertChat() => Db.transaction(
         (txn) {
           List<Future<int>> lst = [];
+          DateTime dateTime = DateTime.now();
           for (int i = 0; i < 100; i++) {
             bool my = Random().nextBool();
+            int contactId = Random().nextInt(9) + 1;
             lst.add(
               V1.msg.upsert(
                 txn: txn,
                 map: () {
                   Map<String, Object?> map = {};
                   V1.msg.id.put(map, i);
-                  V1.msg.createTime.put(map, DateTime.now());
-                  V1.msg.ownerId.put(map, my ? 0 : Random().nextInt(9) + 1);
-                  V1.msg.otherId.put(map, my ? Random().nextInt(9) + 1 : 0);
+                  V1.msg.createTime.put(map, dateTime.add(Duration(minutes: -i)));
+                  V1.msg.ownerId.put(map, my ? 0 : contactId);
+                  V1.msg.otherId.put(map, my ? contactId : 0);
+                  V1.msg.contactId.put(map, contactId);
                   V1.msg.msgType.put(map, 0);
                   V1.msg.relationship.put(map, 1);
                   V1.msg.content.put(map, _str(30));
@@ -330,6 +318,7 @@ class DemoHelper {
   static Future<void> upsertFind() => Db.transaction(
         (txn) {
           List<Future<int>> lst = [];
+          DateTime dateTime = DateTime.now();
           for (int i = 0; i < 100; i++) {
             lst.add(
               V1.find.upsert(
@@ -338,7 +327,7 @@ class DemoHelper {
                   Map<String, Object?> map = {};
                   V1.find.id.put(map, i);
                   V1.find.userId.put(map, Random().nextInt(10));
-                  V1.find.createTime.put(map, HpDevice.time());
+                  V1.find.createTime.put(map, dateTime.add(Duration(minutes: -i)));
                   V1.find.content.put(map, 'content');
                   V1.find.medias.put(map, medias());
                   return map;

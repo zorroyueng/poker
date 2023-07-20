@@ -3,20 +3,12 @@ import 'package:poker/base/adapter.dart';
 import 'package:poker/base/color_provider.dart';
 import 'package:poker/base/common.dart';
 import 'package:poker/db/db_adapter.dart';
-import 'package:poker/demo/demo_helper.dart';
 
 class ChatAdapter<ChatData> extends Adapter {
-  ChatAdapter() {
-    Future.wait([
-      DemoHelper.upsertUser(),
-      DemoHelper.upsertChat(),
-      DemoHelper.upsertFind(),
-    ]).then(
-      (lst) => DbAdapter.chatData(1).then(
-        (lst) => setData(lst),
-      ),
-    );
-    // DbAdapter.chatData().then((lst) => setData(lst));
+  final int contactId;
+
+  ChatAdapter(this.contactId) {
+    DbAdapter.chatData(contactId).then((lst) => setData(lst));
   }
 }
 

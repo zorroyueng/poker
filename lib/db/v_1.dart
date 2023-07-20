@@ -61,7 +61,7 @@ class Find extends Table {
   late final ColInt id = colInt('id', true);
   late final ColInt userId = colInt('userId');
   late final ColStr content = colStr('content');
-  late final ColInt createTime = colInt('createTime');
+  late final ColTime createTime = colTime('createTime');
   late final ColList<String> medias = colList<String>('medias');
 
   @override
@@ -84,6 +84,7 @@ class Msg extends Table {
   late final ColTime createTime = colTime('createTime');
   late final ColInt ownerId = colInt('ownerId');
   late final ColInt otherId = colInt('otherId');
+  late final ColInt contactId = colInt('contactId');
   late final ColInt msgType = colInt('msgType');
   late final ColInt relationship = colInt('relationship');
   late final ColStr content = colStr('content');
@@ -94,6 +95,7 @@ class Msg extends Table {
         createTime,
         ownerId,
         otherId,
+        contactId,
         msgType,
         relationship,
         content,

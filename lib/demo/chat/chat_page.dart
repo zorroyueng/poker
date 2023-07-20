@@ -5,11 +5,12 @@ import 'package:poker/base/common.dart';
 import 'package:poker/demo/chat/chat_adapter.dart';
 
 class ChatPage extends StatelessWidget {
+  final int contactId;
   final ScrollController scrollCtrl = ScrollController();
   final TextEditingController editCtrl = TextEditingController();
-  final ChatAdapter adapter = ChatAdapter();
+  late final ChatAdapter adapter = ChatAdapter(contactId);
 
-  ChatPage({super.key});
+  ChatPage({super.key, required this.contactId});
 
   @override
   Widget build(BuildContext context) => ThemeWidget(
@@ -53,7 +54,7 @@ class ChatPage extends StatelessWidget {
                           StreamWidget(
                             stream: adapter.stream,
                             builder: (c, _, __) {
-                              // todo
+                              HpThread.post(() => scrollCtrl.jumpTo(scrollCtrl.position.maxScrollExtent));
                               return SliverList(
                                 delegate: SliverChildBuilderDelegate(
                                   (c, i) => adapter.data(i).widget(c),

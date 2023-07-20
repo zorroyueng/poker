@@ -3,12 +3,26 @@ import 'package:flutter/material.dart';
 import 'package:poker/base/adapter.dart';
 import 'package:poker/base/color_provider.dart';
 import 'package:poker/base/common.dart';
+import 'package:poker/db/db_adapter.dart';
 import 'package:poker/demo/chat/chat_page.dart';
+import 'package:poker/demo/demo_helper.dart';
 
-class ContactAdapter extends Adapter<ContactData> {}
+class ContactAdapter extends Adapter<ContactData> {
+  ContactAdapter() {
+    Future.wait([
+      DemoHelper.upsertUser(),
+      DemoHelper.upsertChat(),
+      DemoHelper.upsertFind(),
+    ]).then(
+      (lst) => DbAdapter.contactData().then(
+        (lst) => setData(lst),
+      ),
+    );
+  }
+}
 
 class ContactData extends Data {
-  final String id;
+  final int id;
   final String url;
   final String name;
   final String lastMsg;
@@ -84,7 +98,7 @@ class ContactData extends Data {
                 ],
               ),
             ),
-            onTap: () => Navi.push(c, ChatPage()),
+            onTap: () => Navi.push(c, ChatPage(contactId: id)),
           );
         },
       );

@@ -8,10 +8,12 @@ abstract class Table with TableMixin {
   Future<List<Map<String, Object?>>> query({
     Transaction? txn,
     List<String>? columns,
+    String? select,
     String? where,
+    String? groupBy,
     String? orderBy,
   }) {
-    select(TableMixin table, List<String>? columns) {
+    link(TableMixin table, List<String>? columns) {
       String select = '';
       if (columns != null && columns.isNotEmpty) {
         for (String s in columns) {
@@ -27,8 +29,10 @@ abstract class Table with TableMixin {
     }
 
     String sql = _joinSql(
-      sql: 'SELECT ${select(this, columns)} FROM ${tName()}',
+      select: 'SELECT ${link(this, columns)}${select == null ? '' : ',$select'}',
+      from: tName(),
       where: where,
+      groupBy: groupBy,
       orderBy: orderBy,
     );
     HpDevice.log(sql);
@@ -42,26 +46,29 @@ abstract class Table with TableMixin {
     List<String>? joinCols,
     required Col key,
     required Col joinKey,
+    String? select,
     String? where,
+    String? groupBy,
     String? orderBy,
   }) {
-    select(TableMixin table, List<String>? columns) {
+    link(TableMixin table, List<String>? columns) {
       String select = '';
       Iterable<String> lst = (columns != null && columns.isNotEmpty) ? columns : table.tColumns().map((c) => c.name);
       for (String s in lst) {
         if (select.isNotEmpty) {
           select += ',';
         }
-        select += '${table.tName()}.$s';
+        select += s;
       }
       return select;
     }
 
     String sql = _joinSql(
-      sql: 'SELECT ${select(this, cols)},${select(join, joinCols)} FROM ${tName()} '
-          'INNER JOIN ${join.tName()} '
-          'ON ${tName()}.${key.name}=${join.tName()}.${joinKey.name}',
+      select: 'SELECT ${link(this, cols)},${link(join, joinCols)}${select == null ? '' : ',$select'}',
+      from: tName(),
+      join: ' INNER JOIN ${join.tName()} ON ${tName()}.${key.name}=${join.tName()}.${joinKey.name}',
       where: where,
+      groupBy: groupBy,
       orderBy: orderBy,
     );
     HpDevice.log(sql);
@@ -197,16 +204,26 @@ abstract class Table with TableMixin {
   }
 
   String _joinSql({
-    required String sql,
+    required String select,
+    required String from,
+    String? join,
     String? where,
+    String? groupBy,
     String? orderBy,
   }) {
+    select += ' FROM $from';
+    if (join != null) {
+      select += join;
+    }
     if (where != null) {
-      sql += ' WHERE $where';
+      select += ' WHERE $where';
+    }
+    if (groupBy != null) {
+      select += ' GROUP BY $groupBy';
     }
     if (orderBy != null) {
-      sql += ' ORDER BY $orderBy';
+      select += ' ORDER BY $orderBy';
     }
-    return sql;
+    return select;
   }
 }
