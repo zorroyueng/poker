@@ -6,6 +6,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 class V1 extends Version {
   static final User user = User._();
   static final Find find = Find._();
+  static final Msg msg = Msg._();
 
   @override
   int code() => 1;
@@ -16,6 +17,7 @@ class V1 extends Version {
     return Future.wait([
       user.createTable(db),
       find.createTable(db),
+      msg.createTable(db),
     ]);
   }
 
@@ -73,4 +75,30 @@ class Find extends Table {
 
   @override
   String tName() => 'Find';
+}
+
+class Msg extends Table {
+  Msg._();
+
+  late final ColInt id = colInt('id', true);
+  late final ColTime createTime = colTime('createTime');
+  late final ColInt ownerId = colInt('ownerId');
+  late final ColInt otherId = colInt('otherId');
+  late final ColInt msgType = colInt('msgType');
+  late final ColInt relationship = colInt('relationship');
+  late final ColStr content = colStr('content');
+
+  @override
+  List<Col> tColumns() => [
+        id,
+        createTime,
+        ownerId,
+        otherId,
+        msgType,
+        relationship,
+        content,
+      ];
+
+  @override
+  String tName() => 'Msg';
 }

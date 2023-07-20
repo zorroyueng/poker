@@ -19,6 +19,8 @@ mixin TableMixin {
   ColNum colNum(String name) => ColNum._(_t(name));
 
   ColList<T> colList<T>(String name) => ColList<T>._(_t(name));
+
+  ColTime colTime(String name) => ColTime._(_t(name));
 }
 
 abstract class Col<D, T> {
@@ -96,4 +98,14 @@ class ColByte extends Col<Uint8List, Uint8List> {
 
   @override
   Uint8List? _encode(Uint8List? d) => d;
+}
+
+class ColTime extends Col<DateTime, int> {
+  ColTime._(String name) : super(name: name, type: 'INTEGER');
+
+  @override
+  DateTime? _decode(int? t) => t == null ? null : DateTime.fromMillisecondsSinceEpoch(t);
+
+  @override
+  int? _encode(DateTime? d) => d?.millisecondsSinceEpoch;
 }
