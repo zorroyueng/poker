@@ -34,7 +34,7 @@ class DbAdapter {
         joinKey: V1.user.id,
         cols: V1.msg.tColumns()..add(V1.msg.createTime.max()),
         groupBy: '${V1.msg.contactId}',
-        orderBy: '${V1.msg.createTime} ASC',
+        orderBy: '${V1.msg.createTime} DESC',
       )
       .then(
         (lst) => lst

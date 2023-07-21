@@ -44,7 +44,7 @@ class _ChatPageState extends State<ChatPage> {
                 onPressed: () => Common.dlgSetting(c),
               ),
             ],
-            backgroundColor: ColorProvider.itemBg(),
+            surfaceTintColor: ColorProvider.itemBg(),
           ),
           body: SafeArea(
             child: GestureDetector(
