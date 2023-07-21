@@ -20,7 +20,6 @@ class _ChatPageState extends State<ChatPage> {
 
   late final ChatAdapter adapter = ChatAdapter(widget.contactId);
 
-
   @override
   void dispose() {
     super.dispose();
@@ -29,11 +28,11 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) => ThemeWidget(
-        builder: (_, __) => Scaffold(
+        builder: (c, __) => Scaffold(
           body: SafeArea(
             child: GestureDetector(
               behavior: HitTestBehavior.translucent,
-              onTap: () => FocusScope.of(context).unfocus(),
+              onTap: () => HpDevice.hideInput(c),
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
