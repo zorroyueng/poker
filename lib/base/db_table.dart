@@ -84,6 +84,7 @@ abstract class Table extends TableBase {
     }
     String sql = 'INSERT INTO ${tName()} ($params) VALUES($values)';
     HpDevice.log(sql);
+    broadcast.add(map);
     return txn.rawInsert(sql);
   }
 
@@ -134,6 +135,7 @@ abstract class Table extends TableBase {
     }
     String sql = 'UPDATE ${tName()} SET $set WHERE $where';
     HpDevice.log(sql);
+    broadcast.add(map);
     return txn.rawUpdate(sql);
   }
 
