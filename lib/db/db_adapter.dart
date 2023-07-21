@@ -55,7 +55,7 @@ class DbAdapter {
         key: V1.msg.ownerId,
         joinKey: V1.user.id,
         where: '${V1.msg.otherId}=$userId OR ${V1.msg.ownerId}=$userId',
-        orderBy: '${V1.msg.createTime} ASC',
+        orderBy: '${V1.msg.createTime} DESC',
       )
       .then(
         (lst) => lst

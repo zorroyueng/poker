@@ -130,6 +130,29 @@ class Common {
     );
   }
 
+  static IconData icBack() => HpPlatform.isIOS() ? Icons.arrow_back_ios : Icons.arrow_back;
+
+  static IconData icMore() => Icons.more_horiz;
+
+  static Widget iconBtn({
+    required BuildContext c,
+    required IconData icon,
+    Color? color,
+    required VoidCallback onPressed,
+  }) =>
+      SizedBox(
+        width: kToolbarHeight,
+        height: kToolbarHeight,
+        child: IconButton(
+          iconSize: kToolbarHeight * .5,
+          onPressed: onPressed,
+          icon: Icon(
+            icon,
+            color: color ?? ColorProvider.textColor(),
+          ),
+        ),
+      );
+
   // 统一点击水波纹
   static Widget click({
     Widget? child,

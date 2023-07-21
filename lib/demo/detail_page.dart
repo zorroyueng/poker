@@ -4,8 +4,8 @@ import 'package:base/base.dart';
 import 'package:flutter/material.dart';
 import 'package:poker/base/color_provider.dart';
 import 'package:poker/base/common.dart';
-import 'package:poker/demo/poker/adapter.dart';
 import 'package:poker/demo/demo_helper.dart';
+import 'package:poker/demo/poker/adapter.dart';
 import 'package:poker/demo/poker/adapter_item.dart';
 
 class DetailPage extends StatelessWidget {
@@ -44,11 +44,14 @@ class DetailPage extends StatelessWidget {
   Widget _head(BuildContext context, double h) => SliverAppBar(
         leading: PercentWidget(
           percent: barCtrl,
-          builder: (_, v, __) => BackButton(
+          builder: (c, v, __) => Common.iconBtn(
             color: ColorTween(
               begin: ColorProvider.base(),
               end: ColorProvider.textColor(),
             ).lerp(max(0, v - 1)),
+            c: c,
+            icon: Common.icBack(),
+            onPressed: () => Navi.pop(c),
           ),
         ),
         pinned: true,
@@ -56,17 +59,16 @@ class DetailPage extends StatelessWidget {
         elevation: 4,
         shadowColor: ColorProvider.itemBg(),
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: PercentWidget(
-              percent: barCtrl,
-              builder: (_, v, __) => Icon(
-                Icons.more_horiz,
-                color: ColorTween(
-                  begin: ColorProvider.base(),
-                  end: ColorProvider.textColor(),
-                ).lerp(max(0, v - 1)),
-              ),
+          PercentWidget(
+            percent: barCtrl,
+            builder: (c, v, _) => Common.iconBtn(
+              icon: Common.icMore(),
+              color: ColorTween(
+                begin: ColorProvider.base(),
+                end: ColorProvider.textColor(),
+              ).lerp(max(0, v - 1)),
+              c: c,
+              onPressed: () => Common.dlgSetting(c),
             ),
           ),
         ],

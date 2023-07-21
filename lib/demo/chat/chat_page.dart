@@ -29,6 +29,23 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) => ThemeWidget(
         builder: (c, __) => Scaffold(
+          appBar: AppBar(
+            elevation: 4,
+            shadowColor: ColorProvider.itemBg(),
+            leading: Common.iconBtn(
+              c: c,
+              icon: Common.icBack(),
+              onPressed: () => Navi.pop(c),
+            ),
+            actions: [
+              Common.iconBtn(
+                c: c,
+                icon: Common.icMore(),
+                onPressed: () => Common.dlgSetting(c),
+              ),
+            ],
+            backgroundColor: ColorProvider.itemBg(),
+          ),
           body: SafeArea(
             child: GestureDetector(
               behavior: HitTestBehavior.translucent,
@@ -40,41 +57,18 @@ class _ChatPageState extends State<ChatPage> {
                     child: Common.scrollbar(
                       ctx: context,
                       controller: scrollCtrl,
-                      child: CustomScrollView(
-                        controller: scrollCtrl,
-                        slivers: [
-                          SliverAppBar(
-                            pinned: true,
-                            elevation: 4,
-                            shadowColor: ColorProvider.itemBg(),
-                            actions: [
-                              ThemeWidget(
-                                builder: (_, __) => IconButton(
-                                  onPressed: () => Common.dlgSetting(context),
-                                  icon: Icon(
-                                    Icons.more_horiz,
-                                    color: ColorProvider.textColor(),
-                                  ),
-                                ),
-                              ),
-                            ],
-                            backgroundColor: ColorProvider.bg(),
-                            flexibleSpace: FlexibleSpaceBar(
-                              background: Container(
-                                color: ColorProvider.bg(),
-                              ),
-                            ),
+                      child: Align(
+                        alignment: Alignment.topCenter,
+                        child: StreamWidget(
+                          stream: adapter.stream,
+                          builder: (c, _, __) => ListView.builder(
+                            controller: scrollCtrl,
+                            reverse: true,
+                            shrinkWrap: true,
+                            itemCount: adapter.length,
+                            itemBuilder: (c, i) => adapter.data(i).widget(c),
                           ),
-                          StreamWidget(
-                            stream: adapter.stream,
-                            builder: (c, _, __) => SliverList(
-                                delegate: SliverChildBuilderDelegate(
-                                  (c, i) => adapter.data(i).widget(c),
-                                  childCount: adapter.length,
-                                ),
-                              ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
@@ -102,7 +96,6 @@ class _ChatPageState extends State<ChatPage> {
                             onTap: () {
                               HpDevice.log(editCtrl.text);
                               editCtrl.clear();
-                              HpThread.post(() => scrollCtrl.jumpTo(scrollCtrl.position.maxScrollExtent));
                             },
                           ),
                         ),
