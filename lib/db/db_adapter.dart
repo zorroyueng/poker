@@ -26,47 +26,4 @@ class DbAdapter {
             )
             .toList(),
       );
-
-  static Future<List<ContactData>> contactData() => V1.msg
-      .innerJoin(
-        join: V1.user,
-        key: V1.msg.contactId,
-        joinKey: V1.user.id,
-        cols: V1.msg.tColumns()..add(V1.msg.createTime.max()),
-        groupBy: '${V1.msg.contactId}',
-        orderBy: '${V1.msg.createTime} DESC',
-      )
-      .then(
-        (lst) => lst
-            .map(
-              (m) => ContactData(
-                id: V1.msg.contactId.get(m)!,
-                url: V1.user.picUrl.get(m)!,
-                name: V1.user.name.get(m)!,
-                lastMsg: V1.msg.content.get(m)!,
-              ),
-            )
-            .toList(),
-      );
-
-  static Future<List<ChatData>> chatData(int userId) => V1.msg
-      .innerJoin(
-        join: V1.user,
-        key: V1.msg.ownerId,
-        joinKey: V1.user.id,
-        where: '${V1.msg.otherId}=$userId OR ${V1.msg.ownerId}=$userId',
-        orderBy: '${V1.msg.createTime} DESC',
-      )
-      .then(
-        (lst) => lst
-            .map(
-              (m) => ChatData(
-                id: V1.msg.id.get(m)!,
-                my: 0 == V1.msg.ownerId.get(m)!,
-                picUrl: V1.user.picUrl.get(m)!,
-                content: V1.msg.content.get(m)!,
-              ),
-            )
-            .toList(),
-      );
 }

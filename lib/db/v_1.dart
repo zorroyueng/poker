@@ -1,6 +1,7 @@
 import 'package:poker/base/db.dart';
 import 'package:poker/base/db_table.dart';
 import 'package:poker/base/db_table_base.dart';
+import 'package:poker/demo/demo_helper.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class V1 extends Version {
@@ -29,6 +30,19 @@ class V1 extends Version {
 
   @override
   Version? last() => null;
+
+  static Future<void> mockDb() async {
+    int count = await Db.transaction((txn) {
+      return user.count(txn: txn);
+    });
+    if (count == 0) {
+      await Future.wait([
+        DemoHelper.upsertChat(),
+        DemoHelper.upsertFind(),
+        DemoHelper.upsertUser(),
+      ]);
+    }
+  }
 }
 
 class User extends Table {

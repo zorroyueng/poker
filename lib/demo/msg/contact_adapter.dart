@@ -3,22 +3,43 @@ import 'package:flutter/material.dart';
 import 'package:poker/base/adapter.dart';
 import 'package:poker/base/color_provider.dart';
 import 'package:poker/base/common.dart';
-import 'package:poker/db/db_adapter.dart';
+import 'package:poker/db/v_1.dart';
 import 'package:poker/demo/chat/chat_page.dart';
-import 'package:poker/demo/demo_helper.dart';
 
 class ContactAdapter extends Adapter<ContactData> {
-  ContactAdapter() {
-    Future.wait([
-      DemoHelper.upsertUser(),
-      DemoHelper.upsertChat(),
-      DemoHelper.upsertFind(),
-    ]).then(
-      (lst) => DbAdapter.contactData().then(
-        (lst) => setData(lst),
-      ),
-    );
-  }
+  @override
+  DataProvider<ContactData> provider() => ContactProvider(
+        adapter: this,
+        pageLimit: 0,
+        streams: [],
+      );
+}
+
+class ContactProvider extends DataProvider<ContactData> {
+  ContactProvider({required super.adapter, required super.pageLimit, required super.streams});
+
+  @override
+  Future<List<ContactData>> getData(int? limit) => V1.msg
+      .innerJoin(
+        join: V1.user,
+        key: V1.msg.contactId,
+        joinKey: V1.user.id,
+        cols: V1.msg.tColumns()..add(V1.msg.createTime.max()),
+        groupBy: '${V1.msg.contactId}',
+        orderBy: '${V1.msg.createTime} DESC',
+      )
+      .then(
+        (lst) => lst
+            .map(
+              (m) => ContactData(
+                id: V1.msg.contactId.get(m)!,
+                url: V1.user.picUrl.get(m)!,
+                name: V1.user.name.get(m)!,
+                lastMsg: V1.msg.content.get(m)!,
+              ),
+            )
+            .toList(),
+      );
 }
 
 class ContactData extends Data {

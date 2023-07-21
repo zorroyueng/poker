@@ -5,15 +5,18 @@ import 'package:flutter/cupertino.dart';
 
 /// ui data => ui widget
 abstract class Adapter<T extends Data> {
-  final DataProvider<T> _dataProvider;
+  late final DataProvider<T> _dataProvider;
   final List<T> _data = [];
   final Broadcast<void> _ui = Broadcast(null);
 
-  Adapter(this._dataProvider) {
-    // todo dispose
-    StreamSubscription sub = _dataProvider._data.stream().distinct().listen((lst) => setData(lst));
+  Adapter() {
+    _dataProvider = provider();
     _dataProvider.loadData();
   }
+
+  DataProvider<T> provider();
+
+  void dispose() => _dataProvider.dispose();
 
   void setData(List<T> lst) => addData(lst, false);
 
@@ -39,26 +42,32 @@ abstract class Data {
 }
 
 /// net||db data => ui data
-abstract class DataProvider<T> {
+abstract class DataProvider<T extends Data> {
   final int pageLimit;
-  int currentIndex = 0;
   final Broadcast<List<T>> _data = Broadcast([]);
+  final List<StreamSubscription> subs = [];
 
-  DataProvider({this.pageLimit = 0});
-
-  T toUiData(Map<String, Object?> map);
+  DataProvider({
+    required Adapter<T> adapter,
+    required this.pageLimit,
+    required List<Stream> streams,
+  }) {
+    subs.add(_data.stream().distinct().listen((lst) => adapter.setData(lst)));
+    for (Stream s in streams) {
+      subs.add(s.listen((_) => loadData(more: false)));
+    }
+  }
 
   Future<List<T>> getData(int? limit);
 
-  void loadData() {
-    int? limit = pageLimit > 0 ? currentIndex + pageLimit : null;
-    getData(limit).then(
-      (lst) {
-        currentIndex = lst.length;
-        _data.add(lst);
-      },
-    ).onError(
-      (error, stackTrace) {},
-    );
+  void loadData({bool more = true}) {
+    int? limit = pageLimit > 0 ? _data.value().length + (more ? pageLimit : 0) : null;
+    getData(limit).then((lst) => _data.add(lst)).onError((error, stackTrace) {});
+  }
+
+  void dispose() {
+    for (var s in subs) {
+      s.cancel();
+    }
   }
 }

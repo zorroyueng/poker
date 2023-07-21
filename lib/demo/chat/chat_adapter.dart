@@ -2,13 +2,54 @@ import 'package:flutter/material.dart';
 import 'package:poker/base/adapter.dart';
 import 'package:poker/base/color_provider.dart';
 import 'package:poker/base/common.dart';
-import 'package:poker/db/db_adapter.dart';
+import 'package:poker/db/v_1.dart';
 
-class ChatAdapter<ChatData> extends Adapter {
+class ChatAdapter extends Adapter<ChatData> {
   final int contactId;
 
-  ChatAdapter(this.contactId) {
-    DbAdapter.chatData(contactId).then((lst) => setData(lst));
+  ChatAdapter(this.contactId);
+
+  @override
+  DataProvider<ChatData> provider() => ChatProvider(
+        contactId: contactId,
+        adapter: this,
+        pageLimit: 10,
+        streams: [],
+      );
+}
+
+class ChatProvider extends DataProvider<ChatData> {
+  final int contactId;
+
+  ChatProvider({
+    required this.contactId,
+    required super.adapter,
+    required super.pageLimit,
+    required super.streams,
+  });
+
+  @override
+  Future<List<ChatData>> getData(int? limit) {
+    return V1.msg
+        .innerJoin(
+          join: V1.user,
+          key: V1.msg.ownerId,
+          joinKey: V1.user.id,
+          where: '${V1.msg.otherId}=$contactId OR ${V1.msg.ownerId}=$contactId',
+          orderBy: '${V1.msg.createTime} DESC',
+        )
+        .then(
+          (lst) => lst
+              .map(
+                (m) => ChatData(
+                  id: V1.msg.id.get(m)!,
+                  my: 0 == V1.msg.ownerId.get(m)!,
+                  picUrl: V1.user.picUrl.get(m)!,
+                  content: V1.msg.content.get(m)!,
+                ),
+              )
+              .toList(),
+        );
   }
 }
 
