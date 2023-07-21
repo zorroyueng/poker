@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-mixin TableMixin {
+abstract class TableBase {
   String tName();
 
   List<Col> tColumns();

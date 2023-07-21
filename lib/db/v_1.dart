@@ -1,6 +1,6 @@
 import 'package:poker/base/db.dart';
 import 'package:poker/base/db_table.dart';
-import 'package:poker/base/db_table_mixin.dart';
+import 'package:poker/base/db_table_base.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class V1 extends Version {

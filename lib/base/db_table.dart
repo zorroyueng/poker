@@ -1,9 +1,9 @@
 import 'package:base/base.dart';
 import 'package:poker/base/db.dart';
-import 'package:poker/base/db_table_mixin.dart';
+import 'package:poker/base/db_table_base.dart';
 import 'package:sqflite/sqflite.dart';
 
-abstract class Table with TableMixin {
+abstract class Table extends TableBase {
   /// read
   Future<List<Map<String, Object?>>> query({
     Transaction? txn,
@@ -12,7 +12,7 @@ abstract class Table with TableMixin {
     String? groupBy,
     String? orderBy,
   }) {
-    String sql = _joinSql(
+    String sql = _joinSelect(
       select: 'SELECT ${_connect(this, columns)}',
       from: tName(),
       where: where,
@@ -34,7 +34,7 @@ abstract class Table with TableMixin {
     String? groupBy,
     String? orderBy,
   }) {
-    String sql = _joinSql(
+    String sql = _joinSelect(
       select: 'SELECT ${_connect(this, cols)},${_connect(join, joinCols)}',
       from: tName(),
       join: ' INNER JOIN ${join.tName()} ON ${key.name}=${joinKey.name}',
@@ -51,16 +51,17 @@ abstract class Table with TableMixin {
     Map<String, Object?>? map,
     Col? col,
   }) async {
-    String sql = 'SELECT COUNT(*) FROM ${tName()}';
-    if (map != null && col != null) {
-      sql += ' WHERE ${_equal(map, col.name)}';
-    }
+    String sql = _joinSelect(
+      select: 'SELECT COUNT(*)',
+      from: tName(),
+      where: map != null && col != null ? _equal(map, col.name) : null,
+    );
     List<Map<String, Object?>> lst = await (txn != null ? txn.rawQuery(sql) : Db.rawQuery(sql));
     return Sqflite.firstIntValue(lst) ?? 0;
   }
 
   /// write
-  Future<int> _insert({
+  Future<int> insert({
     required Transaction txn,
     required Map<String, Object?> map,
   }) {
@@ -90,21 +91,29 @@ abstract class Table with TableMixin {
     required Transaction txn,
     required Map<String, Object?> map,
     required Col col,
-  }) =>
-      count(
-        txn: txn,
-        map: map,
-        col: col,
-      ).then((n) => n == 0
-          ? _insert(
-              txn: txn,
-              map: map,
-            )
-          : update(
-              txn: txn,
-              map: map,
-              col: col,
-            ));
+  }) async {
+    List<Map<String, Object?>> lst = await query(
+      txn: txn,
+      where: _equal(map, col.name),
+    );
+    if (lst.isEmpty) {
+      return await insert(txn: txn, map: map);
+    } else {
+      // map中有key的值，要和db中完全一致
+      bool needUpdate = false;
+      for (String k in map.keys) {
+        if (map[k] != lst[0][k]) {
+          needUpdate = true;
+          break;
+        }
+      }
+      if (needUpdate) {
+        return await update(txn: txn, map: map, col: col);
+      } else {
+        return 0;
+      }
+    }
+  }
 
   Future<int> update({
     required Transaction txn,
@@ -174,7 +183,7 @@ abstract class Table with TableMixin {
     }
   }
 
-  String _joinSql({
+  String _joinSelect({
     required String select,
     required String from,
     String? join,
@@ -198,7 +207,7 @@ abstract class Table with TableMixin {
     return select;
   }
 
-  String _connect(TableMixin table, List<Col>? columns) {
+  String _connect(TableBase table, List<Col>? columns) {
     String connect = '';
     if (columns != null && columns.isNotEmpty) {
       for (Col c in columns) {
