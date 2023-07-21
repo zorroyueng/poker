@@ -60,6 +60,7 @@ class _ChatPageState extends State<ChatPage> {
               ),
             ],
             surfaceTintColor: ColorProvider.itemBg(),
+            backgroundColor: ColorProvider.itemBg(),
           ),
           body: SafeArea(
             child: GestureDetector(
