@@ -8,26 +8,27 @@ abstract class TableBase {
 
   String _t(String name) => '${tName()}_$name';
 
-  ColInt colInt(String name, [bool key = false]) => ColInt._(_t(name), key);
+  ColInt colInt(String name, {bool key = false, int? dValue}) => ColInt._(_t(name), key: key, dValue: dValue);
 
-  ColStr colStr(String name, [bool key = false]) => ColStr._(_t(name), key);
+  ColStr colStr(String name, {bool key = false, String? dValue}) => ColStr._(_t(name), key: key, dValue: dValue);
 
-  ColBool colBool(String name) => ColBool._(_t(name));
+  ColBool colBool(String name, {bool? dValue}) => ColBool._(_t(name), dValue: dValue);
 
-  ColByte colByte(String name) => ColByte._(_t(name));
+  ColByte colByte(String name, {Uint8List? dValue}) => ColByte._(_t(name), dValue: dValue);
 
-  ColNum colNum(String name) => ColNum._(_t(name));
+  ColNum colNum(String name, {num? dValue}) => ColNum._(_t(name), dValue: dValue);
 
-  ColList<T> colList<T>(String name) => ColList<T>._(_t(name));
+  ColList<T> colList<T>(String name, {List<T>? dValue}) => ColList<T>._(_t(name), dValue: dValue);
 
-  ColTime colTime(String name) => ColTime._(_t(name));
+  ColTime colTime(String name, {DateTime? dValue}) => ColTime._(_t(name), dValue: dValue);
 }
 
 abstract class Col<D, T> {
   final String name;
   final String type;
+  final D? dValue;
 
-  Col({required this.name, required this.type}) {
+  Col({required this.name, required this.type, this.dValue}) {
     assert(name.split('_').length == 2);
   }
 
@@ -37,17 +38,23 @@ abstract class Col<D, T> {
 
   void put(Map<String, Object?> map, D? d) => map[name] = _encode(d);
 
-  D? get(Map<String, Object?> map) => _decode(map[name] as T?);
+  D? get(Map<String, Object?> map) => getDb(map) ?? dValue;
+
+  D? getDb(Map<String, Object?> map) => _decode(map[name] as T?);
 
   @override
   String toString() => name;
 }
 
 class ColInt extends Col<int, int> {
-  ColInt._(String name, [bool key = false])
-      : super(
+  ColInt._(
+    String name, {
+    bool key = false,
+    int? dValue,
+  }) : super(
           name: name,
-          type: 'INTEGER${key ? ' PRIMARY KEY' : ''}',
+          type: 'INTEGER${key ? ' PRIMARY KEY NOT NULL' : ''}',
+          dValue: dValue,
         );
 
   @override
@@ -60,10 +67,14 @@ class ColInt extends Col<int, int> {
 }
 
 class ColStr extends Col<String, String> {
-  ColStr._(String name, [bool key = false])
-      : super(
+  ColStr._(
+    String name, {
+    bool key = false,
+    String? dValue,
+  }) : super(
           name: name,
-          type: 'TEXT${key ? ' PRIMARY KEY' : ''}',
+          type: 'TEXT${key ? ' PRIMARY KEY NOT NULL' : ''}',
+          dValue: dValue,
         );
 
   @override
@@ -74,7 +85,12 @@ class ColStr extends Col<String, String> {
 }
 
 class ColBool extends Col<bool, int> {
-  ColBool._(String name) : super(name: name, type: 'INTEGER');
+  ColBool._(String name, {bool? dValue})
+      : super(
+          name: name,
+          type: 'INTEGER${dValue == null ? '' : ' NOT NULL'}',
+          dValue: dValue,
+        );
 
   @override
   bool? _decode(int? t) => t == null || t == 0 ? false : true;
@@ -84,7 +100,7 @@ class ColBool extends Col<bool, int> {
 }
 
 class ColList<T> extends Col<List<T>, String> {
-  ColList._(String name) : super(name: name, type: 'TEXT');
+  ColList._(String name, {List<T>? dValue}) : super(name: name, type: 'TEXT', dValue: dValue);
 
   @override
   List<T>? _decode(String? t) => t == null ? null : (jsonDecode(t) as List).map((e) => e as T).toList();
@@ -94,7 +110,7 @@ class ColList<T> extends Col<List<T>, String> {
 }
 
 class ColNum extends Col<num, num> {
-  ColNum._(String name) : super(name: name, type: 'REAL');
+  ColNum._(String name, {num? dValue}) : super(name: name, type: 'REAL', dValue: dValue);
 
   @override
   num? _decode(num? t) => t;
@@ -106,7 +122,7 @@ class ColNum extends Col<num, num> {
 }
 
 class ColByte extends Col<Uint8List, Uint8List> {
-  ColByte._(String name) : super(name: name, type: 'BLOB');
+  ColByte._(String name, {Uint8List? dValue}) : super(name: name, type: 'BLOB', dValue: dValue);
 
   @override
   Uint8List? _decode(Uint8List? t) => t;
@@ -116,7 +132,7 @@ class ColByte extends Col<Uint8List, Uint8List> {
 }
 
 class ColTime extends Col<DateTime, int> {
-  ColTime._(String name) : super(name: name, type: 'INTEGER');
+  ColTime._(String name, {DateTime? dValue}) : super(name: name, type: 'INTEGER', dValue: dValue);
 
   @override
   DateTime? _decode(int? t) => t == null ? null : DateTime.fromMillisecondsSinceEpoch(t);

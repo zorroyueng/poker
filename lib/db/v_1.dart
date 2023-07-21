@@ -34,12 +34,12 @@ class V1 extends Version {
 class User extends Table {
   User._();
 
-  late final ColInt id = colInt('id', true);
-  late final ColStr name = colStr('name');
-  late final ColInt age = colInt('age');
-  late final ColInt sex = colInt('sex');
-  late final ColStr intro = colStr('intro');
-  late final ColStr picUrl = colStr('picUrl');
+  late final ColInt id = colInt('id', key: true, dValue: -1);
+  late final ColStr name = colStr('name', dValue: '');
+  late final ColInt age = colInt('age', dValue: 18);
+  late final ColInt sex = colInt('sex', dValue: 0);
+  late final ColStr intro = colStr('intro', dValue: '');
+  late final ColStr picUrl = colStr('picUrl', dValue: '');
 
   @override
   String tName() => 'User';
@@ -58,11 +58,11 @@ class User extends Table {
 class Find extends Table {
   Find._();
 
-  late final ColInt id = colInt('id', true);
-  late final ColInt userId = colInt('userId');
-  late final ColStr content = colStr('content');
-  late final ColTime createTime = colTime('createTime');
-  late final ColList<String> medias = colList<String>('medias');
+  late final ColInt id = colInt('id', key: true, dValue: -1);
+  late final ColInt userId = colInt('userId', dValue: -1);
+  late final ColStr content = colStr('content', dValue: '');
+  late final ColTime createTime = colTime('createTime', dValue: DateTime.now());
+  late final ColList<String> medias = colList<String>('medias', dValue: ['']);
 
   @override
   List<Col> tColumns() => [
@@ -80,14 +80,14 @@ class Find extends Table {
 class Msg extends Table {
   Msg._();
 
-  late final ColInt id = colInt('id', true);
-  late final ColTime createTime = colTime('createTime');
-  late final ColInt ownerId = colInt('ownerId');
-  late final ColInt otherId = colInt('otherId');
-  late final ColInt contactId = colInt('contactId');
-  late final ColInt msgType = colInt('msgType');
-  late final ColInt relationship = colInt('relationship');
-  late final ColStr content = colStr('content');
+  late final ColInt id = colInt('id', key: true, dValue: -1);
+  late final ColTime createTime = colTime('createTime', dValue: DateTime.now());
+  late final ColInt ownerId = colInt('ownerId', dValue: -1);
+  late final ColInt otherId = colInt('otherId', dValue: -1);
+  late final ColInt contactId = colInt('contactId', dValue: -1);
+  late final ColInt msgType = colInt('msgType', dValue: 0);
+  late final ColInt relationship = colInt('relationship', dValue: 0);
+  late final ColStr content = colStr('content', dValue: '');
 
   @override
   List<Col> tColumns() => [
