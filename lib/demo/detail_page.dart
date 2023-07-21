@@ -81,8 +81,8 @@ class DetailPage extends StatelessWidget {
               percent: barCtrl,
               builder: (_, v, ___) => Container(
                 padding: const EdgeInsets.only(
-                  left: kToolbarHeight / 2,
-                  right: kToolbarHeight / 2,
+                  left: kToolbarHeight,
+                  right: kToolbarHeight,
                 ),
                 width: double.infinity,
                 height: kToolbarHeight,
