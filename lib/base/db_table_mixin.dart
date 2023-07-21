@@ -44,17 +44,27 @@ abstract class Col<D, T> {
 }
 
 class ColInt extends Col<int, int> {
-  ColInt._(String name, [bool key = false]) : super(name: name, type: 'INTEGER${key ? ' PRIMARY KEY' : ''}');
+  ColInt._(String name, [bool key = false])
+      : super(
+          name: name,
+          type: 'INTEGER${key ? ' PRIMARY KEY' : ''}',
+        );
 
   @override
   int? _decode(int? t) => t;
 
   @override
   int? _encode(int? d) => d;
+
+  ColInt max() => ColInt._('MAX($name)');
 }
 
 class ColStr extends Col<String, String> {
-  ColStr._(String name, [bool key = false]) : super(name: name, type: 'TEXT${key ? ' PRIMARY KEY' : ''}');
+  ColStr._(String name, [bool key = false])
+      : super(
+          name: name,
+          type: 'TEXT${key ? ' PRIMARY KEY' : ''}',
+        );
 
   @override
   String? _decode(String? t) => t;
@@ -91,6 +101,8 @@ class ColNum extends Col<num, num> {
 
   @override
   num? _encode(num? d) => d;
+
+  ColNum max() => ColNum._('MAX($name)');
 }
 
 class ColByte extends Col<Uint8List, Uint8List> {
@@ -111,4 +123,6 @@ class ColTime extends Col<DateTime, int> {
 
   @override
   int? _encode(DateTime? d) => d?.millisecondsSinceEpoch;
+
+  ColTime max() => ColTime._('max($name)');
 }

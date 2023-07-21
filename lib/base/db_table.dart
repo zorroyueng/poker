@@ -7,20 +7,19 @@ abstract class Table with TableMixin {
   /// read
   Future<List<Map<String, Object?>>> query({
     Transaction? txn,
-    List<String>? columns,
-    String? select,
+    List<Col>? columns,
     String? where,
     String? groupBy,
     String? orderBy,
   }) {
-    link(TableMixin table, List<String>? columns) {
+    link(TableMixin table, List<Col>? columns) {
       String select = '';
       if (columns != null && columns.isNotEmpty) {
-        for (String s in columns) {
+        for (Col c in columns) {
           if (select.isNotEmpty) {
             select += ',';
           }
-          select += '${table.tName()}.$s';
+          select += '${table.tName()}.${c.name}';
         }
       } else {
         select = '${table.tName()}.*';
@@ -29,7 +28,7 @@ abstract class Table with TableMixin {
     }
 
     String sql = _joinSql(
-      select: 'SELECT ${link(this, columns)}${select == null ? '' : ',$select'}',
+      select: 'SELECT ${link(this, columns)}',
       from: tName(),
       where: where,
       groupBy: groupBy,
@@ -42,31 +41,30 @@ abstract class Table with TableMixin {
   Future<List<Map<String, Object?>>> innerJoin({
     Transaction? txn,
     required Table join,
-    List<String>? cols,
-    List<String>? joinCols,
+    List<Col>? cols,
+    List<Col>? joinCols,
     required Col key,
     required Col joinKey,
-    String? select,
     String? where,
     String? groupBy,
     String? orderBy,
   }) {
-    link(TableMixin table, List<String>? columns) {
+    link(TableMixin table, List<Col>? columns) {
       String select = '';
-      Iterable<String> lst = (columns != null && columns.isNotEmpty) ? columns : table.tColumns().map((c) => c.name);
-      for (String s in lst) {
+      List<Col> lst = (columns != null && columns.isNotEmpty) ? columns : table.tColumns();
+      for (Col c in lst) {
         if (select.isNotEmpty) {
           select += ',';
         }
-        select += s;
+        select += c.name;
       }
       return select;
     }
 
     String sql = _joinSql(
-      select: 'SELECT ${link(this, cols)},${link(join, joinCols)}${select == null ? '' : ',$select'}',
+      select: 'SELECT ${link(this, cols)},${link(join, joinCols)}',
       from: tName(),
-      join: ' INNER JOIN ${join.tName()} ON ${tName()}.${key.name}=${join.tName()}.${joinKey.name}',
+      join: ' INNER JOIN ${join.tName()} ON ${key.name}=${joinKey.name}',
       where: where,
       groupBy: groupBy,
       orderBy: orderBy,

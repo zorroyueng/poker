@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:base/base.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:poker/base/db.dart';
 import 'package:poker/db/v_1.dart';
 import 'package:poker/demo/find/find_adapter.dart';
@@ -263,7 +264,7 @@ class DemoHelper {
   static Future<void> upsertUser() => Db.transaction(
         (txn) {
           List<Future<int>> lst = [];
-          for (int i = 0; i < 10; i++) {
+          for (int i = 0; i < head.length; i++) {
             lst.add(
               V1.user.upsert(
                 txn: txn,
@@ -273,7 +274,7 @@ class DemoHelper {
                   V1.user.age.put(map, 1);
                   V1.user.intro.put(map, 'intro');
                   V1.user.name.put(map, DemoHelper.random(DemoHelper.name));
-                  V1.user.picUrl.put(map, DemoHelper.random(DemoHelper.head));
+                  V1.user.picUrl.put(map, DemoHelper.head[i]);
                   V1.user.sex.put(map, 1);
                   return map;
                 }(),
@@ -291,20 +292,21 @@ class DemoHelper {
           DateTime dateTime = DateTime.now();
           for (int i = 0; i < 100; i++) {
             bool my = Random().nextBool();
-            int contactId = Random().nextInt(9) + 1;
+            int contactId = Random().nextInt(head.length - 1) + 1;
+            DateTime dt = dateTime.add(Duration(minutes: -i));
             lst.add(
               V1.msg.upsert(
                 txn: txn,
                 map: () {
                   Map<String, Object?> map = {};
                   V1.msg.id.put(map, i);
-                  V1.msg.createTime.put(map, dateTime.add(Duration(minutes: -i)));
+                  V1.msg.createTime.put(map, dt);
                   V1.msg.ownerId.put(map, my ? 0 : contactId);
                   V1.msg.otherId.put(map, my ? contactId : 0);
                   V1.msg.contactId.put(map, contactId);
                   V1.msg.msgType.put(map, 0);
                   V1.msg.relationship.put(map, 1);
-                  V1.msg.content.put(map, _str(30));
+                  V1.msg.content.put(map, '${_str(30)}_${DateFormat('HH:mm:ss').format(dt)}');
                   return map;
                 }(),
                 col: V1.msg.id,
@@ -326,7 +328,7 @@ class DemoHelper {
                 map: () {
                   Map<String, Object?> map = {};
                   V1.find.id.put(map, i);
-                  V1.find.userId.put(map, Random().nextInt(10));
+                  V1.find.userId.put(map, Random().nextInt(head.length));
                   V1.find.createTime.put(map, dateTime.add(Duration(minutes: -i)));
                   V1.find.content.put(map, 'content');
                   V1.find.medias.put(map, medias());

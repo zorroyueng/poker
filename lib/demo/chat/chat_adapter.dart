@@ -74,6 +74,7 @@ class ChatData extends Data {
             ),
           ),
         ),
+        SizedBox(width: w + 2 * p),
       ],
     );
   }
