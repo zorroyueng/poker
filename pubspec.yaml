@@ -37,8 +37,11 @@ dependencies:
   sqflite: ^2.2.8+4
   sqflite_common_ffi:
   sqflite_common_ffi_web: '>=0.1.0-dev.1'
+  sqlite3_flutter_libs:
 
   intl: ^0.18.1 # 时间格式
+
+  permission_handler: ^10.3.0 # 应用权限
 
   base:
     path: ../base
