@@ -125,4 +125,8 @@ class ColTime extends Col<DateTime, int> {
   int? _encode(DateTime? d) => d?.millisecondsSinceEpoch;
 
   ColTime max() => ColTime._('max($name)');
+
+  ColTime min() => ColTime._('min($name)');
+
+  ColTime avg() => ColTime._('avg($name)');
 }

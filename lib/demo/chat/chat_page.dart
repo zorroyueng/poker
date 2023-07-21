@@ -4,13 +4,28 @@ import 'package:poker/base/color_provider.dart';
 import 'package:poker/base/common.dart';
 import 'package:poker/demo/chat/chat_adapter.dart';
 
-class ChatPage extends StatelessWidget {
+class ChatPage extends StatefulWidget {
   final int contactId;
-  final ScrollController scrollCtrl = ScrollController();
-  final TextEditingController editCtrl = TextEditingController();
-  late final ChatAdapter adapter = ChatAdapter(contactId);
 
-  ChatPage({super.key, required this.contactId});
+  const ChatPage({super.key, required this.contactId});
+
+  @override
+  State<ChatPage> createState() => _ChatPageState();
+}
+
+class _ChatPageState extends State<ChatPage> {
+  final ScrollController scrollCtrl = ScrollController();
+
+  final TextEditingController editCtrl = TextEditingController();
+
+  late final ChatAdapter adapter = ChatAdapter(widget.contactId);
+
+
+  @override
+  void dispose() {
+    super.dispose();
+    scrollCtrl.dispose();
+  }
 
   @override
   Widget build(BuildContext context) => ThemeWidget(
@@ -18,7 +33,7 @@ class ChatPage extends StatelessWidget {
           body: SafeArea(
             child: GestureDetector(
               behavior: HitTestBehavior.translucent,
-              onTap: () => Focus.of(context).requestFocus(FocusNode()),
+              onTap: () => FocusScope.of(context).unfocus(),
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
@@ -53,15 +68,12 @@ class ChatPage extends StatelessWidget {
                           ),
                           StreamWidget(
                             stream: adapter.stream,
-                            builder: (c, _, __) {
-                              HpThread.post(() => scrollCtrl.jumpTo(scrollCtrl.position.maxScrollExtent));
-                              return SliverList(
+                            builder: (c, _, __) => SliverList(
                                 delegate: SliverChildBuilderDelegate(
                                   (c, i) => adapter.data(i).widget(c),
                                   childCount: adapter.length,
                                 ),
-                              );
-                            },
+                              ),
                           ),
                         ],
                       ),
@@ -91,6 +103,7 @@ class ChatPage extends StatelessWidget {
                             onTap: () {
                               HpDevice.log(editCtrl.text);
                               editCtrl.clear();
+                              HpThread.post(() => scrollCtrl.jumpTo(scrollCtrl.position.maxScrollExtent));
                             },
                           ),
                         ),

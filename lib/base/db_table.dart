@@ -12,23 +12,8 @@ abstract class Table with TableMixin {
     String? groupBy,
     String? orderBy,
   }) {
-    link(TableMixin table, List<Col>? columns) {
-      String select = '';
-      if (columns != null && columns.isNotEmpty) {
-        for (Col c in columns) {
-          if (select.isNotEmpty) {
-            select += ',';
-          }
-          select += '${table.tName()}.${c.name}';
-        }
-      } else {
-        select = '${table.tName()}.*';
-      }
-      return select;
-    }
-
     String sql = _joinSql(
-      select: 'SELECT ${link(this, columns)}',
+      select: 'SELECT ${_connect(this, columns)}',
       from: tName(),
       where: where,
       groupBy: groupBy,
@@ -49,20 +34,8 @@ abstract class Table with TableMixin {
     String? groupBy,
     String? orderBy,
   }) {
-    link(TableMixin table, List<Col>? columns) {
-      String select = '';
-      List<Col> lst = (columns != null && columns.isNotEmpty) ? columns : table.tColumns();
-      for (Col c in lst) {
-        if (select.isNotEmpty) {
-          select += ',';
-        }
-        select += c.name;
-      }
-      return select;
-    }
-
     String sql = _joinSql(
-      select: 'SELECT ${link(this, cols)},${link(join, joinCols)}',
+      select: 'SELECT ${_connect(this, cols)},${_connect(join, joinCols)}',
       from: tName(),
       join: ' INNER JOIN ${join.tName()} ON ${key.name}=${joinKey.name}',
       where: where,
@@ -87,7 +60,7 @@ abstract class Table with TableMixin {
   }
 
   /// write
-  Future<int> insert({
+  Future<int> _insert({
     required Transaction txn,
     required Map<String, Object?> map,
   }) {
@@ -123,7 +96,7 @@ abstract class Table with TableMixin {
         map: map,
         col: col,
       ).then((n) => n == 0
-          ? insert(
+          ? _insert(
               txn: txn,
               map: map,
             )
@@ -223,5 +196,20 @@ abstract class Table with TableMixin {
       select += ' ORDER BY $orderBy';
     }
     return select;
+  }
+
+  String _connect(TableMixin table, List<Col>? columns) {
+    String connect = '';
+    if (columns != null && columns.isNotEmpty) {
+      for (Col c in columns) {
+        if (connect.isNotEmpty) {
+          connect += ',';
+        }
+        connect += c.name;
+      }
+    } else {
+      connect = '${table.tName()}.*';
+    }
+    return connect;
   }
 }

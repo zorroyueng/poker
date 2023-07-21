@@ -9,6 +9,7 @@ import 'package:poker/demo/demo_helper.dart';
 
 class ContactAdapter extends Adapter<ContactData> {
   ContactAdapter() {
+    HpDevice.log('ContactAdapter');
     Future.wait([
       DemoHelper.upsertUser(),
       DemoHelper.upsertChat(),

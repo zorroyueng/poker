@@ -8,6 +8,7 @@ abstract class Adapter<T extends Data> {
   void setData(List<T> lst) => addData(lst, false);
 
   void addData(List<T> lst, [bool join = true]) {
+    HpDevice.log('addData');
     if (!join) {
       _data.clear();
     }
