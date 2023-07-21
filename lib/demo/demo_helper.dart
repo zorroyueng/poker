@@ -290,7 +290,7 @@ class DemoHelper {
         (txn) {
           List<Future<int>> lst = [];
           DateTime dateTime = DateTime.now();
-          for (int i = 0; i < 100; i++) {
+          for (int i = 0; i < 1000; i++) {
             bool my = Random().nextBool();
             int contactId = Random().nextInt(head.length - 1) + 1;
             DateTime dt = dateTime.add(Duration(minutes: -i));

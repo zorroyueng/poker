@@ -4,6 +4,9 @@ import 'package:poker/base/db_table_base.dart';
 import 'package:sqflite/sqflite.dart';
 
 abstract class Table extends TableBase {
+  final Broadcast<Map<String, Object?>> _trigger = Broadcast({});
+
+  Stream<Map<String, Object?>> get trigger => _trigger.stream();
   /// read
   Future<List<Map<String, Object?>>> query({
     Transaction? txn,
@@ -11,6 +14,7 @@ abstract class Table extends TableBase {
     String? where,
     String? groupBy,
     String? orderBy,
+    String? limit,
   }) {
     String sql = _joinSelect(
       select: 'SELECT ${_connect(this, columns)}',
@@ -18,6 +22,7 @@ abstract class Table extends TableBase {
       where: where,
       groupBy: groupBy,
       orderBy: orderBy,
+      limit: limit,
     );
     HpDevice.log(sql);
     return txn != null ? txn.rawQuery(sql) : Db.rawQuery(sql);
@@ -33,6 +38,7 @@ abstract class Table extends TableBase {
     String? where,
     String? groupBy,
     String? orderBy,
+    String? limit,
   }) {
     String sql = _joinSelect(
       select: 'SELECT ${_connect(this, cols)},${_connect(join, joinCols)}',
@@ -41,6 +47,7 @@ abstract class Table extends TableBase {
       where: where,
       groupBy: groupBy,
       orderBy: orderBy,
+      limit: limit,
     );
     HpDevice.log(sql);
     return txn != null ? txn.rawQuery(sql) : Db.rawQuery(sql);
@@ -84,7 +91,7 @@ abstract class Table extends TableBase {
     }
     String sql = 'INSERT INTO ${tName()} ($params) VALUES($values)';
     HpDevice.log(sql);
-    broadcast.add(map);
+    _trigger.add(map);
     return txn.rawInsert(sql);
   }
 
@@ -135,7 +142,7 @@ abstract class Table extends TableBase {
     }
     String sql = 'UPDATE ${tName()} SET $set WHERE $where';
     HpDevice.log(sql);
-    broadcast.add(map);
+    _trigger.add(map);
     return txn.rawUpdate(sql);
   }
 
@@ -192,6 +199,7 @@ abstract class Table extends TableBase {
     String? where,
     String? groupBy,
     String? orderBy,
+    String? limit,
   }) {
     select += ' FROM $from';
     if (join != null) {
@@ -205,6 +213,9 @@ abstract class Table extends TableBase {
     }
     if (orderBy != null) {
       select += ' ORDER BY $orderBy';
+    }
+    if (limit != null) {
+      select += ' LIMIT $limit';
     }
     return select;
   }

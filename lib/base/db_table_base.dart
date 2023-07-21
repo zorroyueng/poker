@@ -1,11 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:base/base.dart';
-
 abstract class TableBase {
-  Broadcast<Map<String, Object?>> broadcast = Broadcast({});
-
   String tName();
 
   List<Col> tColumns();

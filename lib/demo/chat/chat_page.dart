@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:poker/base/color_provider.dart';
 import 'package:poker/base/common.dart';
 import 'package:poker/demo/chat/chat_adapter.dart';
+import 'package:poker/demo/chat/chat_provider.dart';
 
 class ChatPage extends StatefulWidget {
   final int contactId;
@@ -18,12 +19,26 @@ class _ChatPageState extends State<ChatPage> {
 
   final TextEditingController editCtrl = TextEditingController();
 
-  late final ChatAdapter adapter = ChatAdapter(widget.contactId);
+  late final ChatAdapter adapter;
+
+  @override
+  void initState() {
+    super.initState();
+    adapter = ChatAdapter(ChatProvider(contactId: widget.contactId));
+    scrollCtrl.addListener(
+      () {
+        if (scrollCtrl.offset >= scrollCtrl.position.maxScrollExtent) {
+          adapter.loadData(more: true);
+        }
+      },
+    );
+  }
 
   @override
   void dispose() {
     super.dispose();
     scrollCtrl.dispose();
+    adapter.dispose();
   }
 
   @override
@@ -94,7 +109,7 @@ class _ChatPageState extends State<ChatPage> {
                             ctx: context,
                             content: 'Send',
                             onTap: () {
-                              HpDevice.log(editCtrl.text);
+                              adapter.provider().sendMsg(editCtrl.text);
                               editCtrl.clear();
                             },
                           ),

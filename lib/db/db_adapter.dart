@@ -1,8 +1,6 @@
 import 'package:poker/db/v_1.dart';
-import 'package:poker/demo/chat/chat_adapter.dart';
 import 'package:poker/demo/demo_helper.dart';
 import 'package:poker/demo/find/find_adapter.dart';
-import 'package:poker/demo/msg/contact_adapter.dart';
 
 class DbAdapter {
   DbAdapter._();

@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:poker/base/color_provider.dart';
 import 'package:poker/base/common.dart';
 import 'package:poker/demo/msg/contact_adapter.dart';
+import 'package:poker/demo/msg/contact_provider.dart';
 
 class MsgTab extends StatefulWidget {
   MsgTab({super.key});
 
-  final ContactAdapter adapter = ContactAdapter();
+  final ContactAdapter adapter = ContactAdapter(ContactProvider());
   double scrollOffset = 0;
 
   @override
