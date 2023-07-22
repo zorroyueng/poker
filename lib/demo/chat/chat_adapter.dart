@@ -12,7 +12,6 @@ class ChatAdapter extends Adapter<ChatProvider, ChatData> {
     double w = Common.base(c, 1.3);
     double p = Common.base(c, .1);
     BorderRadius r = Common.baseRadius(c);
-    TextStyle textStyle = Common.textStyle(c);
     return Row(
       key: ValueKey(data.key()),
       textDirection: data.my ? TextDirection.rtl : TextDirection.ltr,
@@ -41,6 +40,7 @@ class ChatAdapter extends Adapter<ChatProvider, ChatData> {
           child: Align(
             alignment: data.my ? Alignment.centerRight : Alignment.centerLeft,
             child: Container(
+              constraints: BoxConstraints(minHeight: w),
               padding: EdgeInsets.symmetric(vertical: p, horizontal: 2 * p),
               margin: EdgeInsets.all(p),
               decoration: Common.roundRect(
@@ -48,9 +48,14 @@ class ChatAdapter extends Adapter<ChatProvider, ChatData> {
                 scale: .3,
                 bgColor: ColorProvider.chatBg(data.my),
               ),
-              child: SelectableText(
-                data.content,
-                style: textStyle,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SelectableText(
+                    data.content,
+                    style: Common.textStyle(c),
+                  ),
+                ],
               ),
             ),
           ),
