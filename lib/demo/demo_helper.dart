@@ -145,6 +145,15 @@ class DemoHelper {
   ];
 
   static final List<String> head = [
+    'https://img1.baidu.com/it/u=428577822,2972406465&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
+    'https://c-ssl.dtstatic.com/uploads/blog/202012/19/20201219175224_def3a.thumb.1000_0.jpg',
+    'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fitem%2F202002%2F28%2F20200228154016_WZvmX.thumb.1000_0.jpeg&refer=http%3A%2F%2Fc-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1692584776&t=42b6a0eafc26548f75b047645709b303',
+    'https://up.enterdesk.com/edpic/02/42/df/0242df50b7b25f97d6ad6c1f4df6bc6e.jpg',
+    'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fitem%2F201909%2F23%2F20190923182908_zdEcW.thumb.1000_0.jpeg&refer=http%3A%2F%2Fc-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1692584776&t=40c45a1fd552222dc99838a006955841',
+    'https://c-ssl.dtstatic.com/uploads/item/201712/18/20171218172305_zHiQj.thumb.1000_0.jpeg',
+    'https://up.enterdesk.com/edpic_source/99/a7/ef/99a7ef12a7d254862af1956ace3af1b5.jpg',
+    'https://up.enterdesk.com/edpic_source/98/45/d0/9845d0e542c4d72dd72912b084ad9533.jpg',
+    'https://up.enterdesk.com/edpic_source/35/df/aa/35dfaa2e6e8b982011c8336fd589af4b.jpg',
     'https://gd-hbimg.huaban.com/5f9fbf1eb4fd6e88dd348de3bb376b3782ba1b51d15ba-rSk8zA_fw658',
     'https://gd-hbimg.huaban.com/d84daecd9a8c747e7561d7d1e836a957ebc66607557e-dAZQYo_fw658',
     'https://gd-hbimg.huaban.com/0860d651efb9ea224964cf369a6aae7c612403ac4866-bWWP7v_fw658',
@@ -264,6 +273,7 @@ class DemoHelper {
   static Future<void> upsertUser() => Db.transaction(
         (txn) {
           List<Future<int>> lst = [];
+          head.shuffle();
           for (int i = 0; i < head.length; i++) {
             lst.add(
               V1.user.upsert(

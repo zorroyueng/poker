@@ -52,7 +52,11 @@ class ChatProvider extends Provider<ChatData> {
   }
 
   @override
-  List<Stream>? triggers() => [V1.msg.trigger];
+  List<Stream>? triggers() => [
+        V1.msg.trigger(
+          filter: (m) => contactId == V1.msg.contactId.get(m),
+        )
+      ];
 
   @override
   int? pageLimit() => 20;

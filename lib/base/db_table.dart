@@ -6,7 +6,11 @@ import 'package:sqflite/sqflite.dart';
 abstract class Table extends TableBase {
   final Broadcast<Map<String, Object?>> _trigger = Broadcast({});
 
-  Stream<Map<String, Object?>> get trigger => _trigger.stream();
+  Stream<Map<String, Object?>> trigger({bool Function(Map<String, Object?> m)? filter}) {
+    Stream<Map<String, Object?>> s = _trigger.stream();
+    return filter == null ? s : s.where((m) => filter.call(m));
+  }
+
   /// read
   Future<List<Map<String, Object?>>> query({
     Transaction? txn,
@@ -68,33 +72,6 @@ abstract class Table extends TableBase {
   }
 
   /// write
-  Future<int> insert({
-    required Transaction txn,
-    required Map<String, Object?> map,
-  }) {
-    String params = '';
-    String values = '';
-    for (String key in map.keys) {
-      Object? value = map[key];
-      if (value != null) {
-        params += key;
-        if (value is String) {
-          values += '\'$value\'';
-        } else {
-          values += value.toString();
-        }
-        if (key != map.keys.last) {
-          params += ',';
-          values += ',';
-        }
-      }
-    }
-    String sql = 'INSERT INTO ${tName()} ($params) VALUES($values)';
-    HpDevice.log(sql);
-    _trigger.add(map);
-    return txn.rawInsert(sql);
-  }
-
   Future<int> upsert({
     required Transaction txn,
     required Map<String, Object?> map,
@@ -123,11 +100,41 @@ abstract class Table extends TableBase {
     }
   }
 
+  Future<int> insert({
+    required Transaction txn,
+    required Map<String, Object?> map,
+  }) async {
+    String params = '';
+    String values = '';
+    for (String key in map.keys) {
+      Object? value = map[key];
+      if (value != null) {
+        params += key;
+        if (value is String) {
+          values += '\'$value\'';
+        } else {
+          values += value.toString();
+        }
+        if (key != map.keys.last) {
+          params += ',';
+          values += ',';
+        }
+      }
+    }
+    String sql = 'INSERT INTO ${tName()} ($params) VALUES($values)';
+    HpDevice.log(sql);
+    int result = await txn.rawInsert(sql);
+    if (result > 0) {
+      _trigger.add(map);
+    }
+    return result;
+  }
+
   Future<int> update({
     required Transaction txn,
     required Map<String, Object?> map,
     required Col col,
-  }) {
+  }) async {
     String set = '';
     String where = '';
     for (String k in map.keys) {
@@ -142,8 +149,11 @@ abstract class Table extends TableBase {
     }
     String sql = 'UPDATE ${tName()} SET $set WHERE $where';
     HpDevice.log(sql);
-    _trigger.add(map);
-    return txn.rawUpdate(sql);
+    int result = await txn.rawUpdate(sql);
+    if (result > 0) {
+      _trigger.add(map);
+    }
+    return result;
   }
 
   /// structure

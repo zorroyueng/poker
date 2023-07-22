@@ -72,6 +72,8 @@ abstract class Provider<T extends Data> {
 
   Future<List<T>> getData(int from, int? to);
 
+  List<T> data() => _data.value();
+
   void loadData({required bool more}) {
     if (_loading == null) {
       int from = more ? _data.value().length : 0;

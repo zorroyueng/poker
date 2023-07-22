@@ -30,5 +30,21 @@ class ContactProvider extends Provider<ContactData> {
   int? pageLimit() => null;
 
   @override
-  List<Stream>? triggers() => [V1.msg.trigger];
+  List<Stream>? triggers() => [
+        V1.msg.trigger(),
+        V1.user.trigger(
+          filter: (m) {
+            int id = V1.user.id.get(m)!;
+            List<ContactData> lst = data();
+            bool has = false;
+            for (ContactData d in lst) {
+              if (d.id == id) {
+                has = true;
+                break;
+              }
+            }
+            return has;
+          },
+        ),
+      ];
 }
