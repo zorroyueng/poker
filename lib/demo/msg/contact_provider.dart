@@ -2,7 +2,7 @@ import 'package:poker/base/adapter.dart';
 import 'package:poker/db/v_1.dart';
 import 'package:poker/demo/msg/contact_adapter.dart';
 
-class ContactProvider extends DataProvider<ContactData> {
+class ContactProvider extends Provider<ContactData> {
   @override
   Future<List<ContactData>> getData(int from, int? to) => V1.msg
       .innerJoin(

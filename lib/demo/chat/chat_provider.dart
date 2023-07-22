@@ -3,7 +3,7 @@ import 'package:poker/base/db.dart';
 import 'package:poker/db/v_1.dart';
 import 'package:poker/demo/chat/chat_adapter.dart';
 
-class ChatProvider extends DataProvider<ChatData> {
+class ChatProvider extends Provider<ChatData> {
   final int contactId;
 
   ChatProvider({required this.contactId});

@@ -4,9 +4,9 @@ import 'package:base/base.dart';
 import 'package:flutter/cupertino.dart';
 
 /// ui data => ui widget
-abstract class Adapter<P extends DataProvider<T>, T extends Data> {
+abstract class Adapter<P extends Provider<D>, D extends Data> {
   final P _dataProvider;
-  final List<T> _data = [];
+  final List<D> _data = [];
   final Broadcast<void> _ui = Broadcast(null);
 
   Adapter(this._dataProvider) {
@@ -14,15 +14,16 @@ abstract class Adapter<P extends DataProvider<T>, T extends Data> {
     loadData(more: true);
   }
 
+  /// define
   void loadData({required bool more}) => _dataProvider.loadData(more: more);
 
   P provider() => _dataProvider;
 
   void dispose() => _dataProvider.dispose();
 
-  void setData(List<T> lst) => addData(lst, false);
+  void setData(List<D> lst) => addData(lst, false);
 
-  void addData(List<T> lst, [bool join = true]) {
+  void addData(List<D> lst, [bool join = true]) {
     if (!join) {
       _data.clear();
     }
@@ -32,19 +33,25 @@ abstract class Adapter<P extends DataProvider<T>, T extends Data> {
 
   int get length => _data.length;
 
-  T data(int i) => _data[i];
+  Widget item(BuildContext c, int i) {
+    D d = _data[i];
+    Widget w = widget(c, d);
+    assert(w.key is ValueKey && (w.key as ValueKey).value == d.key());
+    return w;
+  }
 
-  Stream<void> get stream => _ui.stream();
+  Stream<void> get trigger => _ui.stream();
+
+  /// interface
+  Widget widget(BuildContext c, D data);
 }
 
 abstract class Data {
   Object key();
-
-  Widget widget(BuildContext c);
 }
 
 /// net||db data => ui data
-abstract class DataProvider<T extends Data> {
+abstract class Provider<T extends Data> {
   final Broadcast<List<T>> _data = Broadcast([]);
   final List<StreamSubscription> _subs = [];
   Future? _loading;

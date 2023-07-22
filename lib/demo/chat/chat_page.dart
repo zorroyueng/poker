@@ -76,13 +76,13 @@ class _ChatPageState extends State<ChatPage> {
                       child: Align(
                         alignment: Alignment.topCenter,
                         child: StreamWidget(
-                          stream: adapter.stream,
+                          stream: adapter.trigger,
                           builder: (c, _, __) => ListView.builder(
                             controller: scrollCtrl,
                             reverse: true,
                             shrinkWrap: true,
                             itemCount: adapter.length,
-                            itemBuilder: (c, i) => adapter.data(i).widget(c),
+                            itemBuilder: (c, i) => adapter.item(c, i),
                           ),
                         ),
                       ),

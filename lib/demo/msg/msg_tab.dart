@@ -57,10 +57,10 @@ class _MsgTabState extends State<MsgTab> {
       );
 
   Widget _content(BuildContext ctx) => StreamWidget(
-        stream: widget.adapter.stream,
+        stream: widget.adapter.trigger,
         builder: (_, __, ___) => SliverList(
           delegate: SliverChildBuilderDelegate(
-            (c, i) => widget.adapter.data(i).widget(c),
+            (c, i) => widget.adapter.item(c, i),
             childCount: widget.adapter.length,
           ),
         ),
