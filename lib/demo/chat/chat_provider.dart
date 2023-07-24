@@ -9,28 +9,26 @@ class ChatProvider extends Provider<ChatData> {
   ChatProvider({required this.contactId});
 
   @override
-  Future<List<ChatData>> getData(int from, int? to) {
-    return V1.msg
-        .innerJoin(
-            join: V1.user,
-            key: V1.msg.ownerId,
-            joinKey: V1.user.id,
-            where: '${V1.msg.otherId}=$contactId OR ${V1.msg.ownerId}=$contactId',
-            orderBy: '${V1.msg.createTime} DESC',
-            limit: to == null ? null : '$to OFFSET $from')
-        .then(
-          (lst) => lst
-              .map(
-                (m) => ChatData(
-                  id: V1.msg.id.get(m)!,
-                  my: 0 == V1.msg.ownerId.get(m)!,
-                  picUrl: V1.user.picUrl.get(m)!,
-                  content: V1.msg.content.get(m)!,
-                ),
-              )
-              .toList(),
-        );
-  }
+  Future<List<ChatData>> getData({int from = 0, int? limit}) => V1.msg
+      .innerJoin(
+          join: V1.user,
+          key: V1.msg.ownerId,
+          joinKey: V1.user.id,
+          where: '${V1.msg.otherId}=$contactId OR ${V1.msg.ownerId}=$contactId',
+          orderBy: '${V1.msg.createTime} DESC',
+          limit: limit == null ? null : '$limit OFFSET $from')
+      .then(
+        (lst) => lst
+            .map(
+              (m) => ChatData(
+                id: V1.msg.id.get(m)!,
+                my: 0 == V1.msg.ownerId.get(m)!,
+                picUrl: V1.user.picUrl.get(m)!,
+                content: V1.msg.content.get(m)!,
+              ),
+            )
+            .toList(),
+      );
 
   void sendMsg(String s) {
     Db.transaction((txn) => V1.msg.insert(
@@ -53,9 +51,9 @@ class ChatProvider extends Provider<ChatData> {
 
   @override
   List<Stream>? triggers() => [
-        V1.msg.trigger(
-          filter: (m) => contactId == V1.msg.contactId.get(m),
-        )
+        V1.msg.trigger().where(
+              (m) => contactId == V1.msg.contactId.get(m),
+            ),
       ];
 
   @override

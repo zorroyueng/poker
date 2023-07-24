@@ -6,10 +6,7 @@ import 'package:sqflite/sqflite.dart';
 abstract class Table extends TableBase {
   final Broadcast<Map<String, Object?>> _trigger = Broadcast({});
 
-  Stream<Map<String, Object?>> trigger({bool Function(Map<String, Object?> m)? filter}) {
-    Stream<Map<String, Object?>> s = _trigger.stream();
-    return filter == null ? s : s.where((m) => filter.call(m));
-  }
+  Stream<Map<String, Object?>> trigger() => _trigger.stream();
 
   /// read
   Future<List<Map<String, Object?>>> query({

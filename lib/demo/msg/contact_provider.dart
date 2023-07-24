@@ -4,7 +4,7 @@ import 'package:poker/demo/msg/contact_adapter.dart';
 
 class ContactProvider extends Provider<ContactData> {
   @override
-  Future<List<ContactData>> getData(int from, int? to) => V1.msg
+  Future<List<ContactData>> getData({int from = 0, int? limit}) => V1.msg
       .innerJoin(
         join: V1.user,
         key: V1.msg.contactId,
@@ -32,8 +32,8 @@ class ContactProvider extends Provider<ContactData> {
   @override
   List<Stream>? triggers() => [
         V1.msg.trigger(),
-        V1.user.trigger(
-          filter: (m) {
+        V1.user.trigger().where(
+          (m) {
             int id = V1.user.id.get(m)!;
             List<ContactData> lst = data();
             bool has = false;

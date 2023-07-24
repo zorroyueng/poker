@@ -10,7 +10,7 @@ abstract class Adapter<P extends Provider<D>, D extends Data> {
   final Broadcast<void> _ui = Broadcast(null);
 
   Adapter(this._dataProvider) {
-    _dataProvider._init(this);
+    _dataProvider._init(onData: (lst) => setData(lst));
     loadData(more: true);
   }
 
@@ -56,8 +56,9 @@ abstract class Provider<T extends Data> {
   final List<StreamSubscription> _subs = [];
   Future? _loading;
 
-  void _init(Adapter adapter) {
-    _subs.add(_data.stream().distinct().listen((lst) => adapter.setData(lst)));
+  /// define
+  void _init({required void Function(List<T> lst) onData}) {
+    _subs.add(_data.stream().distinct().listen((lst) => onData.call(lst)));
     List<Stream>? streams = triggers();
     if (streams != null) {
       for (Stream s in streams) {
@@ -66,22 +67,14 @@ abstract class Provider<T extends Data> {
     }
   }
 
-  List<Stream>? triggers();
-
-  int? pageLimit();
-
-  Future<List<T>> getData(int from, int? to);
-
   List<T> data() => _data.value();
 
   void loadData({required bool more}) {
     if (_loading == null) {
       int from = more ? _data.value().length : 0;
-      var limit = pageLimit();
-      int? to = limit != null && limit > 0 ? _data.value().length + (more ? limit : 0) : null;
       _loading = getData(
-        from,
-        to,
+        from: from,
+        limit: pageLimit(),
       ).then(
         (lst) {
           _data.add(more ? _data.value() + lst : lst);
@@ -92,6 +85,8 @@ abstract class Provider<T extends Data> {
           _loading = null;
         },
       );
+    } else {
+      // todo
     }
   }
 
@@ -100,4 +95,11 @@ abstract class Provider<T extends Data> {
       s.cancel();
     }
   }
+
+  /// interface
+  List<Stream>? triggers();
+
+  int? pageLimit();
+
+  Future<List<T>> getData({int from = 0, int? limit});
 }
