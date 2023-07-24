@@ -1,7 +1,7 @@
 import 'package:poker/base/adapter.dart';
 import 'package:poker/base/db.dart';
 import 'package:poker/db/v_1.dart';
-import 'package:poker/demo/chat/chat_adapter.dart';
+import 'package:poker/demo/chat/chat_data.dart';
 
 class ChatProvider extends Provider<ChatData> {
   final int contactId;
@@ -51,7 +51,7 @@ class ChatProvider extends Provider<ChatData> {
 
   @override
   List<Stream>? triggers() => [
-        V1.msg.trigger().where(
+        V1.msg.trigger.where(
               (m) => contactId == V1.msg.contactId.get(m),
             ),
       ];

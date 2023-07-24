@@ -4,6 +4,7 @@ import 'package:poker/base/adapter.dart';
 import 'package:poker/base/color_provider.dart';
 import 'package:poker/base/common.dart';
 import 'package:poker/demo/chat/chat_page.dart';
+import 'package:poker/demo/msg/contact_data.dart';
 import 'package:poker/demo/msg/contact_provider.dart';
 
 class ContactAdapter extends Adapter<ContactProvider, ContactData> {
@@ -11,7 +12,7 @@ class ContactAdapter extends Adapter<ContactProvider, ContactData> {
 
   @override
   Widget widget(BuildContext c, ContactData data) => ThemeWidget(
-        key: ValueKey(data.key()),
+        key: data.key(),
         builder: (c, _) {
           double p = Common.base(c, .2);
           double w = Common.base(c, 1.3);
@@ -75,21 +76,4 @@ class ContactAdapter extends Adapter<ContactProvider, ContactData> {
           );
         },
       );
-}
-
-class ContactData extends Data {
-  final int id;
-  final String url;
-  final String name;
-  final String lastMsg;
-
-  ContactData({
-    required this.id,
-    required this.url,
-    required this.name,
-    required this.lastMsg,
-  });
-
-  @override
-  Object key() => id;
 }

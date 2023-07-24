@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:poker/base/adapter.dart';
 import 'package:poker/base/color_provider.dart';
 import 'package:poker/base/common.dart';
+import 'package:poker/demo/chat/chat_data.dart';
 import 'package:poker/demo/chat/chat_provider.dart';
 
 class ChatAdapter extends Adapter<ChatProvider, ChatData> {
@@ -13,7 +14,7 @@ class ChatAdapter extends Adapter<ChatProvider, ChatData> {
     double p = Common.base(c, .1);
     BorderRadius r = Common.baseRadius(c);
     return Row(
-      key: ValueKey(data.key()),
+      key: data.key(),
       textDirection: data.my ? TextDirection.rtl : TextDirection.ltr,
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -64,21 +65,4 @@ class ChatAdapter extends Adapter<ChatProvider, ChatData> {
       ],
     );
   }
-}
-
-class ChatData extends Data {
-  final int id;
-  final bool my;
-  final String picUrl;
-  final String content;
-
-  ChatData({
-    required this.id,
-    required this.my,
-    required this.picUrl,
-    required this.content,
-  });
-
-  @override
-  Object key() => id;
 }

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:poker/base/db.dart';
 import 'package:poker/db/v_1.dart';
-import 'package:poker/demo/find/find_adapter.dart';
+import 'package:poker/demo/find/find_data.dart';
 import 'package:poker/demo/poker/adapter.dart';
 
 class DemoHelper {
@@ -35,16 +35,19 @@ class DemoHelper {
     return comments;
   }
 
-  static List<Info> findData() {
-    List<Info> data = [];
-    for (int i = 0; i < 10; i++) {
-      data.add(Info(
-        head: random(head),
-        name: random(name),
-        content: _str(50),
-        medias: medias(),
-        comments: comments(),
-      ));
+  static List<FindData> findData(int fromId, int limit) {
+    List<FindData> data = [];
+    for (int i = 0; i < limit; i++) {
+      data.add(
+        FindData(
+          id: fromId + 1 + i,
+          head: random(head),
+          name: random(name),
+          content: _str(50),
+          medias: medias(),
+          comments: comments(),
+        ),
+      );
     }
     return data;
   }

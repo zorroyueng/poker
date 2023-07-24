@@ -6,7 +6,7 @@ import 'package:sqflite/sqflite.dart';
 abstract class Table extends TableBase {
   final Broadcast<Map<String, Object?>> _trigger = Broadcast({});
 
-  Stream<Map<String, Object?>> trigger() => _trigger.stream();
+  Stream<Map<String, Object?>> get trigger => _trigger.stream();
 
   /// read
   Future<List<Map<String, Object?>>> query({

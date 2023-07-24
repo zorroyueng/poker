@@ -1,6 +1,6 @@
 import 'package:poker/base/adapter.dart';
 import 'package:poker/db/v_1.dart';
-import 'package:poker/demo/msg/contact_adapter.dart';
+import 'package:poker/demo/msg/contact_data.dart';
 
 class ContactProvider extends Provider<ContactData> {
   @override
@@ -31,8 +31,8 @@ class ContactProvider extends Provider<ContactData> {
 
   @override
   List<Stream>? triggers() => [
-        V1.msg.trigger(),
-        V1.user.trigger().where(
+        V1.msg.trigger,
+        V1.user.trigger.where(
           (m) {
             int id = V1.user.id.get(m)!;
             List<ContactData> lst = data();

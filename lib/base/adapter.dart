@@ -15,9 +15,9 @@ abstract class Adapter<P extends Provider<D>, D extends Data> {
   }
 
   /// define
-  void loadData({required bool more}) => _dataProvider.loadData(more: more);
+  void loadData({required bool more}) => _dataProvider.load(more: more);
 
-  P provider() => _dataProvider;
+  P get provider => _dataProvider;
 
   void dispose() => _dataProvider.dispose();
 
@@ -36,7 +36,7 @@ abstract class Adapter<P extends Provider<D>, D extends Data> {
   Widget item(BuildContext c, int i) {
     D d = _data[i];
     Widget w = widget(c, d);
-    assert(w.key is ValueKey && (w.key as ValueKey).value == d.key());
+    assert(w.key == d.key());
     return w;
   }
 
@@ -47,7 +47,7 @@ abstract class Adapter<P extends Provider<D>, D extends Data> {
 }
 
 abstract class Data {
-  Object key();
+  ValueKey key();
 }
 
 /// net||db data => ui data
@@ -62,14 +62,14 @@ abstract class Provider<T extends Data> {
     List<Stream>? streams = triggers();
     if (streams != null) {
       for (Stream s in streams) {
-        _subs.add(s.listen((_) => loadData(more: false)));
+        _subs.add(s.listen((_) => load(more: false)));
       }
     }
   }
 
   List<T> data() => _data.value();
 
-  void loadData({required bool more}) {
+  Future<void> load({required bool more}) async {
     if (_loading == null) {
       int from = more ? _data.value().length : 0;
       _loading = getData(
@@ -85,8 +85,10 @@ abstract class Provider<T extends Data> {
           _loading = null;
         },
       );
+      return await _loading;
     } else {
       // todo
+      return;
     }
   }
 

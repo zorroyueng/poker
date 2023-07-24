@@ -110,7 +110,7 @@ class _ChatPageState extends State<ChatPage> {
                             ctx: context,
                             content: 'Send',
                             onTap: () {
-                              adapter.provider().sendMsg(editCtrl.text);
+                              adapter.provider.sendMsg(editCtrl.text);
                               editCtrl.clear();
                             },
                           ),

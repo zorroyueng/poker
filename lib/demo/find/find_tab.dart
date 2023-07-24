@@ -2,13 +2,13 @@ import 'package:base/base.dart';
 import 'package:flutter/material.dart';
 import 'package:poker/base/color_provider.dart';
 import 'package:poker/base/common.dart';
-import 'package:poker/demo/demo_helper.dart';
 import 'package:poker/demo/find/find_adapter.dart';
+import 'package:poker/demo/find/find_provider.dart';
 
 class FindTab extends StatefulWidget {
   FindTab({super.key});
 
-  final FindAdapter adapter = FindAdapter()..setData(DemoHelper.findData());
+  final FindAdapter adapter = FindAdapter(FindProvider());
   double scrollOffset = 0;
 
   @override
@@ -67,12 +67,12 @@ class _FindTabState extends State<FindTab> {
       );
 
   Widget _content(BuildContext ctx) => StreamWidget(
-        stream: widget.adapter.items.stream(),
-        initialData: widget.adapter.items.value(),
+        stream: widget.adapter.trigger,
+        initialData: null,
         builder: (_, __, ___) => SliverList(
           delegate: SliverChildBuilderDelegate(
-            childCount: widget.adapter.items.value().length,
-            (c, i) => widget.adapter.items.value()[i].item(c),
+            childCount: widget.adapter.length,
+            (c, i) => widget.adapter.item(c, i),
           ),
         ),
       );
@@ -92,13 +92,9 @@ class _FindTabState extends State<FindTab> {
                 stream: loading.stream().distinct(),
                 builder: (ctx, _, __) {
                   if (loading.value()) {
-                    Future.delayed(
-                      const Duration(seconds: 2),
-                      () {
-                        widget.adapter.addData(DemoHelper.findData());
-                        loading.add(false);
-                      },
-                    );
+                    widget.adapter.provider.load(more: true).then(
+                          (_) => loading.add(false),
+                        );
                   }
                   return loading.value()
                       ? Common.loading
@@ -120,12 +116,7 @@ class _FindTabState extends State<FindTab> {
         ctx: context,
         controller: scrollCtrl,
         child: RefreshIndicator(
-          onRefresh: () async {
-            await Future.delayed(
-              const Duration(seconds: 2),
-              () => widget.adapter.setData(DemoHelper.findData()),
-            );
-          },
+          onRefresh: () => widget.adapter.provider.load(more: false),
           child: CustomScrollView(
             controller: scrollCtrl,
             slivers: [

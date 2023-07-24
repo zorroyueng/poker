@@ -1,67 +1,16 @@
 import 'package:base/base.dart';
 import 'package:flutter/material.dart';
+import 'package:poker/base/adapter.dart';
 import 'package:poker/base/color_provider.dart';
 import 'package:poker/base/common.dart';
 import 'package:poker/base/video_widget.dart';
 import 'package:poker/demo/demo_helper.dart';
+import 'package:poker/demo/find/find_data.dart';
+import 'package:poker/demo/find/find_provider.dart';
 import 'package:poker/demo/media_page.dart';
 
-class FindAdapter {
-  final List<Info> lstInfo = [];
-  final Broadcast<List<ItemModel>> items = Broadcast([]);
-
-  void addData(List<Info> data, [bool join = true]) {
-    // lstInfo
-    if (!join) {
-      lstInfo.clear();
-    }
-    lstInfo.addAll(data);
-    // items
-    List<ItemModel> lst = [];
-    for (Info info in data) {
-      lst.add(ItemModel(type: Type.head, info: info));
-      lst.add(ItemModel(type: Type.media, info: info));
-      for (int i = 0; i < info.comments.length; i++) {
-        lst.add(ItemModel(type: Type.comment, info: info, index: i));
-      }
-    }
-    items.add(join ? (items.value() + lst) : lst);
-  }
-
-  void setData(List<Info> data) => addData(data, false);
-}
-
-class Info {
-  final String head;
-  final String name;
-  final String content;
-  final List<String> medias;
-  final List<String> comments;
-
-  Info({
-    required this.head,
-    required this.name,
-    required this.content,
-    required this.medias,
-    required this.comments,
-  });
-
-  @override
-  String toString() => '$name $head $content';
-}
-
-enum Type {
-  head,
-  media,
-  comment,
-}
-
-class ItemModel {
-  final Type type;
-  final Info info;
-  final int index;
-
-  ItemModel({required this.type, required this.info, this.index = 0});
+class FindAdapter extends Adapter<FindProvider, FindItemData> {
+  FindAdapter(super.dataProvider);
 
   double _padding(BuildContext c) => Common.base(c, .2);
 
@@ -69,7 +18,7 @@ class ItemModel {
 
   double _headSize(BuildContext c) => Common.base(c, 1.3);
 
-  Widget _head() => ThemeWidget(
+  Widget _head(FindData find) => ThemeWidget(
         builder: (c, __) {
           double w = _headSize(c);
           double p = _padding(c);
@@ -91,7 +40,7 @@ class ItemModel {
                     onTap: () {},
                     r: r,
                     back: Common.netImage(
-                      url: info.head,
+                      url: find.head,
                       w: w,
                       h: w,
                       borderRadius: r,
@@ -107,7 +56,7 @@ class ItemModel {
                     FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(
-                        info.name,
+                        find.name,
                         maxLines: 1,
                         style: Common.textStyle(
                           c,
@@ -116,7 +65,7 @@ class ItemModel {
                       ),
                     ),
                     Text(
-                      info.content,
+                      find.content,
                       style: Common.textStyle(
                         c,
                         alpha: .8,
@@ -130,17 +79,17 @@ class ItemModel {
         },
       );
 
-  int _gvCrossAxisCount() {
-    if (info.medias.length == 1) {
+  int _gvCrossAxisCount(FindData find) {
+    if (find.medias.length == 1) {
       return 1;
-    } else if (info.medias.length == 2 || info.medias.length == 4) {
+    } else if (find.medias.length == 2 || find.medias.length == 4) {
       return 2;
     } else {
       return 3;
     }
   }
 
-  Widget _pic() => ThemeWidget(
+  Widget _pic(FindData find) => ThemeWidget(
         builder: (c, _) {
           double p = _padding(c);
           return Container(
@@ -152,29 +101,29 @@ class ItemModel {
               shrinkWrap: true,
               //解决无限高度问题
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: info.medias.length,
+              itemCount: find.medias.length,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: _gvCrossAxisCount(),
+                crossAxisCount: _gvCrossAxisCount(find),
                 mainAxisSpacing: p / 2,
                 crossAxisSpacing: p / 2,
               ),
               itemBuilder: (c, i) => LayoutBuilder(
                 builder: (c, constraints) {
                   double size = constraints.maxWidth * HpDevice.pixelRatio(c) * 2;
-                  String url = info.medias[i];
+                  String url = find.medias[i];
                   return Common.click(
                     onTap: () => Navi.pushAlpha(
                       c,
                       MediaPage(
-                        urls: info.medias,
-                        id: info.name,
+                        urls: find.medias,
+                        id: find.name,
                         index: i,
                         w: size,
                         h: size,
                       ),
                     ),
                     back: Hero(
-                      tag: DemoHelper.mediaTag(info.name, i, url),
+                      tag: DemoHelper.mediaTag(find.name, i, url),
                       child: Common.netImage(
                         url: url,
                         w: size,
@@ -189,11 +138,11 @@ class ItemModel {
         },
       );
 
-  Widget _video() => ThemeWidget(
+  Widget _video(FindData find) => ThemeWidget(
         builder: (c, _) {
           double p = _padding(c);
-          String url = info.medias[0];
-          Object tag = '${info.name}_0_$url';
+          String url = find.medias[0];
+          Object tag = '${find.name}_0_$url';
           return Container(
             padding: EdgeInsets.only(
               left: _paddingLeft(c),
@@ -210,8 +159,8 @@ class ItemModel {
                     onTap: () => Navi.pushAlpha(
                       c,
                       MediaPage(
-                        urls: info.medias,
-                        id: info.name,
+                        urls: find.medias,
+                        id: find.name,
                         index: 0,
                       ),
                     ),
@@ -223,17 +172,17 @@ class ItemModel {
         },
       );
 
-  Widget _comment() => ThemeWidget(
+  Widget _comment(FindItemData data) => ThemeWidget(
         builder: (c, _) {
           double p = _padding(c);
           BorderRadius? borderRadius = () {
-            if (info.comments.length == 1) {
+            if (data.find.comments.length == 1) {
               Radius r = Radius.circular(p);
               return BorderRadius.all(r);
-            } else if (index == 0) {
+            } else if (data.index == 0) {
               Radius r = Radius.circular(p);
               return BorderRadius.only(topLeft: r, topRight: r);
-            } else if (index == info.comments.length - 1) {
+            } else if (data.index == data.find.comments.length - 1) {
               Radius r = Radius.circular(p);
               return BorderRadius.only(bottomLeft: r, bottomRight: r);
             } else {
@@ -243,7 +192,7 @@ class ItemModel {
           return Padding(
             padding: EdgeInsets.only(
               left: _paddingLeft(c),
-              top: index == 0 ? p : 0,
+              top: data.index == 0 ? p : 0,
             ),
             child: Common.click(
               onTap: () {},
@@ -252,10 +201,10 @@ class ItemModel {
               child: Container(
                 width: double.infinity,
                 padding: EdgeInsets.only(
-                  top: (index > 0 ? p / 2 : 0) + (index == 0 ? p : 0),
+                  top: (data.index > 0 ? p / 2 : 0) + (data.index == 0 ? p : 0),
                   left: p,
                   right: p,
-                  bottom: index == info.comments.length - 1 ? p : p / 2,
+                  bottom: data.index == data.find.comments.length - 1 ? p : p / 2,
                 ),
                 child: Text.rich(
                   TextSpan(
@@ -269,7 +218,7 @@ class ItemModel {
                         ).copyWith(fontWeight: FontWeight.bold),
                       ),
                       TextSpan(
-                        text: info.comments[index],
+                        text: data.find.comments[data.index],
                         style: Common.textStyle(
                           c,
                           scale: .9,
@@ -285,25 +234,27 @@ class ItemModel {
         },
       );
 
-  Widget item(BuildContext c) {
+  @override
+  Widget widget(BuildContext c, FindItemData data) {
     late Widget item;
     bool isEnd = false;
-    switch (type) {
+    switch (data.type) {
       case Type.head:
-        isEnd = info.medias.isEmpty && info.comments.isEmpty;
-        item = _head();
+        isEnd = data.find.medias.isEmpty && data.find.comments.isEmpty;
+        item = _head(data.find);
         break;
       case Type.media:
-        isEnd = info.comments.isEmpty;
-        item = Common.isVideo(info.medias[0]) ? _video() : _pic();
+        isEnd = data.find.comments.isEmpty;
+        item = Common.isVideo(data.find.medias[0]) ? _video(data.find) : _pic(data.find);
         break;
       case Type.comment:
-        isEnd = index == info.comments.length - 1;
-        item = _comment();
+        isEnd = data.index == data.find.comments.length - 1;
+        item = _comment(data);
         break;
     }
     double p = _padding(c) * 2;
     return Padding(
+      key: data.key(),
       padding: EdgeInsets.only(
         left: p,
         right: p,
