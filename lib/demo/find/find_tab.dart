@@ -1,14 +1,14 @@
 import 'package:base/base.dart';
 import 'package:flutter/material.dart';
+import 'package:poker/base/adapter.dart';
 import 'package:poker/base/color_provider.dart';
 import 'package:poker/base/common.dart';
-import 'package:poker/demo/find/find_adapter.dart';
 import 'package:poker/demo/find/find_provider.dart';
 
 class FindTab extends StatefulWidget {
   FindTab({super.key});
 
-  final FindAdapter adapter = FindAdapter(FindProvider());
+  final Adapter adapter = Adapter(FindProvider());
   double scrollOffset = 0;
 
   @override

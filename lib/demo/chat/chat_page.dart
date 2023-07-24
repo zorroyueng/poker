@@ -1,8 +1,9 @@
 import 'package:base/base.dart';
 import 'package:flutter/material.dart';
+import 'package:poker/base/adapter.dart';
 import 'package:poker/base/color_provider.dart';
 import 'package:poker/base/common.dart';
-import 'package:poker/demo/chat/chat_adapter.dart';
+import 'package:poker/demo/chat/chat_data.dart';
 import 'package:poker/demo/chat/chat_provider.dart';
 
 class ChatPage extends StatefulWidget {
@@ -19,12 +20,12 @@ class _ChatPageState extends State<ChatPage> {
 
   final TextEditingController editCtrl = TextEditingController();
 
-  late final ChatAdapter adapter;
+  late final Adapter<ChatProvider, ChatData> adapter;
 
   @override
   void initState() {
     super.initState();
-    adapter = ChatAdapter(ChatProvider(contactId: widget.contactId));
+    adapter = Adapter(ChatProvider(contactId: widget.contactId));
     scrollCtrl.addListener(
       () {
         if (scrollCtrl.offset >= scrollCtrl.position.maxScrollExtent) {

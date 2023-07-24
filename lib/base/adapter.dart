@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:base/base.dart';
 import 'package:flutter/cupertino.dart';
 
-/// ui data => ui widget
-abstract class Adapter<P extends Provider<D>, D extends Data> {
+/// join Provider & ui
+class Adapter<P extends Provider<D>, D extends Data> {
   final P _dataProvider;
   final List<D> _data = [];
   final Broadcast<void> _ui = Broadcast(null);
@@ -21,12 +21,8 @@ abstract class Adapter<P extends Provider<D>, D extends Data> {
 
   void dispose() => _dataProvider.dispose();
 
-  void setData(List<D> lst) => addData(lst, false);
-
-  void addData(List<D> lst, [bool join = true]) {
-    if (!join) {
-      _data.clear();
-    }
+  void setData(List<D> lst) {
+    _data.clear();
     _data.addAll(lst);
     _ui.add(null);
   }
@@ -35,19 +31,19 @@ abstract class Adapter<P extends Provider<D>, D extends Data> {
 
   Widget item(BuildContext c, int i) {
     D d = _data[i];
-    Widget w = widget(c, d);
+    Widget w = d.widget(c);
     assert(w.key == d.key());
     return w;
   }
 
   Stream<void> get trigger => _ui.stream();
-
-  /// interface
-  Widget widget(BuildContext c, D data);
 }
 
+/// ui data => ui widget
 abstract class Data {
   ValueKey key();
+
+  Widget widget(BuildContext c);
 }
 
 /// net||db data => ui data
