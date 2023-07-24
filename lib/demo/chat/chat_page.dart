@@ -28,7 +28,7 @@ class _ChatPageState extends State<ChatPage> {
     scrollCtrl.addListener(
       () {
         if (scrollCtrl.offset >= scrollCtrl.position.maxScrollExtent) {
-          adapter.loadData(more: true);
+          adapter.load(more: true);
         }
       },
     );

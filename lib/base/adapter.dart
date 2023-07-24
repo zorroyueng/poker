@@ -11,11 +11,11 @@ abstract class Adapter<P extends Provider<D>, D extends Data> {
 
   Adapter(this._dataProvider) {
     _dataProvider._init(onData: (lst) => setData(lst));
-    loadData(more: true);
+    load(more: true);
   }
 
   /// define
-  void loadData({required bool more}) => _dataProvider.load(more: more);
+  void load({required bool more}) => _dataProvider.load(more: more);
 
   P get provider => _dataProvider;
 
